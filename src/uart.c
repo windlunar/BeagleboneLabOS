@@ -5,6 +5,7 @@
 
 #include "uart.h"
 
+// The bootloader u-boot will initialize it, no need to call this function.                
 void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLOW_CTRL_T flowControl){
     CONF_UART0_PTR->conf_uart0_txd = 00000000 | MODE0 ;
 
@@ -12,10 +13,10 @@ void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLO
     // bit 5 RXACTIVE = 1 : Receiver enabled
     // bit 4 PULLTYPESEL = 1 : Pullup selected
     CONF_UART0_PTR->conf_uart0_rxd = 00000000 | 1 << 5 | 1 << 4 | MODE0 ;
-    
 }
- 
-// u-boot will initialize baudrate                  
+
+
+// The bootloader  will initialize baudrate, no need to call this function after bootup.                      
 void uart_set_Baudrate(UART_REG_T *uartChannel, uint32 baudrate){
     
 }
@@ -33,6 +34,7 @@ void uart_putC(UART_REG_T *uartChannel ,char byte){
     while( ( (uartChannel->LSR_UART) & (1 << 5) ) != (1 << 5) ) ;
     uartChannel->THR = byte ;
 }
+
 
 void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32 len){
     for(int32 i = 0 ; i < len ; i++ ){
