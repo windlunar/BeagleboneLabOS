@@ -1,0 +1,11 @@
+MEMORY
+{
+    ram : ORIGIN = 0x82000000, LENGTH = 0x100000
+}
+
+SECTIONS
+{
+    .text : { *(.text*) } > ram
+    .data : { *(.data*) } > ram
+    .bss : { *(.bss*) } > ram
+}
