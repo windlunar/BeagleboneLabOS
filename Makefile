@@ -17,6 +17,7 @@ root_dir = $(shell pwd)
 #Build
 #all
 BUILD:
+	mkdir -p bin
 	make -C ./src
 	make -C ./obj
 	
