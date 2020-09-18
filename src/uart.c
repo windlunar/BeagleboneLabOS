@@ -16,10 +16,10 @@ void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLO
 }
 
 
-// The bootloader  will initialize baudrate, no need to call this function after bootup.                      
-void uart_set_Baudrate(UART_REG_T *uartChannel, uint32 baudrate){
-    
-}
+/** The bootloader  will initialize UART0 baudrate as 115200, no need to call this function 
+ * after bootup.
+ */                       
+void uart_set_Baudrate(UART_REG_T *uartChannel, uint32 baudrate){}
 
 
 void uart_putC(UART_REG_T *uartChannel ,char byte){
@@ -32,6 +32,8 @@ void uart_putC(UART_REG_T *uartChannel ,char byte){
      */ 
     //If tx fifo is not empty, then wait.
     while( ( (uartChannel->LSR_UART) & (1 << 5) ) != (1 << 5) ) ;
+
+    //Put a byte on THR register to send out the data
     uartChannel->THR = byte ;
 }
 

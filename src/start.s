@@ -1,6 +1,3 @@
-.equ CM_PER_GPIO1_CLKCTRL, 0x44e000AC
-.equ GPIO1_OE, 0x4804C134
-.equ GPIO1_SETDATAOUT, 0x4804C194
 
 _start:
    	mrs r0, cpsr
