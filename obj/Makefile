@@ -11,12 +11,16 @@ include ../src_obj_list.make
 
 total_objects = $(src_objects)
 bin_destination_path = ../bin
-
+LIB_GCC = /opt/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1
 
 #Build
 #all objects
+### -L $(LIB_GCC) -lgcc 
+### －Ｌ是指定載入靜態連結函式庫檔案的路徑
+###－ｌ是指定載入的靜態連結函式庫檔案。
+### 除法需要 libgcc.a這個靜態函式庫
 $(bin_name) : $(total_objects)
-	$(toolchain)-ld $(total_objects) -T linker.ld -o $(bin_destination_path)/$(bin_name) 
+	$(toolchain)-ld $(total_objects) -T linker.ld -o $(bin_destination_path)/$(bin_name)  -L $(LIB_GCC) -lgcc 
 
 
 #Clean objects and bin
