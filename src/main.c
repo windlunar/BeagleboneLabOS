@@ -9,7 +9,7 @@
 
 int _main (void)
 {
-	kprintf("\nWelcome to my very first Beaglebone's mini toy OS Kernal!\r\n") ;
+	kprintf("\r\nWelcome to my very first Beaglebone's mini toy OS Kernal!\r\n") ;
 
 	kprintf("\nInitialize user leds...\r\n") ;
 	usrLed_Init() ;
