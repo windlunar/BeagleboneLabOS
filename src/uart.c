@@ -43,3 +43,5 @@ void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32 len){
         uart_putC(uartChannel ,*(str + i)) ;
     }
 }
+
+
