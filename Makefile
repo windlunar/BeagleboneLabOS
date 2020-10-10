@@ -10,13 +10,11 @@ include toolchain.make
 obj_destination_path = ./obj
 bin_destination_path = ./bin
 
-include src_obj_list.make
-
 root_dir = $(shell pwd)
 
 #Build
-#all
-BUILD:
+.PHONY : build
+build:
 	mkdir -p bin
 	make -C ./src
 	make -C ./obj
@@ -24,16 +22,22 @@ BUILD:
 	@echo
 	@echo Build sucessfully!
 
+.PHONY : copy
 copy:
-	cp ./bin/$(bin_name) ../bbb_boot/
+	cp ./bin/*.elf ../bbb_boot/
 
 #Clean objects and bin
 .PHONY : clean
 clean :
-	-rm $(bin_destination_path)/$(bin_name) 
+	-rm $(bin_destination_path)/*.elf $(bin_destination_path)/*.disasm
 	-rm $(obj_destination_path)/*.o
+	-rm ../bbb_boot/*.elf
+	
 
-
+.PHONY : disasm
+disasm:
+	$(toolchain)-objdump -D ./bin/beagos.elf > ./bin/beagos.elf.disasm
+	$(toolchain)-objdump -D ./u-boot/u-boot > ./u-boot/u-boot.disasm
 
 
 
