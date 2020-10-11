@@ -28,6 +28,8 @@ c_src:
 	$(toolchain)-gcc  -c usr_led.c -o $(obj_destination_path)/usr_led.o
 	$(toolchain)-gcc  -c uart.c -o $(obj_destination_path)/uart.o
 	$(toolchain)-gcc  -c print.c -o $(obj_destination_path)/print.o
+	$(toolchain)-gcc  -c debug.c -o $(obj_destination_path)/debug.o
+
 
 #Clean objects
 .PHONY : clean

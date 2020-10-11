@@ -13,16 +13,8 @@ typedef int int32 ;
 
 
 extern uint32 _estack;
-
-
-
 extern void WRITE_REG32 (unsigned int address, unsigned int value);
 extern unsigned int READ_REG32 (unsigned int address);
-
-extern unsigned int READ_CPSR ();
-extern unsigned int READ_SP ();
-extern unsigned int READ_CP15_c1 ();
-extern unsigned int READ_VECTOR_BASE ();
 
 
 #endif

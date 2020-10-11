@@ -10,6 +10,7 @@
 #include "uart.h"
 #include "print.h"
 #include "syscall.h"
+#include "debug.h"
 
 
 
@@ -68,10 +69,8 @@ int kernal_entry (void)
 	usertask_stack_start = activate(usertask_stack_start);
     kprintf("Back to the kernal. #1\r\n") ;
 	kprintf("sp : %x \r\n",READ_SP());
-	for(int i = 0 ; i < 16 ; i++){
-		kprintf("Addr of usertask_stack_start[%d] #1 : %p ----",i,&usertask_stack_start[i]);
-		kprintf("usertask_stack_start[%d] #1 : %x \r\n",i,usertask_stack_start[i]);
-	}
+	kprintf("usertask_stack_start #0 : %x \r\n",(uint32)usertask_stack_start);
+	stackDisplay(0x89000000,32) ;
 	
 	
 
@@ -79,7 +78,9 @@ int kernal_entry (void)
     kprintf("Back to the kernal. #2\r\n") ;
 	kprintf("sp : %x \r\n",READ_SP());
 	kprintf("usertask_stack_start #2 : %x \r\n",(uint32)usertask_stack_start);
+	stackDisplay(0x89000000,32) ;	
 
+	
 	kprintf("\nStart to blinking user leds...\r\n") ;
 
 	while(1){

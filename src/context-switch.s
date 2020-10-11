@@ -7,7 +7,6 @@ activate:
 	mrs 	ip, cpsr
 	push 	{r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
 	
-
 	/* switch to user mode */
 	msr 	CPSR_c, #0xD0 
 
@@ -18,12 +17,10 @@ activate:
 
 	/* Load user state */
 	ldmia 	sp!, {r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	//msr		apsr, ip
-	
+	msr		apsr, ip
 	
 	/* Jump to user task */
 	blx lr
-	//mov		r15, r14
 
 
 /** .type symbol,%function to indicate that the label symbol
@@ -32,15 +29,6 @@ activate:
 .type svc_handler, %function    
 .global svc_handler
 svc_handler:
-	/** 
-	 * send char, 只是用來確定程式有跳到這裡
-	 * 0x44E09000 為UART0的base address, 也是tx address
-	 * 傳送ASCII 的 0x40 (@) 
-	 */
-	//ldr		r0, =0x44E09000		
-	//ldr		r1, =0x40
-	//str		r1, [r0]
-
 	/** switch to system mode
 	 * 要切換到system mode的原因為, SVC mode的r13(sp) ,r14(lr) 與user mode是不共用的
 	 * 而 system mode是共用的 ,因此先切換到system mode以保存user state
@@ -48,7 +36,7 @@ svc_handler:
 	msr 	CPSR_c, #0xDF
 
     /* Save user state*/
-	//mrs		ip, apsr
+	mrs		ip, apsr
 
 	stmdb sp!, {r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 	mov		r0, r13
@@ -60,9 +48,7 @@ svc_handler:
 	pop 	{r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
 	msr		cpsr, ip
 
-	
 	blx 	lr
-	//mov		r15, r14
 
 
 

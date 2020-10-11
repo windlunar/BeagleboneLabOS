@@ -45,11 +45,3 @@ void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32 len){
     }
 }
 
-
-void print_LR(uint32 data){
-    kprintf("LR : %x\r\n", data) ;
-}
-
-void print_SP(uint32 data){
-    kprintf("SP : %x\r\n", data) ;
-}
