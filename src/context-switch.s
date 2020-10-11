@@ -1,8 +1,8 @@
 //.thumb
 //.syntax unified
 
-.global activate
-activate:
+.global task_activate
+task_activate:
 	/* save kernel state */
 	mrs 	ip, cpsr
 	push 	{r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}

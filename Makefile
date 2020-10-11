@@ -24,14 +24,14 @@ build:
 
 .PHONY : copy
 copy:
-	cp ./bin/*.elf ../bbb_boot/
+	cp ./bin/*.elf ~/bbb_boot/
 
 #Clean objects and bin
 .PHONY : clean
 clean :
 	-rm $(bin_destination_path)/*.elf $(bin_destination_path)/*.disasm
 	-rm $(obj_destination_path)/*.o
-	-rm ../bbb_boot/*.elf
+	-rm ~/bbb_boot/*.elf
 	
 
 .PHONY : disasm

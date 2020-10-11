@@ -14,76 +14,77 @@
 
 
 
-void usertask(void)
-{
-	kprintf("User Task #1\r\n");
-	kprintf("sp : %x \r\n",READ_SP());
-	for(int i = 0; i<100000 ; i++) ;
-    sys_call();
+void usertask1(void){
+	kprintf("Starting User Task 1 \r\n");
 
-	kprintf("HERE! User Task #2\r\n");
-	kprintf("sp : %x \r\n",READ_SP());
-	for(int i = 0; i<100000 ; i++) ;
-    sys_call();
+	int k = 0 ;
+	while(1){
+		kprintf("User Task 1 #%d\r\n" ,k);
+		for(int i = 0; i<100000 ; i++) ;
+		k++ ;
+    	sys_call();
+	}
+}
 
-	while (1); 
+void usertask2(void){
+	kprintf("Starting User Task 2 \r\n");
+
+	int k = 0 ;
+	while(1){
+		kprintf("User Task 2 #%d\r\n" ,k);
+		for(int i = 0; i<100000 ; i++) ;
+		k++ ;
+    	sys_call();
+	}
 }
 
 
 int kernal_entry (void)
 {
 	/* Initialization of process stack.
-	 * r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr 
+	 * r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr 
      * 
-     * push : 將data放到sp+4的位址
+     * push : 將data放到sp-4的位址
      * pop : 將sp的data取出,然後sp+4
      * 所以sp指向 stack中最上面的那一個data
      * 
-     * usertask_stack_start[0] ~ [13]依次存放 :
-     * r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr
+     * usertask_stack_start[0] ~ [9]依次存放 :
+     * r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr
      * 所以要把 usertask的entry位址放在 usertask_stack_start[13] 的位址上
      */
-	uint32 *usertask_stack_top = (uint32 *)0x89000000 ;
-	uint32 *usertask_stack_start = usertask_stack_top - 16;
-	usertask_stack_start[9] = (uint32) &usertask;
+	uint32 user_task1[256] ;
+	uint32 *usertask1_stack_top = user_task1 + 256 ;
+	uint32 *usertask1_stack_start = usertask1_stack_top - 16;
+	usertask1_stack_start[9] = (uint32) &usertask1;
 
+	uint32 user_task2[256] ;
+	uint32 *usertask2_stack_top = user_task2 + 256 ;
+	uint32 *usertask2_stack_start = usertask2_stack_top - 16;
+	usertask2_stack_start[9] = (uint32) &usertask2;
 
 	
 	kprintf("\r\nWelcome to my very first Beaglebone's mini toy OS Kernal!\r\n") ;
 
 	kprintf("\nInitialize user leds...\r\n") ;
 	usrLed_Init() ;
-	kprintf("Initialize user leds done!.\r\n") ;
 	
 
-	kprintf("cpsr : %x \r\n",READ_CPSR());
-	kprintf("sp : %x \r\n",READ_SP());
-	kprintf("CP15 : %x \r\n",READ_CP15_c1());
-	kprintf("Vector Base : %x \r\n",READ_VECTOR_BASE());
+	kprintf("cpsr : %x ---sp : %x ---CP15 : %x ---Exception Vector Base : %x \r\n"
+			,READ_CPSR() ,READ_SP() ,READ_CP15_c1() ,READ_VECTOR_BASE());
 
 
-	kprintf("OS Starting...\r\n");
-
-	kprintf("usertask_stack_start #0 : %x \r\n",(uint32)usertask_stack_start);
-
-	usertask_stack_start = activate(usertask_stack_start);
-    kprintf("Back to the kernal. #1\r\n") ;
-	kprintf("sp : %x \r\n",READ_SP());
-	kprintf("usertask_stack_start #0 : %x \r\n",(uint32)usertask_stack_start);
-	stackDisplay(0x89000000,32) ;
-	
-	
-
-    usertask_stack_start = activate(usertask_stack_start);
-    kprintf("Back to the kernal. #2\r\n") ;
-	kprintf("sp : %x \r\n",READ_SP());
-	kprintf("usertask_stack_start #2 : %x \r\n",(uint32)usertask_stack_start);
-	stackDisplay(0x89000000,32) ;	
-
-	
+	kprintf("Multitask Starting...\r\n");
 	kprintf("\nStart to blinking user leds...\r\n") ;
 
 	while(1){
+		usertask1_stack_start = task_activate(usertask1_stack_start);
+    	kprintf("Back to the kernal. #1\r\n") ;
+
+		usrLed_blink() ;
+
+    	usertask2_stack_start = task_activate(usertask2_stack_start);
+    	kprintf("Back to the kernal. #2\r\n") ;
+
 		usrLed_blink() ;
 	}
    	return 0;
