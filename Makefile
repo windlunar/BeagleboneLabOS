@@ -37,7 +37,7 @@ clean :
 .PHONY : disasm
 disasm:
 	$(toolchain)-objdump -D ./bin/beagos.elf > ./bin/beagos.elf.disasm
-	$(toolchain)-objdump -D ./u-boot/u-boot > ./u-boot/u-boot.disasm
+	#$(toolchain)-objdump -D ./u-boot/u-boot > ./u-boot/u-boot.disasm
 
 
 

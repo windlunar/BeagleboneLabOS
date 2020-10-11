@@ -20,7 +20,7 @@ void usertask(void)
 	for(int i = 0; i<100000 ; i++) ;
     sys_call();
 
-	kprintf("User Task #2\r\n");
+	kprintf("HERE! User Task #2\r\n");
 	kprintf("sp : %x \r\n",READ_SP());
 	for(int i = 0; i<100000 ; i++) ;
     sys_call();
@@ -44,7 +44,7 @@ int kernal_entry (void)
      */
 	uint32 *usertask_stack_top = (uint32 *)0x89000000 ;
 	uint32 *usertask_stack_start = usertask_stack_top - 16;
-	usertask_stack_start[13] = (uint32) &usertask;
+	usertask_stack_start[9] = (uint32) &usertask;
 
 
 	
@@ -67,13 +67,18 @@ int kernal_entry (void)
 
 	usertask_stack_start = activate(usertask_stack_start);
     kprintf("Back to the kernal. #1\r\n") ;
-	kprintf("usertask_stack_start #1 : %x \r\n",(uint32)usertask_stack_start);
 	kprintf("sp : %x \r\n",READ_SP());
+	for(int i = 0 ; i < 16 ; i++){
+		kprintf("Addr of usertask_stack_start[%d] #1 : %p ----",i,&usertask_stack_start[i]);
+		kprintf("usertask_stack_start[%d] #1 : %x \r\n",i,usertask_stack_start[i]);
+	}
+	
+	
 
     usertask_stack_start = activate(usertask_stack_start);
     kprintf("Back to the kernal. #2\r\n") ;
-	kprintf("usertask_stack_start #2 : %x \r\n",(uint32)usertask_stack_start);
 	kprintf("sp : %x \r\n",READ_SP());
+	kprintf("usertask_stack_start #2 : %x \r\n",(uint32)usertask_stack_start);
 
 	kprintf("\nStart to blinking user leds...\r\n") ;
 

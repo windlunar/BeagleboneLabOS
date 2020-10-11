@@ -4,6 +4,7 @@
 
 
 #include "uart.h"
+#include "print.h"
 
 // The bootloader u-boot will initialize it, no need to call this function.                
 void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLOW_CTRL_T flowControl){
@@ -45,3 +46,10 @@ void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32 len){
 }
 
 
+void print_LR(uint32 data){
+    kprintf("LR : %x\r\n", data) ;
+}
+
+void print_SP(uint32 data){
+    kprintf("SP : %x\r\n", data) ;
+}

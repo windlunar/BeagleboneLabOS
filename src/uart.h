@@ -140,5 +140,7 @@ void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLO
 void uart_set_Baudrate(UART_REG_T *uartChannel, uint32 baudrate);
 void uart_putC(UART_REG_T *uartChannel ,char byte) ;
 void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32 len) ;
+void print_LR(uint32 data);
+void print_SP(uint32 data);
 
 #endif

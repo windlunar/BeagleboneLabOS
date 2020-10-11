@@ -5,7 +5,7 @@
 activate:
 	/* save kernel state */
 	mrs 	ip, cpsr
-	push 	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
+	push 	{r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
 	
 
 	/* switch to user mode */
@@ -14,15 +14,16 @@ activate:
 	/** Load user stack 
 	 * r0為傳入的第一個參數, 也就是user stack 
 	 */	
-	mov		r13, r0					
+	mov		r13, r0				
 
 	/* Load user state */
-	pop 	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
-
-	msr		apsr, ip
-
+	ldmia 	sp!, {r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+	//msr		apsr, ip
+	
+	
 	/* Jump to user task */
-	bx lr
+	blx lr
+	//mov		r15, r14
 
 
 /** .type symbol,%function to indicate that the label symbol
@@ -45,21 +46,23 @@ svc_handler:
 	 * 而 system mode是共用的 ,因此先切換到system mode以保存user state
 	 */
 	msr 	CPSR_c, #0xDF
-	
-    /* Save user state*/
-	mrs 	ip, apsr
-	push 	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
 
-	
+    /* Save user state*/
+	//mrs		ip, apsr
+
+	stmdb sp!, {r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+	mov		r0, r13
+
 	/* switch to superviser mode */
 	msr 	CPSR_c, #0xD3
 
     /* Restore kernal state*/
-	pop 	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
+	pop 	{r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
 	msr		cpsr, ip
+
 	
-	bx 	lr
-	//movs	pc, lr
+	blx 	lr
+	//mov		r15, r14
 
 
 
