@@ -50,7 +50,7 @@ int kernal_entry (void)
      * 
      * usertask_stack_start[0] ~ [9]依次存放 :
      * r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr
-     * 所以要把 usertask的entry位址放在 usertask_stack_start[13] 的位址上
+     * 所以要把 usertask的entry位址放在 usertask_stack_start[9] 的位址上
      */
 	uint32 user_task1[256] ;
 	uint32 *usertask1_stack_top = user_task1 + 256 ;
