@@ -29,6 +29,8 @@ c_src:
 	$(toolchain)-gcc  -c uart.c -o $(obj_destination_path)/uart.o
 	$(toolchain)-gcc  -c print.c -o $(obj_destination_path)/print.o
 	$(toolchain)-gcc  -c debug.c -o $(obj_destination_path)/debug.o
+	$(toolchain)-gcc  -c task.c -o $(obj_destination_path)/task.o
+	$(toolchain)-gcc  -c user_task.c -o $(obj_destination_path)/user_task.o
 
 
 #Clean objects
