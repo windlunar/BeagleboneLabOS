@@ -14,10 +14,26 @@
 #include "debug.h"
 
 
+typedef struct
+{
+    //uint32 userTaskStack[256];
+    int userTaskStackSize ;
 
-void usertask1(void);
+    //userTaskStack最後一個空間
+    uint32 *userTaskStack_end;  
 
-void usertask2(void);
+    //userTaskStack起始空間
+    uint32 *userTaskStack_start;   
+
+    //原來的userTaskStack_start 
+    uint32 *userTaskStackPtr;
+
+    void (*taskFUNC)() ;
+    int taskID;
+
+
+}USERTASK_t;
+
 
 uint32 *userTaskInit(uint32 *userTaskStack ,int stackSize ,void (*taskFunc)() ) ;
 
