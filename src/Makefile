@@ -11,26 +11,26 @@ obj_destination_path = ../obj
 ASFLAGS += -mapcs-32 -march=armv7-a
 CFLAGS  += -march=armv7-a -mtune=cortex-a8 -O2
 
+c_obj=main.o usr_led.o uart.o print.o debug.o task.o user_task.o
+
+asm_obj=start.o syscall.o context-switch.o
 
 .PHONY : all
-all: asm_src c_src
-
-.PHONY : asm_src
-asm_src:
-	$(toolchain)-as  start.s -o $(obj_destination_path)/start.o
-	$(toolchain)-as  syscall.s -o $(obj_destination_path)/syscall.o
-	$(toolchain)-as  context-switch.s -o $(obj_destination_path)/context-switch.o
+all: $(c_obj) $(asm_obj) move
 
 
-.PHONY : c_src
-c_src:
-	$(toolchain)-gcc  -c main.c -o $(obj_destination_path)/main.o
-	$(toolchain)-gcc  -c usr_led.c -o $(obj_destination_path)/usr_led.o
-	$(toolchain)-gcc  -c uart.c -o $(obj_destination_path)/uart.o
-	$(toolchain)-gcc  -c print.c -o $(obj_destination_path)/print.o
-	$(toolchain)-gcc  -c debug.c -o $(obj_destination_path)/debug.o
-	$(toolchain)-gcc  -c task.c -o $(obj_destination_path)/task.o
-	$(toolchain)-gcc  -c user_task.c -o $(obj_destination_path)/user_task.o
+%.o : %.s
+	$(toolchain)-as $^ -o $@
+
+
+%.o : %.c
+	$(toolchain)-gcc -c $^ -o $@
+
+
+.PHONY : move
+move : 
+	cp *.o $(obj_destination_path)
+	rm -rf *.o	
 
 
 #Clean objects
