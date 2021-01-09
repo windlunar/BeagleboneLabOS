@@ -84,14 +84,14 @@ And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
 <br>
 14.Go to : "</your workspace/>/BeagleboneLabOS/bin"
 
-<br>
+<br><br>
 15.Choose the elf binary and wait for upload :beaglebonLabOS.elf
 
-<br>
+<br><br>
 16.After upload successfully, type the command to execute the kernal:
         bootelf 0x81000000
 
-<br>
+<br><br>
 You can see task1 started and and back to kernal mode by software interrupt.
 And then run task2 ---SWI---->kernal
 -------->run task3 ---SWI---->kernal
@@ -100,6 +100,7 @@ And then run task2 ---SWI---->kernal
 
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/
 result.png)
+
 <br>
 
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/bbb.jpg)
