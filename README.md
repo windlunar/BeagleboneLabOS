@@ -65,15 +65,16 @@ Then you will see the command line provided by U-boot
 <br><br>
 11.Type the following command at U-boot's commmand line to transfer binary file form pc to beaglebone through UART0.
 And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
+
         loadx 0x81000000
 
 <br>
 12.And type "CTRL+A" and then "S" ,you should see:
 <br>
+13.Choose "xmodem"
 
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/choose_xmodem.png)
-<br>
-13.Choose "xmodem"
+
 
 <br>
 13.Choose "[Goto]"
@@ -89,9 +90,10 @@ And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
 
 <br><br>
 16.After upload successfully, type the command to execute the kernal:
+
         bootelf 0x81000000
 
-<br><br>
+<br>
 You can see task1 started and and back to kernal mode by software interrupt.
 And then run task2 ---SWI---->kernal
 -------->run task3 ---SWI---->kernal
