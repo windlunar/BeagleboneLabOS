@@ -58,11 +58,11 @@ Then you should see:
 9.Hold the button "S2" ,and power on beaglebone(through usb or 5V).
 Then the board should boot up by U-boot which is in SD card.
 
-<br>
+<br><br>
 10.Press space while you see "Press SPACE to abort autoboot in 2 seconds".
 Then you will see the command line provided by U-boot
 
-<br>
+<br><br>
 11.Type the following command at U-boot's commmand line to transfer binary file form pc to beaglebone through UART0.
 And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
         loadx 0x81000000
@@ -85,7 +85,7 @@ And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
 14.Go to : "</your workspace/>/BeagleboneLabOS/bin"
 
 <br><br>
-15.Choose the elf binary and wait for upload :beaglebonLabOS.elf
+15.Choose the "beaglebonLabOS.elf" and wait for upload complete.
 
 <br><br>
 16.After upload successfully, type the command to execute the kernal:
@@ -98,8 +98,7 @@ And then run task2 ---SWI---->kernal
 -------->run task1 ......
 <br>
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/
-result.png)
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/result.png)
 
 <br>
 
