@@ -60,16 +60,16 @@ Then the board should boot up by U-boot which is in SD card.
 
 <br><br>
 10.Press space while you see "Press SPACE to abort autoboot in 2 seconds".
-Then you will see the command line provided by U-boot
+Then you will see the U-boot's command line.
 
 <br><br>
-11.Type the following command at U-boot's command line to transfer binary file form pc to beaglebone through UART0.
-And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
+11.Type the following command at U-boot's command line to upload binary file form pc to beaglebone through UART0.
+And the elf will be uploaded to beaglebone's memory ,and place to 0x81000000.
 
         loadx 0x81000000
 
 <br>
-12.And type "CTRL+A" and then "S" ,you should see:
+12.Type "CTRL+A" and then "S" ,you should see:
 <br>
 13.Choose "xmodem"
 
