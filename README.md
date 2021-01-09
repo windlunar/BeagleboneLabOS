@@ -1,30 +1,35 @@
 # BeagleboneLabOS
 
-Hi ,<br><br>
-## I'm trying to make a toy operating system on Beaglebone black in order to learn some OS concept and pratice my C languege skill.<br>
+Hi ,<br><
+I'm trying to make a toy operating system on Beaglebone black in order to learn some OS concept and pratice my C languege skill.
+<br>
 Currently ,this tiny kernal can switch between user tasks and kernel mode.
 
 
-Enviroment Setup:
+Setup:
 =
 
 <br>
 Need to prepare:
+<br>
 1. A PC with Ubuntu 18.04
+<br>
 2. Beaglebone black
+<br>
 3. TTL to USB converter
+<br>
 4. SD card with U-boot
 <br>
 
 <br><br>
 2.Install "gcc-arm-none-eabi-6-2017-q2-update" to compile source code
-<br>
+<br><br>
 3.Install "minicom"
 
         sudo apt-get install minicom
 
 <br>
-4. Move to your working space or any directory you like.<br>
+4. Move to your working space or any directory you like.<br><br>
 5. clone this project:
 
         git clone https://github.com/windlunar/BeagleboneLabOS
@@ -35,7 +40,7 @@ Need to prepare:
         make
 <br>
 7.Connect Beaglebone's UART0 to TTL-USB converter ,and plug TTL-USB converter to PC's usb port.
-
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/uart0.png)
 
 <br>
 8. Open another terminal ,execute minicom:
@@ -43,6 +48,7 @@ Need to prepare:
         sudo minicom
 <br>
 Then you should see:
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/minicom.png)
 
 <br>        
 9.Hold the button "S2" ,and power on beaglebone(through usb or 5V).
@@ -59,12 +65,13 @@ And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
 
 <br>
 12.And type "CTRL+A" and then "S" ,you should see:
-
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/choose_xmodem.png)
 <br>
 13.Choose "xmodem"
 
 <br>
 13.Choose "[Goto]"
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/goto.png)
 
 <br>
 14.Go to : "</your workspace/>/BeagleboneLabOS/bin"
@@ -75,7 +82,13 @@ And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
 <br>
 16.After upload successfully, type the command to execute the kernal:
         bootelf 0x81000000
+
+<br>
 You can see task1 started and and back to kernal mode by software interrupt.
 And then run task2 ---SWI---->kernal
 -------->run task3 ---SWI---->kernal
 -------->run task1 ......
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/
+result.png)
+
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/bbb.jpg)
