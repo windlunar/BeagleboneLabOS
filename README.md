@@ -83,7 +83,7 @@ And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/goto.png)
 
 <br>
-14.Go to : "</your workspace/>/BeagleboneLabOS/bin"
+14.Go to : "your workspace/BeagleboneLabOS/bin"
 
 <br><br>
 15.Choose the "beaglebonLabOS.elf" and wait for upload complete.
