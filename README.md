@@ -1,8 +1,8 @@
 # BeagleboneLabOS
 
-Hi ,<br><
+Hi ,<br>
 I'm trying to make a toy operating system on Beaglebone black in order to learn some OS concept and pratice my C languege skill.
-<br>
+<br><br>
 Currently ,this tiny kernal can switch between user tasks and kernel mode.
 
 
@@ -40,6 +40,8 @@ Need to prepare:
         make
 <br>
 7.Connect Beaglebone's UART0 to TTL-USB converter ,and plug TTL-USB converter to PC's usb port.
+<br>
+
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/uart0.png)
 
 <br>
@@ -48,6 +50,8 @@ Need to prepare:
         sudo minicom
 <br>
 Then you should see:
+<br>
+
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/minicom.png)
 
 <br>        
@@ -65,12 +69,16 @@ And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
 
 <br>
 12.And type "CTRL+A" and then "S" ,you should see:
+<br>
+
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/choose_xmodem.png)
 <br>
 13.Choose "xmodem"
 
 <br>
 13.Choose "[Goto]"
+<br>
+
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/goto.png)
 
 <br>
@@ -88,7 +96,10 @@ You can see task1 started and and back to kernal mode by software interrupt.
 And then run task2 ---SWI---->kernal
 -------->run task3 ---SWI---->kernal
 -------->run task1 ......
+<br>
+
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/
 result.png)
+<br>
 
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/bbb.jpg)
