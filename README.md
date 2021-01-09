@@ -45,7 +45,7 @@ Need to prepare:
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/uart0.png)
 
 <br>
-8. Open another terminal ,execute minicom:
+8. Open another terminal ,execute minicom and set the baudrate to 115200:
 
         sudo minicom
 <br>
@@ -63,7 +63,7 @@ Then the board should boot up by U-boot which is in SD card.
 Then you will see the command line provided by U-boot
 
 <br><br>
-11.Type the following command at U-boot's commmand line to transfer binary file form pc to beaglebone through UART0.
+11.Type the following command at U-boot's command line to transfer binary file form pc to beaglebone through UART0.
 And the elf will be uploaded to beaglebone's memory ,and place at 0x81000000
 
         loadx 0x81000000
