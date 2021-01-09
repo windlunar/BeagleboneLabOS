@@ -1,5 +1,4 @@
-//.thumb
-//.syntax unified
+
 .equ UART0_BASE, 0x44E09000
 
 .globl WRITE_REG32
@@ -42,7 +41,8 @@ READ_CPSR:
 
 .globl READ_SP
 READ_SP:
-	mov 	r0, r13					//r13 is stack pointer
+	//r13 is stack pointer
+	mov 	r0, r13					
 	bx 		lr
 
 .globl READ_CP15_c1
@@ -57,13 +57,13 @@ READ_VECTOR_BASE:
 	 * exception vectors offset
 	 * 
 	 * 0x00 Reset 				Reset
-	 * 0x04 Undefined 			PC = [base + 24h]
-	 * 0x08 SWI 				PC = [base + 28h]
-	 * 0x0C Pre-fetch abort 	PC = [base + 2Ch]
-	 * 0x10 Data abort 			PC = [base + 30h]
-	 * 0x14 Unused 				PC = [base + 34h]
-	 * 0x18 IRQ 				PC = [base + 38h]
-	 * 0x20 FIQ 				PC = [base + 3Ch]
+	 * 0x04 Undefined 			PC = [base + 20h]
+	 * 0x08 SWI 				PC = [base + 24h]
+	 * 0x0C Pre-fetch abort 	PC = [base + 28h]
+	 * 0x10 Data abort 			PC = [base + 2ch]
+	 * 0x14 Unused 				PC = [base + 30h]
+	 * 0x18 IRQ 				PC = [base + 34h]
+	 * 0x20 FIQ 				PC = [base + 38h]
 	 */ 
 	mrc 	p15, #0, r0, c12, c0, #0
 	bx 		lr
@@ -73,23 +73,31 @@ READ_VECTOR_BASE:
 
 .globl _start
 _start:
-	//MRC     p15, #0, r0, c1, c0, #0			//load CP15 to r0
-	//orr 	r0, r0, #0x00002000 			//Set CP15 bit13 = 1
-	//MCR     p15, #0, r0, c1, c0, #0			//store r0 to CP15
-
 	/**
-	 * U-Boot 2017.01 (Sep 13 2020 - 04:52:37 +0800)   
+	 * U-Boot version :2017.01
+	 * 初始化已透過U-Boot初始化
 	 * 
+	 * 透過 READ_VECTOR_BASE function 讀取 exception vector 存放的位址:
 	 * 0x9ff52000為 exception vector's base addr
 	 * SMI at 0x9ff52008 -> jump to 0x9ff52024
 	 * So svc_handler's address should load to 0x9ff52024
 	 */
-	/*設定svc_handler 的entry*/ 
+
+	/**設定svc_handler 的entry
+	 * 0x9ff52024 存放實際的svc_handler function的 entry address
+	 * 所以下面三行意思是令 
+	 * r0 = 0x9ff52024
+	 * r1 = svc_handler的 address
+	 * 再令 r0(0x9ff52024)這個位址的值 = svc_handler的 address(存在r1)
+	 * 
+	 * 所以當觸發 svc中斷時, 系統會先根據exception vector去 0x9ff52024這個位址拿svc_handler的entry addr 
+	 * */ 
 	ldr r0, =0x9ff52024
 
 	ldr r1, =svc_handler
 	str r1, [r0]
 
+	/** 跳到kernal_entry*/
 	bl 		kernal_entry
 
 .loop: 

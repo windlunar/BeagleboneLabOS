@@ -2,7 +2,6 @@
 # 2020/7/21
 #
 # Created by Allen.YY
-# EE ,NCHU
 #
 
 include toolchain.make
@@ -22,21 +21,26 @@ build:
 	@echo
 	@echo Build sucessfully!
 
-.PHONY : copy
-copy:
-	cp ./bin/*.elf ~/bbb_boot/
 
 #Clean objects and bin
 .PHONY : clean
 clean :
-	-rm $(bin_destination_path)/*.elf $(bin_destination_path)/*.disasm
+	-rm $(bin_destination_path)/*.elf
 	-rm $(obj_destination_path)/*.o
-	-rm ~/bbb_boot/*.elf
-	
+
+.PHONY : clobj
+clobj :
+	-rm $(obj_destination_path)/*.o
+
+
+.PHONY : clean_diasm
+clean_diasm :
+	-rm $(bin_destination_path)/*.disasm
+
 
 .PHONY : disasm
 disasm:
-	$(toolchain)-objdump -D ./bin/beagos.elf > ./bin/beagos.elf.disasm
+	$(toolchain)-objdump -D ./bin/beagos.elf > ./bin/beaglebonLabOS.elf.disasm
 	#$(toolchain)-objdump -D ./u-boot/u-boot > ./u-boot/u-boot.disasm
 
 

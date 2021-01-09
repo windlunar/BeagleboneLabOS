@@ -1,6 +1,6 @@
 
 #include "usr_led.h"
-#include "common.h"
+#include "../common.h"
 #include "cm_per.h"
 #include "gpio_reg.h"
 
@@ -44,8 +44,8 @@ void usrLed_Init(){
 
 void usrLed_blink(){
     GPIO1_PTR->GPIO_SETDATAOUT = (15<<21) ;
-    for(read_val = 0; read_val < 1000000; read_val ++);
+    for(read_val = 0; read_val < 500000; read_val ++);
 
     GPIO1_PTR->GPIO_CLEARDATAOUT = (15 << 21) ;
-	for(read_val = 0; read_val < 1000000; read_val ++);
+	for(read_val = 0; read_val < 500000; read_val ++);
 }

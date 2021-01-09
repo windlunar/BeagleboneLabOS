@@ -1,5 +1,3 @@
-//.thumb
-//.syntax unified
 
 /**
  * 當呼叫SVC時，SVC會觸發exception 

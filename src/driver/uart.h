@@ -5,7 +5,7 @@
 #ifndef __UART_H_
 #define __UART_H_
 
-#include "common.h"
+#include "../common.h"
 #include "cm_conf.h"
 
 #define UART0_BASE      0x44E09000

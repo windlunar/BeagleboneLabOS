@@ -2,13 +2,12 @@
 # 2020/7/21
 #
 # Created by Allen.YY
-# EE ,NCHU
 #
 
 include ../toolchain.make
 
 bin_destination_path = ../bin
-bin_name = beagos.elf
+bin_name = beaglebonLabOS.elf
 LIB_GCC = /opt/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1
 
 #Build

@@ -5,7 +5,7 @@
 #ifndef __CM_CONF_H_
 #define __CM_CONF_H_
 
-#include "common.h"
+#include "../common.h"
 
 //Control module base address is 0x44E10000
 //And the pffset of pin config registers are 0x800

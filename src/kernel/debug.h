@@ -3,9 +3,9 @@
 #ifndef __DEBUG_H_
 #define __DEBUG_H_
 
-#include "common.h"
-#include "uart.h"
-#include "print.h"
+#include "../common.h"
+#include "../driver/uart.h"
+#include "../lib/print.h"
 
 
 

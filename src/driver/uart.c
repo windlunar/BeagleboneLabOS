@@ -4,7 +4,7 @@
 
 
 #include "uart.h"
-#include "print.h"
+//#include "../lib/print.h"
 
 // The bootloader u-boot will initialize it, no need to call this function.                
 void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLOW_CTRL_T flowControl){

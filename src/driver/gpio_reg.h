@@ -2,7 +2,7 @@
 #ifndef __GPIO_REG_H_
 #define __GPIO_REG_H_
 
-#include "common.h"
+#include "../common.h"
 
 
 #define GPIO1_BASE		0x4804C000

@@ -1,12 +1,8 @@
-/**
- * U-Boot 2017.01 (Sep 13 2020 - 04:52:37 +0800)   
- * 
- */ 
-
 
 #include "task.h"
-#include "print.h"
+#include "../lib/print.h"
 
+uint32 task_stack[TASK_NUM][TASK_STACK_SIZE] ;
 
 uint32 *userTaskInit(unsigned int *userTaskStack ,int stackSize ,void (*taskFunc)() ){
 	/* Initialization of process stack.

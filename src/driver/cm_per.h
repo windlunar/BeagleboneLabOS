@@ -2,7 +2,7 @@
 #ifndef __CM_PER_H_
 #define __CM_PER_H_
 
-#include "common.h"
+#include "../common.h"
 
 
 #define CM_PER_BASE    0x44e00000

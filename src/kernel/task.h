@@ -1,22 +1,17 @@
-/**
- * U-Boot 2017.01 (Sep 13 2020 - 04:52:37 +0800)   
- * 
- * Need to close the watchdog ,or the BBB will reset itself after 50 seconds
- */ 
+
 #ifndef __TASK_H_
 #define __TASK_H_
 
-#include "usr_led.h"
-#include "common.h"
-#include "uart.h"
-#include "print.h"
-#include "syscall.h"
-#include "debug.h"
+#include "../common.h"
 
+#define TASK_RUNNING    0
+#define TASK_READY      1
+
+#define TASK_STACK_SIZE 128
+#define TASK_NUM 3
 
 typedef struct
 {
-    //uint32 userTaskStack[256];
     int userTaskStackSize ;
 
     //userTaskStack最後一個空間
@@ -29,13 +24,18 @@ typedef struct
     uint32 *userTaskStackPtr;
 
     void (*taskFUNC)() ;
-    int taskID;
+    int32 taskID;
+    int32 taskStatus ;
 
 
 }USERTASK_t;
 
+extern uint32 task_stack[TASK_NUM][TASK_STACK_SIZE] ;
 
 uint32 *userTaskInit(uint32 *userTaskStack ,int stackSize ,void (*taskFunc)() ) ;
+
+//輸入參數 stack(Process stack pointer)會存到r0
+uint32 *userTaskRun(uint32 *stack); 
 
 #endif
 
