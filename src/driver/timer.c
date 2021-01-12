@@ -57,3 +57,9 @@ void disnableTimerAndUnbindISR(int32_t IRQ_ID)
 {
 	irq_isr_unbind(IRQ_ID);
 }
+
+
+void __attribute__((optimize("O0"))) delay(uint32_t num)
+{
+	for (uint32_t count = 0 ;count < num ;count++) ;
+}

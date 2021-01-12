@@ -59,7 +59,7 @@ svc_handler:
 .align	2
 irq_entry:
     b irqs_handler
-	
+
 
 
 

@@ -25,3 +25,11 @@ void stackDisplay(uint32_t stackTop ,int num){
         kprintf("MEM ADDR : %p --- CONTENT : %x\r\n", stackTopAddr-i,*(stackTopAddr-i)) ;
     }
 }
+
+
+int32_t readCpsr(){
+	int32_t cpsr;
+
+    asm volatile("mrs %[v], CPSR" : : [v] "r" (cpsr));
+	return cpsr ;
+}

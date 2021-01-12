@@ -66,4 +66,6 @@ void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr);
 void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(void));
 void disnableTimerAndUnbindISR(int32_t IRQ_ID);
 
+void __attribute__((optimize("O0"))) delay(uint32_t num);
+
 #endif

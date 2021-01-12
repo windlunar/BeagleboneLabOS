@@ -5,7 +5,10 @@
 #include "../common.h"
 #include "interrupt_regs.h"
 
+void __attribute__((interrupt("IRQ"))) irqs_handler(void) ;
+//void irqs_handler(void);
 
+/************************************************************************************************/
 void SYSTEM_INT_Enable(int32_t interruptID) ;
 void SYSTEM_INT_disable(int32_t interruptID) ;
 uint32_t getActivateIrqNum(void) ;

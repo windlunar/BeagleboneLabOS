@@ -18,6 +18,6 @@ void print_here();
 void print_LR(uint32_t data);
 void print_SP(uint32_t data);
 void stackDisplay(uint32_t stackTop ,int num);
-
+int32_t readCpsr() ;
 
 #endif

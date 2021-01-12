@@ -54,7 +54,7 @@ void cpsrEnableIRQ(void)
 void cpsrDisableIRQ(void)
 {
     asm volatile("mrs r0, CPSR\n\t"
-        		 "orr r0, r0, #0x40\n\t"
+        		 "orr r0, r0, #0x80\n\t"
         		 "msr CPSR_c, r0");
 }
 
@@ -102,10 +102,9 @@ uint32_t getIntVectorAddr(void)
 	return intvector_addr;
 }
 
-
-
-
-void __attribute__((interrupt("IRQ"))) irqs_handler(void)
+// __attribute__((interrupt("IRQ"))) 能正常返回
+//void irqs_handler(void) 不能
+void __attribute__((interrupt("IRQ"))) irqs_handler(void)	
 {
 	//獲得 irq number以判斷是觸發那種中斷
 	uint8_t irq_num = getActivateIrqNum();
