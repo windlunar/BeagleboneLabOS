@@ -9,7 +9,7 @@
 
 
 #define RTC_BASE                0x44E3E000
-#define RTC_BASE_PTR          ((volatile uint32 *)RTC_BASE)
+#define RTC_BASE_PTR          ((volatile uint32_t *)RTC_BASE)
                                                
 
 

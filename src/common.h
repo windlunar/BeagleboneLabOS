@@ -2,7 +2,7 @@
 #ifndef __COMMON_H_
 #define __COMMON_H_
 
-typedef unsigned char uint8 ;
+typedef unsigned char uint8  ;
 typedef unsigned short uint16 ;
 typedef unsigned int uint32 ;
 typedef unsigned long uint64 ;
@@ -23,7 +23,7 @@ typedef int int32_t ;
 
 
 
-extern uint32 _estack;
+extern uint32_t _estack;
 extern void WRITE_REG32 (unsigned int address, unsigned int value);
 extern unsigned int READ_REG32 (unsigned int address);
 
@@ -31,6 +31,7 @@ static inline void dataSyncBarrier(void)
 {
 	asm volatile("dsb\n");
 }
+
 
 
 extern void __attribute__((optimize("O0"))) delay(uint32_t nr_of_nops);

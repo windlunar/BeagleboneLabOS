@@ -2,9 +2,9 @@
 #include "task.h"
 #include "../lib/print.h"
 
-uint32 task_stack[TASK_NUM][TASK_STACK_SIZE] ;
+uint32_t task_stack[TASK_NUM][TASK_STACK_SIZE] ;
 
-uint32 *userTaskInit(unsigned int *userTaskStack ,int stackSize ,void (*taskFunc)() ){
+uint32_t *userTaskInit(unsigned int *userTaskStack ,int stackSize ,void (*taskFunc)() ){
 	/* Initialization of process stack.
 	 * r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr 
      * 
@@ -16,8 +16,8 @@ uint32 *userTaskInit(unsigned int *userTaskStack ,int stackSize ,void (*taskFunc
      * r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr
      * 所以要把 usertask的entry位址放在 usertask_stack_start[9] 的位址上
      */
-	uint32 *userTaskStack_top = userTaskStack + stackSize ;
-	uint32 *userTaskStack_start = userTaskStack_top - 16;
+	uint32_t *userTaskStack_top = userTaskStack + stackSize ;
+	uint32_t *userTaskStack_start = userTaskStack_top - 16;
 	userTaskStack_start[9] = (uint32) taskFunc;
 
 	return userTaskStack_start ;

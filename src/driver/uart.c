@@ -20,7 +20,7 @@ void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLO
 /** The bootloader  will initialize UART0 baudrate as 115200, no need to call this function 
  * after bootup.
  */                       
-void uart_set_Baudrate(UART_REG_T *uartChannel, uint32 baudrate){}
+void uart_set_Baudrate(UART_REG_T *uartChannel, uint32_t baudrate){}
 
 
 void uart_putC(UART_REG_T *uartChannel ,char byte){
@@ -39,8 +39,8 @@ void uart_putC(UART_REG_T *uartChannel ,char byte){
 }
 
 
-void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32 len){
-    for(int32 i = 0 ; i < len ; i++ ){
+void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32_t len){
+    for(int32_t i = 0 ; i < len ; i++ ){
         uart_putC(uartChannel ,*(str + i)) ;
     }
 }

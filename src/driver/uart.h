@@ -25,96 +25,96 @@
 /** Define UART related structure*/
 typedef struct{
     union{
-        uint32 THR ;
-        uint32 RHR ;
-        uint32 DLL ;
+        uint32_t THR ;
+        uint32_t RHR ;
+        uint32_t DLL ;
     };
 
     union{
-        uint32 IER_IRDA ;
-        uint32 IER_CIR ;
-        uint32 IER_UART ;
-        uint32 DLH ;
+        uint32_t IER_IRDA ;
+        uint32_t IER_CIR ;
+        uint32_t IER_UART ;
+        uint32_t DLH ;
     };
     
     union{
-        uint32 EFR ;
-        uint32 IIR_UART ;
-        uint32 IIR_CIR ;
-        uint32 FCR ;
-        uint32 IIR_IRDA ;
+        uint32_t EFR ;
+        uint32_t IIR_UART ;
+        uint32_t IIR_CIR ;
+        uint32_t FCR ;
+        uint32_t IIR_IRDA ;
     };
 
-    uint32 LCR ;
+    uint32_t LCR ;
 
     union{
-        uint32 MCR ;
-        uint32 XON1_ADDR1 ;
-    };
-
-    union{
-        uint32 XON2_ADDR2 ;
-        uint32 LSR_CIR ;
-        uint32 LSR_IRDA ;
-        uint32 LSR_UART ;
+        uint32_t MCR ;
+        uint32_t XON1_ADDR1 ;
     };
 
     union{
-        uint32 TCR ;
-        uint32 MSR ;
-        uint32 XOFF1 ;
+        uint32_t XON2_ADDR2 ;
+        uint32_t LSR_CIR ;
+        uint32_t LSR_IRDA ;
+        uint32_t LSR_UART ;
     };
 
     union{
-        uint32 SPR ;
-        uint32 TLR ;
-        uint32 XOFF2 ;
-    };
-
-    uint32 MDR1 ;
-    uint32 MDR2 ;
-
-    union{
-        uint32 TXFLL ;
-        uint32 SFLSR ;
+        uint32_t TCR ;
+        uint32_t MSR ;
+        uint32_t XOFF1 ;
     };
 
     union{
-        uint32 RESUME ;
-        uint32 TXFLH ;
+        uint32_t SPR ;
+        uint32_t TLR ;
+        uint32_t XOFF2 ;
+    };
+
+    uint32_t MDR1 ;
+    uint32_t MDR2 ;
+
+    union{
+        uint32_t TXFLL ;
+        uint32_t SFLSR ;
+    };
+
+    union{
+        uint32_t RESUME ;
+        uint32_t TXFLH ;
     };
       
     union{
-        uint32 RXFLL ;
-        uint32 SFREGL ;
+        uint32_t RXFLL ;
+        uint32_t SFREGL ;
     };
 
     union{
-        uint32 SFREGH ;
-        uint32 RXFLH ;
+        uint32_t SFREGH ;
+        uint32_t RXFLH ;
     };
 
     union{
-        uint32 BLR ;
-        uint32 UASR ;
+        uint32_t BLR ;
+        uint32_t UASR ;
     };
 
-    uint32 ACREG ;
-    uint32 SCR ;
-    uint32 SSR ;
-    uint32 EBLR ;
-    uint32 MVR ;
-    uint32 SYSC ;
-    uint32 SYSS ;
-    uint32 WER ;
-    uint32 CFPS ;
-    uint32 RXFIFO_LVL ;
-    uint32 TXFIFO_LVL ;
-    uint32 IER2 ;
-    uint32 ISR2 ;
-    uint32 FREQ_SEL ;
-    uint32 MDR3 ;
-    uint32 TX_DMA_THRESHOLD ;
+    uint32_t ACREG ;
+    uint32_t SCR ;
+    uint32_t SSR ;
+    uint32_t EBLR ;
+    uint32_t MVR ;
+    uint32_t SYSC ;
+    uint32_t SYSS ;
+    uint32_t WER ;
+    uint32_t CFPS ;
+    uint32_t RXFIFO_LVL ;
+    uint32_t TXFIFO_LVL ;
+    uint32_t IER2 ;
+    uint32_t ISR2 ;
+    uint32_t FREQ_SEL ;
+    uint32_t MDR3 ;
+    uint32_t TX_DMA_THRESHOLD ;
     
 }UART_REG_T;
 
@@ -137,8 +137,8 @@ typedef enum{
 }FLOW_CTRL_T;
 
 void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLOW_CTRL_T flowControl);
-void uart_set_Baudrate(UART_REG_T *uartChannel, uint32 baudrate);
+void uart_set_Baudrate(UART_REG_T *uartChannel, uint32_t baudrate);
 void uart_putC(UART_REG_T *uartChannel ,char byte) ;
-void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32 len) ;
+void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32_t len) ;
 
 #endif

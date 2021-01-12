@@ -9,5 +9,6 @@ void usrLedInitAsm() ;
 void usrLedBlinkAsm() ;
 void usrLedInit() ;
 void usrLedBlink() ;
+void usrLedToggle(uint32_t usr_led_num);
 
 #endif

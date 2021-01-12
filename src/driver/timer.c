@@ -5,9 +5,20 @@
 #include "uart.h"
 #include "cm_per.h"
 #include "../kernel/interrupt.h"
+#include "../driver/usr_led.h"
 
+
+void timer0_ISR(void)
+{
+	(DMTIMER0_BASE_PTR_t->IRQSTATUS) = (1 << 1);
+	usrLedToggle(3);
+	usrLedToggle(2);
+	usrLedToggle(1);
+	usrLedToggle(0);
+}
 
 /************************************************************************************************/
+
 void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
 {
     DMTIMER_struct_ptr->IRQENABLE_SET = (1 << 1);
@@ -23,6 +34,8 @@ void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
 
     // Start
     DMTIMER_struct_ptr->TCLR |= (1 << 0); 
+
+    enableTimerAndBindISR(IRQ_NUM_TIMER0 ,timer0_ISR);
 }
 
 
@@ -34,13 +47,13 @@ void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr)
 }
 
 
-void timer_ISR_bind(int32_t IRQ_ID ,void (*handler)(void))
+void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(void))
 {
 	irq_isr_bind(IRQ_ID, handler);
 }
 
 
-void timer_ISR_unbind(int32_t IRQ_ID)
+void disnableTimerAndUnbindISR(int32_t IRQ_ID)
 {
 	irq_isr_unbind(IRQ_ID);
 }

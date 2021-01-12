@@ -7,21 +7,21 @@
 #define IRQ_NUM 128
 #define IRQ_NUM_MASK 127
 
-void SYSTEM_INT_Enable(int32 interruptID)
+void SYSTEM_INT_Enable(int32_t interruptID)
 {             
-    int32 interrupt_group = interruptID >> 5 ;
+    int32_t interrupt_group = interruptID >> 5 ;
     *(INTC_BASE_PTR + INTC_MIR_CLEAR_BASE + 0x20 * interrupt_group) = 0x01 << (interruptID & 0x1F) ;
 
 }
 
-void SYSTEM_INT_disable(int32 interruptID)
+void SYSTEM_INT_disable(int32_t interruptID)
 {             
-    int32 interrupt_group = interruptID >> 5 ;
+    int32_t interrupt_group = interruptID >> 5 ;
     *(INTC_BASE_PTR + INTC_MIR_SET_BASE + 0x20 * interrupt_group) = 0x01 << (interruptID & 0x1F) ;
 
 }
 
-uint32 getActivateIrqNum(void)
+uint32_t getActivateIrqNum(void)
 {
     return ( *(INTC_BASE_PTR + INTC_SIR_IRQ) &  IRQ_NUM_MASK);
 }
@@ -29,14 +29,14 @@ uint32 getActivateIrqNum(void)
 
 
 void 
-setIntRouteAndPriority(uint32 interruptID ,uint32 priority ,uint32 route)
+setIntRouteAndPriority(uint32_t interruptID ,uint32_t priority ,uint32_t route)
 {
     *(INTC_ILR_n_BASE_PTR + interruptID * 0x04) = ( (priority << 0x02) & 0xfc ) | route ;
 }
 
 
 void 
-setIntRoute(uint32 interruptID ,uint32 route)
+setIntRoute(uint32_t interruptID ,uint32_t route)
 {
     *(INTC_ILR_n_BASE_PTR + interruptID * 0x04) |= route ;
 }
@@ -107,7 +107,7 @@ uint32_t getIntVectorAddr(void)
 
 void __attribute__((interrupt("IRQ"))) irqs_handler(void)
 {
-	//獲得 irq number以判斷是處發那種中斷
+	//獲得 irq number以判斷是觸發那種中斷
 	uint8_t irq_num = getActivateIrqNum();
 
 	//根據獲得的irq num, 執行陣列中對應的函式

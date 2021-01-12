@@ -6,15 +6,15 @@
 #include "interrupt_regs.h"
 
 
-void SYSTEM_INT_Enable(int32 interruptID) ;
-void SYSTEM_INT_disable(int32 interruptID) ;
-uint32 getActivateIrqNum(void) ;
+void SYSTEM_INT_Enable(int32_t interruptID) ;
+void SYSTEM_INT_disable(int32_t interruptID) ;
+uint32_t getActivateIrqNum(void) ;
 
 void 
-setIntRouteAndPriority(uint32 interruptID ,uint32 priority ,uint32 route);
+setIntRouteAndPriority(uint32_t interruptID ,uint32_t priority ,uint32_t route);
 
 void 
-setIntRoute(uint32 interruptID ,uint32 route);
+setIntRoute(uint32_t interruptID ,uint32_t route);
 
 void cpsrEnableIRQ(void);
 void cpsrDisableIRQ(void);

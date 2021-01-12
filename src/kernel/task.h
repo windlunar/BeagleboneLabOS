@@ -15,27 +15,27 @@ typedef struct
     int userTaskStackSize ;
 
     //userTaskStack最後一個空間
-    uint32 *userTaskStack_end;  
+    uint32_t *userTaskStack_end;  
 
     //userTaskStack起始空間
-    uint32 *userTaskStack_start;   
+    uint32_t *userTaskStack_start;   
 
     //原來的userTaskStack_start 
-    uint32 *userTaskStackPtr;
+    uint32_t *userTaskStackPtr;
 
     void (*taskFUNC)() ;
-    int32 taskID;
-    int32 taskStatus ;
+    int32_t taskID;
+    int32_t taskStatus ;
 
 
 }USERTASK_t;
 
-extern uint32 task_stack[TASK_NUM][TASK_STACK_SIZE] ;
+extern uint32_t task_stack[TASK_NUM][TASK_STACK_SIZE] ;
 
-uint32 *userTaskInit(uint32 *userTaskStack ,int stackSize ,void (*taskFunc)() ) ;
+uint32_t *userTaskInit(uint32_t *userTaskStack ,int stackSize ,void (*taskFunc)() ) ;
 
 //輸入參數 stack(Process stack pointer)會存到r0
-uint32 *userTaskRun(uint32 *stack); 
+uint32_t *userTaskRun(uint32_t *stack); 
 
 #endif
 

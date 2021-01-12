@@ -39,7 +39,7 @@ int kprintf(const char *fmt, ...){
 
 int kprintfmt(const char *fmt ,va_list args){
     register int character ;
-    uint32 va_val ,base ;
+    uint32_t va_val ,base ;
     char padc ;
     int width ;
 
@@ -49,7 +49,7 @@ int kprintfmt(const char *fmt ,va_list args){
         //先判斷是否不等於, 然後才+1跳入while執行, 或是不執行
         //當遇到%時,不執行該迴圈,and then add the pointer fmt to move to the next char after % (like c,s,d,u,p...)
         // and then 往下執行label FORMAT_PRINT
-        while((character = *(uint8 *)fmt++) != '%'){
+        while((character = *(uint8_t  *)fmt++) != '%'){
             //如果遇到結束字元則跳出
             if(character == '\0'){
                 return 0 ;
@@ -64,7 +64,7 @@ int kprintfmt(const char *fmt ,va_list args){
         FORMAT_PRINT:
             //判斷the next char after % (like c,s,d,u,p...), 以格式化輸出(like c,s,d,u,p...)
             //然後pointer fmt才+1 , move to the next char after (c,s,d,u,p...), 以繼續印出後面的字元
-            switch(character = *(uint8 *)fmt++){
+            switch(character = *(uint8_t  *)fmt++){
                 case '-':
                     padc = '-';
                     goto FORMAT_PRINT;
@@ -121,7 +121,7 @@ int kprintfmt(const char *fmt ,va_list args){
 }
 
 
-static void print_va(uint32 va_val, uint32 base, int32 width, int32 padc){
+static void print_va(uint32_t va_val, uint32_t base, int32_t width, int32_t padc){
 	if (va_val >= base) {
 		print_va(va_val / base, base, width - 1, padc);
 	} else {

@@ -11,7 +11,7 @@ userTaskRun:
 	msr 	CPSR_c, #0x50
 
 	/** Load user stack 
-	 * r0為傳入的第一個參數, 也就是user stack 
+	 * r0為傳入的第一個參數, 也就是user stack pointer
 	 */	
 	mov		r13, r0				
 
@@ -24,9 +24,7 @@ userTaskRun:
 	blx lr
 
 
-/** .type symbol,%function to indicate that the label symbol
- *  corresponds to a procedure entry
- */
+
 .type svc_handler, %function    
 .global svc_handler
 
@@ -42,6 +40,8 @@ svc_handler:
 	mrs		ip, apsr
 
 	stmdb sp!, {r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+
+	// r0作為返回值 ,返回user mode的sp
 	mov		r0, r13
 
 	/* switch to superviser mode */
