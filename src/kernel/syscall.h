@@ -5,7 +5,7 @@
 #include "../common.h"
 
 void svc_handler(void) ;
-void sys_call() ;
+void svc_call() ;
 
 
 #endif

@@ -12,7 +12,7 @@ void terminal_printC(int character){
 }
 
 
-static void print_char(int character){
+void print_char(int character){
     terminal_printC(character) ;
 }
 

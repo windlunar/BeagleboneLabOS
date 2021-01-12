@@ -9,6 +9,7 @@ include ../../toolchain.make
 obj_destination_path = ../../obj
 ASFLAGS += -mapcs-32 -march=armv7-a
 CFLAGS  += -march=armv7-a -mtune=cortex-a8 -O2
+#CFLAGS = -mcpu=cortex-a8 -marm -Wall -O2 -nostdlib -nostartfiles -ffreestanding -fstack-usage -Wstack-usage=256
 
 c_obj=usr_led.o uart.o timer.o
 
@@ -25,6 +26,7 @@ all: $(c_obj) move
 move : 
 	cp *.o $(obj_destination_path)
 	rm -rf *.o	
+	rm -rf *.su
 
 
 #Clean objects

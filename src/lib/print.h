@@ -7,7 +7,7 @@
 
 
 void terminal_printC(int character) ;
-static void print_char(int chartr);
+void print_char(int chartr);
 
 int kprintf(const char *fmt, ...);
 int kprintfmt(const char *fmt ,va_list args);

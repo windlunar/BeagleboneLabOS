@@ -1,5 +1,4 @@
 
-.equ UART0_BASE, 0x44E09000
 
 .globl WRITE_REG32
 WRITE_REG32:
@@ -70,6 +69,7 @@ READ_VECTOR_BASE:
 
 				
 
+.equ STACK_SIZE, 256
 
 .globl _start
 _start:
@@ -96,12 +96,43 @@ _start:
 
 	ldr r1, =svc_handler
 	str r1, [r0]
+	
+
+	//設定 irq entry 位址
+	ldr r0, =0x9ff52034
+	ldr r1, =irq_entry
+	str r1, [r0]
+
+	//設定 stack top
+    ldr sp, =0x9df318e0
+    sub r1, sp, #STACK_SIZE
+
+    //save svc mode
+    mrs r3, cpsr
+
+	//設定 irq stack
+    mov r2, #0x12 		
+    msr cpsr_cxsf, r2
+    mov sp, r1
+    sub r1, sp, #STACK_SIZE
+
+    //回到 svc mode
+    msr cpsr_cxsf, r3
 
 	/** 跳到kernal_entry*/
 	bl 		kernal_entry
-
+/*
 .loop: 
 	b 		.loop
+*/
+
+
+/**
+ * c 指  CPSR中的control field ( PSR[7:0])
+ * f 指  flag field (PSR[31:24])
+ * x 指  extend field (PSR[15:8])
+ * s 指  status field ( PSR[23:16])
+ */ 
 
 
 

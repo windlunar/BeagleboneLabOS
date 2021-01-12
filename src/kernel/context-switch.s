@@ -1,12 +1,14 @@
 
+
 .global userTaskRun
 userTaskRun:
 	/* save kernel state */
 	mrs 	ip, cpsr
 	push 	{r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
 	
-	/* switch to user mode */
-	msr 	CPSR_c, #0xD0 
+	/* switch to user mode and enable irq */
+	//msr 	CPSR_c, #0xD0 
+	msr 	CPSR_c, #0x50
 
 	/** Load user stack 
 	 * r0為傳入的第一個參數, 也就是user stack 
@@ -17,6 +19,7 @@ userTaskRun:
 	ldmia 	sp!, {r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 	msr		apsr, ip
 	
+
 	/* Jump to user task */
 	blx lr
 
@@ -26,6 +29,8 @@ userTaskRun:
  */
 .type svc_handler, %function    
 .global svc_handler
+
+.align	2
 svc_handler:
 	/** switch to system mode
 	 * 要切換到system mode的原因為, SVC mode的r13(sp) ,r14(lr) 與user mode是不共用的
@@ -47,6 +52,14 @@ svc_handler:
 	msr		cpsr, ip
 
 	blx 	lr
+
+/************************************************************************************************/
+
+.global irq_entry
+.align	2
+irq_entry:
+    b irqs_handler
+	
 
 
 

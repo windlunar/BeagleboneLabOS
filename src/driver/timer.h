@@ -7,11 +7,6 @@
 
 #include "../common.h"
 
-
-#define DMTIMER0_BASE    0x44E05000
-#define DMTIMER0_BASE_PTR_t           ((volatile DMTIMER0_T *)DMTIMER0_BASE)
-                                               
-
 typedef struct{
     uint32 TIDR ;           // offset = 0x00
     uint32 NON_USE1 ;       // offset = 0x04
@@ -28,19 +23,42 @@ typedef struct{
     uint32 IRQENABLE_CLR ;  // offset = 0x30
     uint32 IRQWAKEEN ;      // offset = 0x34
     uint32 TCLR ;           // offset = 0x38
+
+    //TIMER_COUNTER
     uint32 TCRR ;           // offset = 0x3c
+
+    // LOAD_VALUE: Timer counter value loaded on overflow in auto-reload mode or on
+    // TTGR write access
     uint32 TLDR ;           // offset = 0x40
     uint32 TTGR ;           // offset = 0x44
+
+    /**
+     * TWPS Register Field Descriptions:
+     * bit4 | W_PEND_TMAR | R/W | 0h | When equal to 1, a write is pending to the TMAR register
+     * bit3 | W_PEND_TTGR | R/W | 0h | When equal to 1, a write is pending to the TTGR register
+     * bit2 | W_PEND_TLDR | R/W | 0h | When equal to 1, a write is pending to the TLDR register
+     * bit1 | W_PEND_TCRR | R/W | 0h | When equal to 1, a write is pending to the TCRR register
+     * bit0 | W_PEND_TCLR | R/W | 0h | When equal to 1, a write is pending to the TCLR register
+     */ 
     uint32 TWPS ;           // offset = 0x48
     uint32 TMAR ;           // offset = 0x4c
     uint32 TCAR1 ;          // offset = 0x50
     uint32 TSICR ;          // offset = 0x54
     uint32 TCAR2 ;          // offset = 0x58
-}DMTIMER0_T ;
+}DMTIMER_T ;
 
 
 
-void dmtimer0PrintRegs() ;
+#define DMTIMER0_BASE    0x44E05000
+#define DMTIMER0_BASE_PTR_t           ((volatile DMTIMER_T *)DMTIMER0_BASE)
 
+#define DMTIMER7_BASE    0x4804A000
+#define DMTIMER7_BASE_PTR_t           ((volatile DMTIMER_T *)DMTIMER7_BASE)
+/*****************************************************************************************/
+
+void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs);
+void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr);
+void timer_ISR_bind(int32_t IRQ_ID ,void (*handler)(void));
+void timer_ISR_unbind(int32_t IRQ_ID);
 
 #endif

@@ -5,9 +5,9 @@
 #include "../common.h"
 
 
-void usrLed_Init_asm() ;
-void usrLed_blink_asm() ;
-void usrLed_Init() ;
-void usrLed_blink() ;
+void usrLedInitAsm() ;
+void usrLedBlinkAsm() ;
+void usrLedInit() ;
+void usrLedBlink() ;
 
 #endif
