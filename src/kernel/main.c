@@ -20,23 +20,28 @@
 #include "../driver/gpio_reg.h"
 
 
-uint32_t *usertask1_stack_start = NULL ;
-uint32_t *usertask2_stack_start = NULL ;
-uint32_t *usertask3_stack_start = NULL ;
+uint32_t *usertask_stack_start[TASK_NUM] ;
 
 void sched(void)
 {
 	while(1)
 	{
 		
-		usertask1_stack_start = userTaskRun(usertask1_stack_start);
+		usertask_stack_start[0] = userTaskRun(usertask_stack_start[0]);
+    	kprintf("		Back to kernal mode. #0\r\n\r\n") ;
+
+    	usertask_stack_start[1] = userTaskRun(usertask_stack_start[1]);
     	kprintf("		Back to kernal mode. #1\r\n\r\n") ;
 
-    	usertask2_stack_start = userTaskRun(usertask2_stack_start);
+		usertask_stack_start[2] = userTaskRun(usertask_stack_start[2]);
     	kprintf("		Back to kernal mode. #2\r\n\r\n") ;
 
-		usertask3_stack_start = userTaskRun(usertask3_stack_start);
+		usertask_stack_start[3] = userTaskRun(usertask_stack_start[3]);
     	kprintf("		Back to kernal mode. #3\r\n\r\n") ;
+
+		usertask_stack_start[4] = userTaskRun(usertask_stack_start[4]);
+    	kprintf("		Back to kernal mode. #4\r\n\r\n") ;
+
 	}
 }
 
@@ -58,7 +63,7 @@ int kernal_entry(void)
 	interrupt_init();
 	kprintf("Init interrupt.\r\n");
 
-	timer_init(DMTIMER0_BASE_PTR_t ,50);
+	timer_init(DMTIMER0_BASE_PTR_t ,20);
 	enableTimerAndBindISR(IRQ_NUM_TIMER0 ,timer0_ISR);
 
 	kprintf("Init Timer0 to switch tasks.\r\n");
@@ -66,9 +71,14 @@ int kernal_entry(void)
 /*************************************************************************************************
  * Init Tasks 
  *************************************************************************************************/
-	usertask1_stack_start = userTaskInit((uint32_t *)&task_stack[0] ,TASK_STACK_SIZE ,&usertask1);
-	usertask2_stack_start = userTaskInit((uint32_t *)&task_stack[1] ,TASK_STACK_SIZE ,&usertask2);
-	usertask3_stack_start = userTaskInit((uint32_t *)&task_stack[2] ,TASK_STACK_SIZE ,&usertask3);
+	for(int32_t i =0 ;i<5;i++){
+		usertask_stack_start[i] = NULL ;
+	}
+	usertask_stack_start[0] = userTaskInit((uint32_t *)&task_stack[0] ,TASK_STACK_SIZE ,&usertask0);
+	usertask_stack_start[1] = userTaskInit((uint32_t *)&task_stack[1] ,TASK_STACK_SIZE ,&usertask1);
+	usertask_stack_start[2] = userTaskInit((uint32_t *)&task_stack[2] ,TASK_STACK_SIZE ,&usertask2);
+	usertask_stack_start[3] = userTaskInit((uint32_t *)&task_stack[3] ,TASK_STACK_SIZE ,&usertask3);
+	usertask_stack_start[4] = userTaskInit((uint32_t *)&task_stack[4] ,TASK_STACK_SIZE ,&usertask4);
 /*************************************************************************************************/
 	kprintf("Init Tasks.\r\n");
 	kprintf("Tasks Starting...\r\n");

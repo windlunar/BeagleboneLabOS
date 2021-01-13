@@ -54,13 +54,20 @@ userTaskRun:
 
 	/* Load user state */
 	ldmia 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	msr		apsr, ip
-	
+
+/*
+		push {r0 ,r1 ,r2 ,r3 ,lr}
+		mov r1, lr
+		mov r2 ,r9
+		bl print_R0_R1_R2_R3
+		pop {r0 ,r1 ,r2 ,r3 ,lr}
+*/
 	/* Jump to user task */
 	// r9 = user task返回位址
-	msr 	CPSR_c, #0x50
-
-	mov		pc,r9
+	//msr 	CPSR_c, #0x50
+	msr		cpsr, ip
+	bx 		r9
+	//mov		pc,r9
 
 
 
@@ -83,7 +90,7 @@ svc_handler:
 	msr 	cpsr, r10
 
     /* Save user state*/
-	mrs		ip, apsr
+	mrs		ip, spsr
 
 	stmdb sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 
@@ -117,6 +124,7 @@ irq_entry:
 irq_entry:
 	sub		lr, lr, #4	//保存 lr_irq(返回user proc的位址)
 	mov		r9 ,lr		//r9 = lr_irq
+	mrs		ip, spsr
 
 	mrs 	r10, cpsr
 	bic 	r10, r10, #0x1F 		// clear bits
@@ -125,8 +133,7 @@ irq_entry:
 	msr 	cpsr, r10
 
 	//In system mode
-	//save previous user state
-	mrs		ip, apsr
+	//mrs		ip, apsr
 
 	//r9 =lr_irq
 	stmdb 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}

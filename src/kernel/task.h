@@ -8,7 +8,7 @@
 #define TASK_READY      1
 
 #define TASK_STACK_SIZE 256
-#define TASK_NUM 3
+#define TASK_NUM 5
 
 typedef struct
 {
