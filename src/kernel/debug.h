@@ -19,6 +19,7 @@ void print_LR(uint32_t data);
 void print_SP(uint32_t data);
 void stackDisplay(uint32_t stackTop ,int num);
 int32_t readCpsr() ;
+int32_t readCpsrMode() ;
 
 void print_R1_R2_R3(uint32_t r1 ,uint32_t r2 ,uint32_t r3) ;
 

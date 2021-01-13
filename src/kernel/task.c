@@ -2,6 +2,7 @@
 #include "task.h"
 #include "../lib/print.h"
 
+CONTEXT_t task_context[TASK_NUM] ;
 uint32_t task_stack[TASK_NUM][TASK_STACK_SIZE] ;
 
 uint32_t *userTaskInit(unsigned int *userTaskStack ,int stackSize ,void (*taskFunc)() ){

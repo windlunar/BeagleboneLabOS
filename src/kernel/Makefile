@@ -14,7 +14,7 @@ CFLAGS  += -march=armv7-a -mtune=cortex-a8 -O2
 
 c_obj=main.o debug.o task.o
 
-asm_obj=start.o syscall.o context-switch.o interrupt.o
+asm_obj=start.o syscall.o context-switch.o interrupt.o syscall_c.o
 
 .PHONY : all
 all: $(c_obj) $(asm_obj) move

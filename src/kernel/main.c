@@ -63,8 +63,8 @@ int kernal_entry(void)
 	interrupt_init();
 	kprintf("Init interrupt.\r\n");
 
-	timer_init(DMTIMER0_BASE_PTR_t ,20);
-	enableTimerAndBindISR(IRQ_NUM_TIMER0 ,timer0_ISR);
+	//timer_init(DMTIMER0_BASE_PTR_t ,20);
+	//enableTimerAndBindISR(IRQ_NUM_TIMER0 ,timer0_ISR);
 
 	kprintf("Init Timer0 to switch tasks.\r\n");
 

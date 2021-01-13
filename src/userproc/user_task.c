@@ -2,7 +2,24 @@
 #include "user_task.h"
 #include "../lib/print.h"
 #include "../driver/uart.h"
+#include "../kernel/debug.h"
 
+
+void usertask0(void){
+	kprintf("Starting User Task 0 \r\n");
+
+	int k = 0 ;
+
+	while(1)
+	{	
+		kprintf("\r\nUser Task 0 #%d\r\n" ,k);
+		readCpsrMode();
+    	syscall_print_hello();		
+		readCpsrMode();
+		for(int i =0 ;i<100000;i++) ;
+		k++ ;
+	}
+}
 
 
 void usertask1(void){
@@ -12,12 +29,12 @@ void usertask1(void){
 
 	while(1)
 	{
-		kprintf("User Task 1 #%d\r\n" ,k);
-    	svc_call();
+		kprintf("\r\nUser Task 1 #%d\r\n" ,k);
+		//readCpsrMode();
+    	syscall_print_hello();		
+		//readCpsrMode();
+		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
-		//uart_putC(UART0_PTR ,0x30) ;
-		//uart_putC(UART0_PTR ,'\r') ;
-		//uart_putC(UART0_PTR ,'\n') ;
 	}
 }
 
@@ -28,12 +45,12 @@ void usertask2(void){
 
 	while(1)
 	{
-		kprintf("User Task 2 #%d\r\n" ,k);
-    	//svc_call();
+		kprintf("\r\nUser Task 2 #%d\r\n" ,k);
+		//readCpsrMode();
+    	//syscall_print_hello();		
+		//readCpsrMode();
+		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
-		//uart_putC(UART0_PTR ,0x31) ;
-		//uart_putC(UART0_PTR ,'\r') ;
-		//uart_putC(UART0_PTR ,'\n') ;
 	}
 }
 
@@ -44,12 +61,12 @@ void usertask3(void){
 
 	while(1)
 	{
-		kprintf("User Task 3 #%d\r\n" ,k);
-    	svc_call();
+		kprintf("\r\nUser Task 3 #%d\r\n" ,k);
+		//readCpsrMode();
+    	//syscall_print_hello();		
+		//readCpsrMode();
+		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
-		//uart_putC(UART0_PTR ,0x32) ;
-		//uart_putC(UART0_PTR ,'\r') ;
-		//uart_putC(UART0_PTR ,'\n') ;
 	}
 }
 
@@ -61,29 +78,15 @@ void usertask4(void){
 
 	while(1)
 	{
-		kprintf("User Task 4 #%d\r\n" ,k);
-    	svc_call();
+		kprintf("\r\nUser Task 4 #%d\r\n" ,k);
+		//readCpsrMode();
+    	//syscall_print_hello();		
+		//readCpsrMode();
+		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
-		//uart_putC(UART0_PTR ,0x32) ;
-		//uart_putC(UART0_PTR ,'\r') ;
-		//uart_putC(UART0_PTR ,'\n') ;
 	}
 }
 
 
-void usertask0(void){
-	kprintf("Starting User Task 0 \r\n");
 
-	int k = 0 ;
-
-	while(1)
-	{
-		kprintf("User Task 0 #%d\r\n" ,k);
-    	//svc_call();
-		k++ ;
-		//uart_putC(UART0_PTR ,0x32) ;
-		//uart_putC(UART0_PTR ,'\r') ;
-		//uart_putC(UART0_PTR ,'\n') ;
-	}
-}
 
