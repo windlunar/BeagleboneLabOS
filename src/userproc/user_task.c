@@ -13,10 +13,10 @@ void usertask0(void){
 	while(1)
 	{	
 		kprintf("\r\nUser Task 0 #%d\r\n" ,k);
-		readCpsrMode();
-    	syscall_print_hello();		
-		readCpsrMode();
-		for(int i =0 ;i<100000;i++) ;
+		//readCpsrMode();
+    	//syscall_print_hello();		
+		//readCpsrMode();
+		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
 }
@@ -31,7 +31,7 @@ void usertask1(void){
 	{
 		kprintf("\r\nUser Task 1 #%d\r\n" ,k);
 		//readCpsrMode();
-    	syscall_print_hello();		
+    	//syscall_print_hello();		
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;

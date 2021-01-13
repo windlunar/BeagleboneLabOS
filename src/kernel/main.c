@@ -20,28 +20,23 @@
 #include "../driver/gpio_reg.h"
 
 
-uint32_t *usertask_stack_start[TASK_NUM] ;
+
 
 void sched(void)
 {
-	while(1)
+	//choose a task to run
+	for(int32_t id =0 ;id<TASK_NUM ;id++)
 	{
-		
-		usertask_stack_start[0] = userTaskRun(usertask_stack_start[0]);
-    	kprintf("		Back to kernal mode. #0\r\n\r\n") ;
+		if(userTask[id].taskStatus == TASK_READY)
+		{
+			userTask[id].taskStatus = TASK_RUNNING ;
 
-    	usertask_stack_start[1] = userTaskRun(usertask_stack_start[1]);
-    	kprintf("		Back to kernal mode. #1\r\n\r\n") ;
+			userTask[id].userTaskStackPtr = userTaskRun(userTask[id].userTaskStackPtr);
 
-		usertask_stack_start[2] = userTaskRun(usertask_stack_start[2]);
-    	kprintf("		Back to kernal mode. #2\r\n\r\n") ;
-
-		usertask_stack_start[3] = userTaskRun(usertask_stack_start[3]);
-    	kprintf("		Back to kernal mode. #3\r\n\r\n") ;
-
-		usertask_stack_start[4] = userTaskRun(usertask_stack_start[4]);
-    	kprintf("		Back to kernal mode. #4\r\n\r\n") ;
-
+			userTask[id].taskStatus = TASK_READY ;
+			kprintf("		Back to kernal sched from taskid=%d ,Run another task\r\n\r\n",id) ;
+			kprintf("		"); readCpsrMode();
+		}
 	}
 }
 
@@ -63,28 +58,37 @@ int kernal_entry(void)
 	interrupt_init();
 	kprintf("Init interrupt.\r\n");
 
-	//timer_init(DMTIMER0_BASE_PTR_t ,20);
-	//enableTimerAndBindISR(IRQ_NUM_TIMER0 ,timer0_ISR);
+	timer_init(DMTIMER0_BASE_PTR_t ,20);
+	enableTimerAndBindISR(IRQ_NUM_TIMER0 ,timer0_ISR);
 
 	kprintf("Init Timer0 to switch tasks.\r\n");
 
 /*************************************************************************************************
  * Init Tasks 
  *************************************************************************************************/
-	for(int32_t i =0 ;i<5;i++){
-		usertask_stack_start[i] = NULL ;
+	userTaskVector[0] = usertask0 ; 
+	userTaskVector[1] = usertask1 ; 
+	userTaskVector[2] = usertask2 ; 
+	userTaskVector[3] = usertask3 ; 
+	userTaskVector[4] = usertask4 ; 
+
+	for(int32_t id =0 ;id<TASK_NUM ;id++)
+	{
+		userTask[id].userTaskStackPtr = NULL ;
 	}
-	usertask_stack_start[0] = userTaskInit((uint32_t *)&task_stack[0] ,TASK_STACK_SIZE ,&usertask0);
-	usertask_stack_start[1] = userTaskInit((uint32_t *)&task_stack[1] ,TASK_STACK_SIZE ,&usertask1);
-	usertask_stack_start[2] = userTaskInit((uint32_t *)&task_stack[2] ,TASK_STACK_SIZE ,&usertask2);
-	usertask_stack_start[3] = userTaskInit((uint32_t *)&task_stack[3] ,TASK_STACK_SIZE ,&usertask3);
-	usertask_stack_start[4] = userTaskInit((uint32_t *)&task_stack[4] ,TASK_STACK_SIZE ,&usertask4);
+
+	for(int32_t id =0 ;id<TASK_NUM ;id++)
+	{
+		userTaskInit(id ,&userTask[id] ,userTaskVector[id]);
+	}
 /*************************************************************************************************/
 	kprintf("Init Tasks.\r\n");
 	kprintf("Tasks Starting...\r\n");
 
-	sched() ;
-	for(;;) ;
+	for(;;)
+	{
+		sched() ;
+	}
 
 	return 0;
 }

@@ -17,7 +17,7 @@
 
 //Define syscall id
 .equ	 SYSCALL_ID_print_hello ,   1
-
+.equ	 SYSCALL_ID_yield ,   		2
 
 
 
@@ -93,7 +93,16 @@ syscall_print_hello:
 	bx lr	//返回 user proc
 
 
-
+.globl syscall_print_hello; 
+.align	4
+syscall_yield: 
+	//stmdb sp!, {r13}
+	push {r0 ,lr}
+	mov r0, #SYSCALL_ID_yield
+	svc 0x00
+	pop	{r0 ,lr}
+	msr     CPSR_c, #CPSR_M_USR
+	bx lr	//返回 user proc
 
 
 
