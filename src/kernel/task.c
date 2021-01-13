@@ -20,6 +20,8 @@ uint32_t *userTaskInit(unsigned int *userTaskStack ,int stackSize ,void (*taskFu
 	uint32_t *userTaskStack_start = userTaskStack_top - 16;
 	userTaskStack_start[9] = (uint32) taskFunc;
 
+     //userTaskStack_start[8] = (uint32) userTaskStack_start ;
+
 	return userTaskStack_start ;
 }
 

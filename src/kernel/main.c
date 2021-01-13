@@ -28,6 +28,7 @@ void sched(void)
 {
 	while(1)
 	{
+		
 		usertask1_stack_start = userTaskRun(usertask1_stack_start);
     	kprintf("		Back to kernal mode. #1\r\n\r\n") ;
 
@@ -57,9 +58,11 @@ int kernal_entry(void)
 	interrupt_init();
 	kprintf("Init interrupt.\r\n");
 
-	timer_init(DMTIMER0_BASE_PTR_t ,1000);
-	kprintf("Init Timer0.\r\n");
-			
+	timer_init(DMTIMER0_BASE_PTR_t ,50);
+	enableTimerAndBindISR(IRQ_NUM_TIMER0 ,timer0_ISR);
+
+	kprintf("Init Timer0 to switch tasks.\r\n");
+
 /*************************************************************************************************
  * Init Tasks 
  *************************************************************************************************/

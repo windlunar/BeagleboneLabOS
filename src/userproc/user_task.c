@@ -12,7 +12,7 @@ void usertask1(void){
 	while(1)
 	{
 		kprintf("User Task 1 #%d\r\n" ,k);
-    	svc_call();
+    	//svc_call();
 		k++ ;
 	}
 }
@@ -25,7 +25,7 @@ void usertask2(void){
 	while(1)
 	{
 		kprintf("User Task 2 #%d\r\n" ,k);
-    	svc_call();
+    	//svc_call();
 		k++ ;
 	}
 }

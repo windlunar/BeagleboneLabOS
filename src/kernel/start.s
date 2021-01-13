@@ -95,7 +95,7 @@ _start:
 
 	mrs r0, cpsr
 	bic r0, r0, #0x1F // clear mode bits
-	orr r0, r0, #0x13 // set SVC mode
+	orr r0, r0, #0x13 // switch to SVC mode
 	orr r0, r0, #0xC0 // disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
 	msr cpsr, r0
 

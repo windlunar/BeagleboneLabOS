@@ -103,8 +103,8 @@ uint32_t getIntVectorAddr(void)
 }
 
 // __attribute__((interrupt("IRQ"))) 能正常返回
-//void irqs_handler(void) 不能
-void __attribute__((interrupt("IRQ"))) irqs_handler(void)	
+//void __attribute__((interrupt("IRQ"))) irqs_handler(void)	
+void irqs_handler(void)
 {
 	//獲得 irq number以判斷是觸發那種中斷
 	uint8_t irq_num = getActivateIrqNum();
@@ -139,7 +139,7 @@ void interrupt_init(void)
 	dataSyncBarrier(); 
 
 	//Enable irq
-	cpsrEnableIRQ() ;
+	//cpsrEnableIRQ() ;
 }
 
 

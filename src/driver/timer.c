@@ -17,6 +17,15 @@ void timer0_ISR(void)
 	usrLedToggle(0);
 }
 
+void timer7_ISR(void)
+{
+	(DMTIMER7_BASE_PTR_t->IRQSTATUS) = (1 << 1);
+	usrLedToggle(3);
+	usrLedToggle(2);
+	usrLedToggle(1);
+	usrLedToggle(0);
+}
+
 /************************************************************************************************/
 
 void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
@@ -35,8 +44,15 @@ void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
     // Start
     DMTIMER_struct_ptr->TCLR |= (1 << 0); 
 
-    enableTimerAndBindISR(IRQ_NUM_TIMER0 ,timer0_ISR);
+    
 }
+
+
+void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr){
+    // Start
+    DMTIMER_struct_ptr->TCLR |= (1 << 0); 
+}
+
 
 
 void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr)
