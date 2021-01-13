@@ -46,17 +46,19 @@ int kernal_entry(void)
 /*************************************************************************************************
  * Init Tasks 
  *************************************************************************************************/
-	userTaskVector[0] = usertask0 ; 
-	userTaskVector[1] = usertask1 ; 
-	userTaskVector[2] = usertask2 ; 
-	userTaskVector[3] = usertask3 ; 
-	userTaskVector[4] = usertask4 ; 
+
 
 	for(int32_t id =0 ;id<TASK_NUM ;id++)
 	{
 		userTask[id].userTaskStackPtr = NULL ;
 		userTaskVector[id] = NULL ;
 	}
+
+	userTaskVector[0] = usertask0 ; 
+	userTaskVector[1] = usertask1 ; 
+	userTaskVector[2] = usertask2 ; 
+	userTaskVector[3] = usertask3 ; 
+	userTaskVector[4] = usertask4 ; 
 
 	for(int32_t id =0 ;id<TASK_NUM ;id++)
 	{
