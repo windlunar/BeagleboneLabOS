@@ -21,26 +21,6 @@
 
 
 
-
-void sched(void)
-{
-	//choose a task to run
-	for(int32_t id =0 ;id<TASK_NUM ;id++)
-	{
-		if(userTask[id].taskStatus == TASK_READY)
-		{
-			userTask[id].taskStatus = TASK_RUNNING ;
-
-			userTask[id].userTaskStackPtr = userTaskRun(userTask[id].userTaskStackPtr);
-
-			userTask[id].taskStatus = TASK_READY ;
-			kprintf("		Back to kernal sched from taskid=%d ,Run another task\r\n\r\n",id) ;
-			kprintf("		"); readCpsrMode();
-		}
-	}
-}
-
-
 int kernal_entry(void)
 {
 /*************************************************************************************************
@@ -75,11 +55,12 @@ int kernal_entry(void)
 	for(int32_t id =0 ;id<TASK_NUM ;id++)
 	{
 		userTask[id].userTaskStackPtr = NULL ;
+		userTaskVector[id] = NULL ;
 	}
 
 	for(int32_t id =0 ;id<TASK_NUM ;id++)
 	{
-		userTaskInit(id ,&userTask[id] ,userTaskVector[id]);
+		userTasksInit(id ,&userTask[id] ,userTaskVector[id]);
 	}
 /*************************************************************************************************/
 	kprintf("Init Tasks.\r\n");
