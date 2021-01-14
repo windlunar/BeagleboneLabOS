@@ -81,9 +81,7 @@ int32_t enQueue(QUEUE_TASK_t *qPtr, USERTASK_t *data)
     }
 
     qPtr->qDataTaskStructPtr[qPtr->idxBack] = data ;
-        //kprintf("#1 queue[%d] is the back\r\n" ,qPtr->idxBack) ;
     qPtr->idxBack = ( (qPtr->idxBack)+1 ) % (qPtr->size) ;
-        //kprintf("#2 queue[%d] is the back\r\n" ,qPtr->idxBack) ;
     qPtr->NumDataInQueue++ ;
     return 0 ;
 }

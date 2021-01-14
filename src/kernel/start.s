@@ -69,9 +69,9 @@ READ_VECTOR_BASE:
 
 				
 
-.equ STACK_SIZE, 256
-
-.globl _start
+.equ STACK_SIZE, 4096
+.align	4
+.global _start
 _start:
 	/**
 	 * U-Boot version :2017.01
@@ -111,7 +111,8 @@ _start:
 	str r1, [r0]
 
 	//設定 stack top
-    ldr sp, =0x9df318e0
+    //ldr sp, =0x9df318e0
+	ldr sp, =0x9df31000
     sub r1, sp, #STACK_SIZE
 
     //save svc mode
@@ -146,3 +147,10 @@ _start:
 
 
 
+.align	4
+.global _call_sched
+_call_sched:
+	//r0 = schedFuncContextPtr =0x9df31000
+	mov		sp, r0
+	ldmia 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+	bx 		lr

@@ -87,7 +87,7 @@ void setNewIrqAgr(){
 
 
 //128個函數陣列
-static void (*irq_handler_array[IRQ_NUM])(void); // Make no assumptions on its NULL initialization
+static void (*irq_handler_array[IRQ_NUM])(uint32_t *usrTaskContext); // Make no assumptions on its NULL initialization
 
 
 uint32_t getIntVectorAddr(void)
@@ -104,7 +104,7 @@ uint32_t getIntVectorAddr(void)
 
 // __attribute__((interrupt("IRQ"))) 能正常返回
 //void __attribute__((interrupt("IRQ"))) irqs_handler(void)	
-void irqs_handler(void)
+void irqs_handler(uint32_t *usrTaskContextOld)
 {
 	//獲得 irq number以判斷是觸發那種中斷
 	uint8_t irq_num = getActivateIrqNum();
@@ -112,7 +112,7 @@ void irqs_handler(void)
 	//根據獲得的irq num, 執行陣列中對應的函式
 	if (irq_handler_array[irq_num])
 	{
-		(*irq_handler_array[irq_num])();
+		(*irq_handler_array[irq_num])(usrTaskContextOld);
 	}else{
 		return ;
 	}
@@ -190,7 +190,7 @@ void disableINT_NUM(uint8_t irq_num)
 	}
 }
 
-void irq_isr_bind(uint8_t irq_num, void (*handler)(void))
+void irq_isr_bind(uint8_t irq_num, void (*handler)(uint32_t*))
 {
 	irq_handler_array[irq_num] = handler;
     *(INTC_ILR_n_BASE_PTR + irq_num) = (0 << 2) | (0 << 0) ;

@@ -8,8 +8,8 @@
 #include "../common.h"
 
 
-void timer0_ISR(void) ;
-void timer7_ISR(void) ;
+void timer0_ISR(uint32_t *usrTaskContextOld) ;
+void timer7_ISR(uint32_t *usrTaskContextOld) ;
 
 /*****************************************************************************************/
 
@@ -64,7 +64,7 @@ typedef struct{
 
 void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs);
 void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr);
-void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(void));
+void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(uint32_t*));
 void disnableTimerAndUnbindISR(int32_t IRQ_ID);
 
 void __attribute__((optimize("O0"))) delay(uint32_t num);

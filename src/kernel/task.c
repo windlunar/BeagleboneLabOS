@@ -2,6 +2,7 @@
 #include "task.h"
 #include "../lib/queue.h"
 
+SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
 USERTASK_t userTask[TASK_NUM] ;
 
 //每個陣列皆為一個指標, 指向該函式起始位置
@@ -15,7 +16,7 @@ QUEUE_TASK_t taskReadyQ ;
 void sched(void)
 {
 	//choose a task to run
-	for(int32_t id =0 ;id<TASK_NUM ;id++)
+	for(;;)
 	{
 		//判斷 head是否 Ready
 		if(taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxHead]->taskStatus == TASK_READY)
@@ -30,7 +31,8 @@ void sched(void)
 			TaskStructPtr->taskStatus = TASK_RUNNING ;
 
 			//Switch to user mode and run the task
-			TaskStructPtr->userTaskStackPtr = userTaskRun(TaskStructPtr->userTaskStackPtr) ;
+			userTaskRun((uint32_t *)TaskStructPtr->usrTaskContextSPtr) ;
+			//TaskStructPtr->usrTaskContextSPtr = userTaskRun((uint32_t)TaskStructPtr->usrTaskContextSPtr) ;
 
 			//Return from user mode(context switch through timer irq) 
 			//,and set the task status to READY
@@ -56,10 +58,17 @@ void userTasksInit(int32_t taskid, USERTASK_t *userTaskStructPtr ,void (*taskFun
      * 所以要把 usertask 的 entry位址放在 usertask_stack_start[9] 的位址上
      */
 	uint32_t *userTaskStackTop = userTaskStructPtr->task_stack + TASK_STACK_SIZE;
-     userTaskStructPtr->userTaskStackPtr = userTaskStackTop - 16;
-	userTaskStructPtr->userTaskStackPtr[9] = (uint32_t) taskFunc;
+    userTaskStructPtr->usrTaskContextSPtr = (USR_TASK_CONTEXT_t *)(userTaskStackTop - 16);
+
+	userTaskStructPtr->usrTaskContextSPtr->r9_return_lr = (uint32_t) taskFunc;
 
      userTaskStructPtr->taskID = taskid ;
      userTaskStructPtr->taskStatus = TASK_READY ;
 
+}
+
+
+void schedFuncContextPrepare(void)
+{
+	schedFuncContextSPtr->lr = (uint32_t)sched ;	//跳轉address為 task.c的函式shed()
 }

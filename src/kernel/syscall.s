@@ -51,7 +51,6 @@ svc_handler:
 	stmdb  sp!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 	
 /************************************************************************************************/
-	mov	r1 ,sp
 	//switch back to svc mode
 	mrs 	r10, cpsr
 	bic 	r10, r10, #0x1F 		// clear bits

@@ -34,8 +34,8 @@ userTaskRun:
 	 */	
 	mov		r13, r0				
 
-	/* Load user state */
-	ldmia 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+	// pop ,Load user state ,r9=跳轉addr
+	ldmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 /************************************************************************************************/
 
 	/* Jump to user task */
@@ -48,49 +48,6 @@ userTaskRun:
 
 
 /*
-.type svc_handler, %function    
-.global svc_handler
-.align	4
-svc_handler:
-	// switch to system mode
-	// 要切換到system mode的原因為, SVC mode的r13(sp) ,r14(lr) 與user mode是不共用的
-	// 而 system mode是共用的 ,因此先切換到system mode以保存user state
-	//
-	mov 	r9 ,lr
-	//msr 	CPSR_c, #0xDF
-
-	mrs 	r10, cpsr
-	bic 	r10, r10, #0x1F 		// clear bits
-	orr 	r10, r10, #(CPSR_M_SYS) // system mode
-	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
-	msr 	cpsr, r10
-
-    // Save user state
-	mrs		ip, spsr
-
-	stmdb sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-
-	// r0作為返回值 ,返回user mode的sp
-	mov		r0, r13
-
-	// switch to superviser mode
-	//msr 	CPSR_c, #0xD3
-	mrs 	r10, cpsr
-	bic 	r10, r10, #0x1F // clear mode bits
-	orr 	r10, r10, #(CPSR_M_SVC) // switch to svc mode
-	orr 	r10, r10, #0xC0 // disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
-	msr 	cpsr, r10
-
-    // Restore kernal state
-	pop 	{r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
-	msr		cpsr, ip
-
-	blx 	lr
-*/
-
-/************************************************************************************************/
-
-/*
 .global irq_entry
 .align	2
 irq_entry:
@@ -100,6 +57,10 @@ irq_entry:
 .global irq_entry
 .align	4
 irq_entry:
+/***********************************************************************************************/
+// 準備原來user task的context 結構
+// 然後存到 r0 作為 irq_handler的傳入參數
+/***********************************************************************************************/
 	sub		lr, lr, #4	//保存 lr_irq(返回user proc的位址)
 	mov		r9 ,lr		//r9 = lr_irq
 	mrs		ip, spsr
@@ -111,12 +72,11 @@ irq_entry:
 	msr 	cpsr, r10
 
 	//In system mode
-	//mrs		ip, apsr
-
 	//r9 =lr_irq
-	stmdb 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
+	//push
+	stmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 
-	//return value r0 as the user stack pointer
+	//make r0 as the user stack pointer (user task的context struct的起始位址)
 	mov		r0,	sp	
 
 	mrs 	r10, cpsr
@@ -124,18 +84,11 @@ irq_entry:
 	orr 	r10, r10, #(CPSR_M_SVC) // switch to svc mode
 	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
 	msr 	cpsr, r10
-
+/***********************************************************************************************/
 	//In SVC mode
-	//在svc mode中處理irq中斷
-	push 	{r0 ,r1 ,r2 ,r3}
+	//在svc mode中處理irq中斷 ,應該傳入 user task的context(sp) address = r0
 	bl 		irqs_handler
-	pop 	{r0 ,r1 ,r2 ,r3}
 
-	pop 	{r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr}
-	msr		cpsr, ip
-
-	//回到sched
-	bx 		lr
 
 
 

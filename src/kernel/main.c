@@ -50,7 +50,7 @@ int kernal_entry(void)
 
 	for(int32_t id =0 ;id<TASK_NUM ;id++)
 	{
-		userTask[id].userTaskStackPtr = NULL ;
+		userTask[id].usrTaskContextSPtr = NULL ;
 		userTaskFuncsVector[id] = NULL ;
 	}
 
@@ -70,10 +70,14 @@ int kernal_entry(void)
 	kprintf("Init Tasks.\r\n");
 	kprintf("Tasks Starting...\r\n");
 
-	for(;;)
-	{
-		sched() ;
-	}
+	//設定要跳進去sched()的context
+	schedFuncContextPrepare();
+
+	//Jump to sched() in task.c
+	//跳到 sched後不再回來 ,原來在kernel_entry的環境全部丟棄
+	_call_sched((uint32_t)schedFuncContextSPtr) ;
+
+	for(;;);
 
 	return 0;
 }

@@ -34,15 +34,18 @@ void __print_hello(void){
 void __yield(uint32_t userTaskSP){
     // check which task's status is running
     // Then change the task satus back to ready
-    printDataInQueue(&taskReadyQ);
-    if(taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxBack]->taskStatus == TASK_RUNNING)
+    //queue.c的back的計算好像有點問題
+    /*
+    int32_t qBack = (taskReadyQ.idxHead + TASK_NUM-1) % TASK_NUM ;
+    if(taskReadyQ.qDataTaskStructPtr[qBack]->taskStatus == TASK_RUNNING)
     {
         kprintf("Here #1\r\n") ;
         taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxBack]->taskStatus = TASK_READY ;
 
         //update the current saved user stack
-        taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxBack]->userTaskStackPtr = (uint32_t *)userTaskSP ;
+        taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxBack]->usrTaskContextSPtr = (uint32_t *)userTaskSP ;
     }
     kprintf("Here #2\r\n") ;
     sched() ;
+    */
 }

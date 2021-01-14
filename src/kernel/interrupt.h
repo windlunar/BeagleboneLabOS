@@ -6,7 +6,7 @@
 #include "interrupt_regs.h"
 
 //void __attribute__((interrupt("IRQ"))) irqs_handler(void) ;
-void irqs_handler(void);
+void irqs_handler(uint32_t *usrTaskContextOld);
 
 /************************************************************************************************/
 void SYSTEM_INT_Enable(int32_t interruptID) ;
@@ -33,7 +33,7 @@ void interrupt_init(void);
 void disableIrqThroughCpsr(void);
 void eableINT_NUM(uint8_t irq_num);
 void disableINT_NUM(uint8_t irq_num);
-void irq_isr_bind(uint8_t irq_num, void (*handler)(void));
+void irq_isr_bind(uint8_t irq_num, void (*handler)(uint32_t*));
 void irq_isr_unbind(uint8_t irq_num);
 
 #endif

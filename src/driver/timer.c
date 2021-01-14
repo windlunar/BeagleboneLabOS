@@ -6,18 +6,43 @@
 #include "cm_per.h"
 #include "../kernel/interrupt.h"
 #include "../driver/usr_led.h"
+#include "../kernel/task.h"
 
 
-void timer0_ISR(void)
+void timer0_ISR(uint32_t *usrTaskContextOld)
 {
 	(DMTIMER0_BASE_PTR_t->IRQSTATUS) = (1 << 1);
 	usrLedToggle(3);
 	usrLedToggle(2);
 	usrLedToggle(1);
 	usrLedToggle(0);
+
+	for(int32_t id =0 ; id<TASK_NUM; id++)
+	{
+		if(userTask[id].taskStatus == TASK_RUNNING)
+		{
+			// Save old context
+			userTask[id].usrTaskContextSPtr = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+
+			// Change the task status to ready
+			userTask[id].taskStatus = TASK_READY ;
+			break ;
+		}
+	}
+
+	//prepare sched() context
+	schedFuncContextPrepare();
+
+	//dataSyncBarrier();
+
+	// 讓下一個irq能觸發
+	*(INTC_BASE_PTR + INTC_CONTROL) = (NEW_IRQ_AGREE << 0); 
+
+	_call_sched((uint32_t)schedFuncContextSPtr) ;
+
 }
 
-void timer7_ISR(void)
+void timer7_ISR(uint32_t *usrTaskContextOld)
 {
 	(DMTIMER7_BASE_PTR_t->IRQSTATUS) = (1 << 1);
 	usrLedToggle(3);
@@ -63,7 +88,7 @@ void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr)
 }
 
 
-void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(void))
+void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(uint32_t*))
 {
 	irq_isr_bind(IRQ_ID, handler);
 }
