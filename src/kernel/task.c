@@ -1,11 +1,12 @@
 
 #include "task.h"
-#include "../lib/print.h"
+#include "../lib/queue.h"
 
 USERTASK_t userTask[TASK_NUM] ;
 
 //每個陣列皆為一個指標, 指向該函式起始位置
-void (*userTaskVector[TASK_NUM])(void);
+void (*userTaskFuncsVector[TASK_NUM])(void);
+QUEUE_TASK_t taskReadyQ ;
 
 
 
@@ -16,21 +17,29 @@ void sched(void)
 	//choose a task to run
 	for(int32_t id =0 ;id<TASK_NUM ;id++)
 	{
-		if(userTask[id].taskStatus == TASK_READY)
+		//判斷 head是否 Ready
+		if(taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxHead]->taskStatus == TASK_READY)
 		{
-			userTask[id].taskStatus = TASK_RUNNING ;
+			USERTASK_t *TaskStructPtr = taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxHead] ;
 
-			userTask[id].userTaskStackPtr = userTaskRun(userTask[id].userTaskStackPtr);
+			//dequeue task
+			deQueue(&taskReadyQ) ;
 
-			userTask[id].taskStatus = TASK_READY ;
-			kprintf("		Back to kernal sched from taskid=%d ,Run another task\r\n\r\n",id) ;
+			//And the put it to back ,and set it to running
+			enQueue(&taskReadyQ ,TaskStructPtr) ;
+			TaskStructPtr->taskStatus = TASK_RUNNING ;
+
+			//Switch to user mode and run the task
+			TaskStructPtr->userTaskStackPtr = userTaskRun(TaskStructPtr->userTaskStackPtr) ;
+
+			//Return from user mode(context switch through timer irq) 
+			//,and set the task status to READY
+			TaskStructPtr->taskStatus = TASK_READY ;
+			kprintf("		Back to kernal sched from taskid=%d ,Run another task\r\n\r\n",TaskStructPtr->taskID) ;
 			kprintf("		"); readCpsrMode();
 		}
 	}
 }
-
-
-
 
 void userTasksInit(int32_t taskid, USERTASK_t *userTaskStructPtr ,void (*taskFunc)()){
 	/* Initialization of process stack.

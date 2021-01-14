@@ -3,7 +3,8 @@
 #define __TASK_H_
 
 #include "../common.h"
-
+#include "../lib/print.h"
+#include "debug.h"
 
 
 /*
@@ -53,7 +54,7 @@ typedef struct
 extern USERTASK_t userTask[TASK_NUM] ;
 
 //user tasks的函式指標
-extern void (*userTaskVector[TASK_NUM])(void);
+extern void (*userTaskFuncsVector[TASK_NUM])(void);
 
 
 

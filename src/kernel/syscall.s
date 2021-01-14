@@ -33,12 +33,12 @@ svc_handler:
 	 * 要切換到system mode的原因為, SVC mode的r13(sp) ,r14(lr) 與user mode是不共用的
 	 * 而 system mode是共用的 ,因此先切換到system mode以保存user state
 	 */
-	mov 	r9 ,lr	//保存返回user proc address
+	mov 	r9 ,lr	//保存返回user proc的 address
 	
 	/* Save user state*/
 	mrs		ip, spsr
 /************************************************************************************************/
-	//switch to system mode to sace user proc env
+	//switch to system mode to sace user proc context
 	mrs 	r10, cpsr
 	bic 	r10, r10, #0x1F 		// clear bits
 	orr 	r10, r10, #(CPSR_M_SYS) // system mode
@@ -46,11 +46,12 @@ svc_handler:
 	msr 	cpsr, r10
 
 	//儲存 user proc context
-	// r0在syscall_print_hello時已經push到stack中 r0
-	mov		lr ,r9
+	// r0在執行 svc 時已經push到stack中
+	mov		lr ,r9	//現在 lr跟 r9都是 user proc的返回addr
 	stmdb  sp!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 	
 /************************************************************************************************/
+	mov	r1 ,sp
 	//switch back to svc mode
 	mrs 	r10, cpsr
 	bic 	r10, r10, #0x1F 		// clear bits
@@ -77,11 +78,11 @@ svc_handler:
 	//switch back to svc mode
 	msr		cpsr, r10
 
-	//返回 syscall_print_hello
+	//返回 syscall_<NAME>
 	blx 	lr	
 	//bx	r9
 
-.globl syscall_print_hello; 
+.global syscall_print_hello; 
 .align	4
 syscall_print_hello: 
 	//stmdb sp!, {r13}
@@ -93,7 +94,7 @@ syscall_print_hello:
 	bx lr	//返回 user proc
 
 
-.globl syscall_print_hello; 
+.global syscall_yield; 
 .align	4
 syscall_yield: 
 	//stmdb sp!, {r13}
@@ -103,6 +104,12 @@ syscall_yield:
 	pop	{r0 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
 	bx lr	//返回 user proc
+
+
+//.global return_to_sched;
+//.align 4
+//return_to_sched:
+	
 
 
 

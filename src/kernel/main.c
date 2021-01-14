@@ -18,6 +18,7 @@
 #include "../driver/rtc_reg.h"
 #include "../driver/cm_per.h"
 #include "../driver/gpio_reg.h"
+#include "../lib/queue.h"
 
 
 
@@ -47,23 +48,24 @@ int kernal_entry(void)
  * Init Tasks 
  *************************************************************************************************/
 
-
 	for(int32_t id =0 ;id<TASK_NUM ;id++)
 	{
 		userTask[id].userTaskStackPtr = NULL ;
-		userTaskVector[id] = NULL ;
+		userTaskFuncsVector[id] = NULL ;
 	}
 
-	userTaskVector[0] = usertask0 ; 
-	userTaskVector[1] = usertask1 ; 
-	userTaskVector[2] = usertask2 ; 
-	userTaskVector[3] = usertask3 ; 
-	userTaskVector[4] = usertask4 ; 
+	userTaskFuncsVector[0] = usertask0 ; 
+	userTaskFuncsVector[1] = usertask1 ; 
+	userTaskFuncsVector[2] = usertask2 ; 
+	userTaskFuncsVector[3] = usertask3 ; 
+	userTaskFuncsVector[4] = usertask4 ; 
 
-	for(int32_t id =0 ;id<TASK_NUM ;id++)
-	{
-		userTasksInit(id ,&userTask[id] ,userTaskVector[id]);
-	}
+	for(int32_t id =0 ;id<TASK_NUM ;id++) userTasksInit(id ,&userTask[id] ,userTaskFuncsVector[id]);
+
+	//Init Task queue
+	queueInit(&taskReadyQ ,TASK_NUM) ;
+	for(int32_t id =0 ;id<TASK_NUM ;id++) enQueue(&taskReadyQ, &userTask[id]);
+
 /*************************************************************************************************/
 	kprintf("Init Tasks.\r\n");
 	kprintf("Tasks Starting...\r\n");
