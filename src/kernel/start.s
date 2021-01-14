@@ -1,54 +1,61 @@
 
-
+.align	4
 .globl WRITE_REG32
 WRITE_REG32:
 	str 	r1,[r0]
 	bx 		lr
-	
+
+.align	4	
 .globl READ_REG32
 READ_REG32:
 	ldr 	r0,[r0]
 	bx 		lr
 
+.align	4
 .globl WR_REG16
 WR_REG16:
 	strh 	r1,[r0]
 	bx 		lr
-	
+
+.align	4
 .globl RD_REG16
 RD_REG16:
 	ldrh 	r0,[r0]
 	bx 		lr
 	
+.align	4	
 .globl WR_REG8
 WR_REG8:
 	strb 	r1,[r0]
 	bx 		lr
 	
+	.align	4
 .globl RD_REG8
 RD_REG8:
 	ldrb 	r0,[r0]
 	bx 		lr
 	
 
-
+.align	4
 .globl READ_CPSR
 READ_CPSR:
 	mrs 	r0, cpsr
 	bx 		lr
 
-
+.align	4
 .globl READ_SP
 READ_SP:
 	//r13 is stack pointer
 	mov 	r0, r13					
 	bx 		lr
 
+.align	4
 .globl READ_CP15_c1
 READ_CP15_c1:
 	MRC     p15, #0, r0, c1, c0, #0
 	bx 		lr
 
+.align	4
 .globl READ_VECTOR_BASE
 READ_VECTOR_BASE:
 	/**

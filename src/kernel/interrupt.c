@@ -3,6 +3,9 @@
 #include "interrupt_regs.h"
 #include "interrupt.h"
 #include "../lib/print.h"
+#include "task.h"
+#include "../driver/timer.h"
+#include "../driver/usr_led.h"
 
 #define IRQ_NUM 128
 #define IRQ_NUM_MASK 127
@@ -87,7 +90,7 @@ void setNewIrqAgr(){
 
 
 //128個函數陣列
-static void (*irq_handler_array[IRQ_NUM])(uint32_t *usrTaskContext); // Make no assumptions on its NULL initialization
+static void (*irq_handler_array[IRQ_NUM])(void); // Make no assumptions on its NULL initialization
 
 
 uint32_t getIntVectorAddr(void)
@@ -102,25 +105,7 @@ uint32_t getIntVectorAddr(void)
 	return intvector_addr;
 }
 
-// __attribute__((interrupt("IRQ"))) 能正常返回
-//void __attribute__((interrupt("IRQ"))) irqs_handler(void)	
-void irqs_handler(uint32_t *usrTaskContextOld)
-{
-	//獲得 irq number以判斷是觸發那種中斷
-	uint8_t irq_num = getActivateIrqNum();
 
-	//根據獲得的irq num, 執行陣列中對應的函式
-	if (irq_handler_array[irq_num])
-	{
-		(*irq_handler_array[irq_num])(usrTaskContextOld);
-	}else{
-		return ;
-	}
-	dataSyncBarrier();
-
-	// 讓下一個irq能觸發
-	*(INTC_BASE_PTR + INTC_CONTROL) = (NEW_IRQ_AGREE << 0); 
-}
 
 
 
@@ -190,7 +175,7 @@ void disableINT_NUM(uint8_t irq_num)
 	}
 }
 
-void irq_isr_bind(uint8_t irq_num, void (*handler)(uint32_t*))
+void irq_isr_bind(uint8_t irq_num, void (*handler)(void))
 {
 	irq_handler_array[irq_num] = handler;
     *(INTC_ILR_n_BASE_PTR + irq_num) = (0 << 2) | (0 << 0) ;
@@ -204,3 +189,72 @@ void irq_isr_unbind(uint8_t irq_num)
 	*(INTC_ILR_n_BASE_PTR + irq_num) = 0 ;
 	irq_handler_array[irq_num] = NULL;
 }
+
+/************************************************************************************************/
+// __attribute__((interrupt("IRQ"))) 能正常返回
+//void irqs_handler(uint32_t *usrTaskContextOld)
+void __attribute__((interrupt("IRQ"))) irqs_handler(void)	
+{
+	//獲得 irq number以判斷是觸發那種中斷
+	uint8_t irq_num = getActivateIrqNum();
+
+	//根據獲得的irq num, 執行陣列中對應的函式
+	if (irq_handler_array[irq_num])
+	{
+		(*irq_handler_array[irq_num])();
+		
+	}else{
+		return ;
+	}
+
+	dataSyncBarrier();
+	*(INTC_BASE_PTR + INTC_CONTROL) = (NEW_IRQ_AGREE << 0); 
+
+}
+/************************************************************************************************/
+
+void timer0_ISR(uint32_t *usrTaskContextOld)
+{
+	(DMTIMER0_BASE_PTR_t->IRQSTATUS) = (1 << 1);
+	usrLedToggle(3);
+
+	for(int32_t id =0 ; id<TASK_NUM; id++)
+	{
+		if(userTask[id].taskStatus == TASK_RUNNING)
+		{
+			// Save old context
+			userTask[id].usrTaskContextSPtr = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+
+			// Change the task status to ready
+			userTask[id].taskStatus = TASK_READY ;
+			break ;
+		}
+	}
+
+	//prepare sched() context
+	schedFuncContextPrepare();
+
+	//dataSyncBarrier();
+
+	// 讓下一個irq能觸發
+	*(INTC_BASE_PTR + INTC_CONTROL) = (NEW_IRQ_AGREE << 0); 
+
+	_call_sched((uint32_t)schedFuncContextSPtr) ;
+
+}
+
+
+
+// 2021/1/15--Not work 
+void timer2_ISR(void)
+{
+	kprintf("Here\r\n") ;
+	
+	usrLedToggle(2);
+	usrLedToggle(1);
+	usrLedToggle(0);
+	(DMTIMER2_BASE_PTR_t->IRQSTATUS) = (1 << 1);
+
+}
+
+/************************************************************************************************/

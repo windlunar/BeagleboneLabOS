@@ -32,7 +32,8 @@ void usertask1(void){
 	{
 		kprintf("\r\nUser Task 1 #%d\r\n" ,k);
 		//readCpsrMode();
-    	//syscall_print_hello();		
+    	//syscall_print_hello();
+		//syscall_yield() ;			
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
@@ -65,7 +66,7 @@ void usertask3(void){
 		kprintf("\r\nUser Task 3 #%d\r\n" ,k);
 		//readCpsrMode();
     	//syscall_print_hello();		
-		syscall_yield() ;	
+		//syscall_yield() ;	
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;

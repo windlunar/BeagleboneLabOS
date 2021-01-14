@@ -9,52 +9,28 @@
 #include "../kernel/task.h"
 
 
-void timer0_ISR(uint32_t *usrTaskContextOld)
-{
-	(DMTIMER0_BASE_PTR_t->IRQSTATUS) = (1 << 1);
-	usrLedToggle(3);
-	usrLedToggle(2);
-	usrLedToggle(1);
-	usrLedToggle(0);
-
-	for(int32_t id =0 ; id<TASK_NUM; id++)
-	{
-		if(userTask[id].taskStatus == TASK_RUNNING)
-		{
-			// Save old context
-			userTask[id].usrTaskContextSPtr = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
-
-			// Change the task status to ready
-			userTask[id].taskStatus = TASK_READY ;
-			break ;
-		}
-	}
-
-	//prepare sched() context
-	schedFuncContextPrepare();
-
-	//dataSyncBarrier();
-
-	// 讓下一個irq能觸發
-	*(INTC_BASE_PTR + INTC_CONTROL) = (NEW_IRQ_AGREE << 0); 
-
-	_call_sched((uint32_t)schedFuncContextSPtr) ;
-
-}
-
-// 2021/1/15--Not work 
-void timer7_ISR(uint32_t *usrTaskContextOld)
-{
-	(DMTIMER7_BASE_PTR_t->IRQSTATUS) = (1 << 1);
-	usrLedToggle(3);
-	usrLedToggle(2);
-	usrLedToggle(1);
-	usrLedToggle(0);
-}
-
-/************************************************************************************************/
 
 void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
+{
+	CM_PER_BASE_PTR->CM_PER_TIMER2_CLKCTRL |= (1 << 1) ;
+
+    DMTIMER_struct_ptr->IRQENABLE_SET = (1 << 1);
+    DMTIMER_struct_ptr->TCLR = (1 << 1); 
+
+    // 32.768 kHz clk
+    DMTIMER_struct_ptr->TLDR = ~0 - (32768 * msecs / 1000); 
+
+    // load
+    DMTIMER_struct_ptr->TCRR = ~0 - (32768 * msecs / 1000); 
+
+	delay(1000); 
+
+    // Start
+    DMTIMER_struct_ptr->TCLR |= (1 << 0); 
+}
+
+
+void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
 {
     DMTIMER_struct_ptr->IRQENABLE_SET = (1 << 1);
     DMTIMER_struct_ptr->TCLR = (1 << 1); 
@@ -69,9 +45,8 @@ void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
 
     // Start
     DMTIMER_struct_ptr->TCLR |= (1 << 0); 
-
-    
 }
+
 
 
 void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr){
@@ -89,10 +64,18 @@ void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr)
 }
 
 
-void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(uint32_t*))
+void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(void))
 {
 	irq_isr_bind(IRQ_ID, handler);
 }
+
+
+void enableOsTick(uint8_t irq_num)
+{
+    *(INTC_ILR_n_BASE_PTR + irq_num) = (0 << 2) | (0 << 0) ;
+	eableINT_NUM(irq_num);
+}
+
 
 
 void disnableTimerAndUnbindISR(int32_t IRQ_ID)

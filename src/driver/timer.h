@@ -8,9 +8,6 @@
 #include "../common.h"
 
 
-void timer0_ISR(uint32_t *usrTaskContextOld) ;
-void timer7_ISR(uint32_t *usrTaskContextOld) ;
-
 /*****************************************************************************************/
 
 typedef struct{
@@ -58,17 +55,22 @@ typedef struct{
 #define DMTIMER0_BASE    0x44E05000
 #define DMTIMER0_BASE_PTR_t           ((volatile DMTIMER_T *)DMTIMER0_BASE)
 
-#define DMTIMER7_BASE    0x4804A000
-#define DMTIMER7_BASE_PTR_t           ((volatile DMTIMER_T *)DMTIMER7_BASE)
+#define DMTIMER2_BASE    0x48040000
+#define DMTIMER2_BASE_PTR_t           ((volatile DMTIMER_T *)DMTIMER2_BASE)
 /*****************************************************************************************/
 
 void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs);
 void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr);
-void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(uint32_t*));
+void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(void));
 void disnableTimerAndUnbindISR(int32_t IRQ_ID);
 
 void __attribute__((optimize("O0"))) delay(uint32_t num);
 
 void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr) ;
+
+
+
+void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs);
+void enableOsTick(uint8_t irq_num) ;
 
 #endif

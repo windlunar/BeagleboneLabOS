@@ -17,7 +17,7 @@ void sched(void)
 {
 	//Return from user mode(context switch through timer irq) 
 	//,and set the task status to READY
-	kprintf("		Back to kernel ,Run another task\r\n\r\n") ;
+	kprintf("In kernel\r\n\r\n") ;
 
 	//choose a task to run
 	for(;;)

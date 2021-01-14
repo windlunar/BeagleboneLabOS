@@ -39,11 +39,15 @@ int kernal_entry(void)
 	interrupt_init();
 	kprintf("Init interrupt.\r\n");
 
-	timer_init(DMTIMER0_BASE_PTR_t ,20);
-	enableTimerAndBindISR(IRQ_NUM_TIMER0 ,timer0_ISR);
+	OsTickInit(DMTIMER0_BASE_PTR_t ,10);
+	enableOsTick(IRQ_NUM_TIMER0) ;
 
 	kprintf("Init Timer0 to switch tasks.\r\n");
 
+	//timer_init(DMTIMER2_BASE_PTR_t ,1000);
+	//enableTimerAndBindISR(IRQ_NUM_TIMER2 ,timer2_ISR);
+
+	//kprintf("Init Timer2.\r\n");
 /*************************************************************************************************
  * Init Tasks 
  *************************************************************************************************/

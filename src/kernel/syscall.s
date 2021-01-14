@@ -90,7 +90,6 @@ svc_handler:
 .global syscall_print_hello; 
 .align	4
 syscall_print_hello: 
-	//stmdb sp!, {r13}
 	push {r0 ,lr}
 	mov r0, #SYSCALL_ID_print_hello
 	svc 0x00
@@ -102,7 +101,6 @@ syscall_print_hello:
 .global syscall_yield; 
 .align	4
 syscall_yield: 
-	//stmdb sp!, {r13}
 	push {r0 ,lr}
 	mov r0, #SYSCALL_ID_yield
 	svc 0x00
