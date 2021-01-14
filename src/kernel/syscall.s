@@ -38,7 +38,7 @@ svc_handler:
 	/* Save user state*/
 	mrs		ip, spsr
 /************************************************************************************************/
-	//switch to system mode to sace user proc context
+	//switch to system mode to save user proc context
 	mrs 	r10, cpsr
 	bic 	r10, r10, #0x1F 		// clear bits
 	orr 	r10, r10, #(CPSR_M_SYS) // system mode
@@ -48,8 +48,13 @@ svc_handler:
 	//儲存 user proc context
 	// r0在執行 svc 時已經push到stack中
 	mov		lr ,r9	//現在 lr跟 r9都是 user proc的返回addr
-	stmdb  sp!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	
+
+	// push ,準備原來user task的context 結構
+	// 然後存到 r1 作為 irq_handler的傳入參數 ,r0已經作為 syscall id
+	stmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
+
+	//make r0 as the user stack pointer (user task的context struct的起始位址)
+	mov		r1,	sp	
 /************************************************************************************************/
 	//switch back to svc mode
 	mrs 	r10, cpsr
@@ -71,7 +76,8 @@ svc_handler:
 	msr 	cpsr, r10
 	
 	//pop to user context
-	ldmia 	sp!, {r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+	//恢復狀態
+	ldmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 	mrs		r10 ,spsr
 /************************************************************************************************/
 	//switch back to svc mode

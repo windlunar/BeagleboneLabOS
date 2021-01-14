@@ -35,6 +35,7 @@ userTaskRun:
 	mov		r13, r0				
 
 	// pop ,Load user state ,r9=跳轉addr
+	//恢復狀態
 	ldmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 /************************************************************************************************/
 
@@ -43,8 +44,6 @@ userTaskRun:
 	msr		cpsr, ip
 	msr     CPSR_c, #CPSR_M_USR
 	bx 		r9
-	//blx 		r9
-	//mov		pc,r9
 
 
 /*
@@ -74,6 +73,8 @@ irq_entry:
 	//In system mode
 	//r9 =lr_irq
 	//push
+	// 準備原來user task的context 結構
+	// 然後存到 r0 作為 irq_handler的傳入參數
 	stmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 
 	//make r0 as the user stack pointer (user task的context struct的起始位址)
@@ -86,7 +87,7 @@ irq_entry:
 	msr 	cpsr, r10
 /***********************************************************************************************/
 	//In SVC mode
-	//在svc mode中處理irq中斷 ,應該傳入 user task的context(sp) address = r0
+	//在svc mode中處理irq中斷 ,應該傳入 user task的context(sp) 結構 address = r0
 	bl 		irqs_handler
 
 

@@ -15,6 +15,10 @@ QUEUE_TASK_t taskReadyQ ;
 // 原來在執行的 user proccess要在返回之前設定成 TASK_READY ,然後應該要實作個ready queue ,放到queue最後面
 void sched(void)
 {
+	//Return from user mode(context switch through timer irq) 
+	//,and set the task status to READY
+	kprintf("		Back to kernel ,Run another task\r\n\r\n") ;
+
 	//choose a task to run
 	for(;;)
 	{
@@ -32,13 +36,6 @@ void sched(void)
 
 			//Switch to user mode and run the task
 			userTaskRun((uint32_t *)TaskStructPtr->usrTaskContextSPtr) ;
-			//TaskStructPtr->usrTaskContextSPtr = userTaskRun((uint32_t)TaskStructPtr->usrTaskContextSPtr) ;
-
-			//Return from user mode(context switch through timer irq) 
-			//,and set the task status to READY
-			TaskStructPtr->taskStatus = TASK_READY ;
-			kprintf("		Back to kernal sched from taskid=%d ,Run another task\r\n\r\n",TaskStructPtr->taskID) ;
-			kprintf("		"); readCpsrMode();
 		}
 	}
 }

@@ -7,8 +7,8 @@
 #include "../lib/queue.h"
 
 
-void syscall_handler(uint32_t syscall_id ,uint32_t userTaskSP) ;
-void syscall_handler(uint32_t syscall_id ,uint32_t userTaskSP){
+void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld) ;
+void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld){
     switch (syscall_id)
     {
     case SYSCALL_ID_print_hello:
@@ -16,7 +16,7 @@ void syscall_handler(uint32_t syscall_id ,uint32_t userTaskSP){
         break;
 
     case SYSCALL_ID_yield:
-        __yield(userTaskSP) ;
+        __yield(usrTaskContextOld) ;
         break;   
 
     default:
@@ -25,27 +25,32 @@ void syscall_handler(uint32_t syscall_id ,uint32_t userTaskSP){
 }
 
 
-void __print_hello(void){
-    
-    kprintf("Hello! This is my first system call ,") ;
-    readCpsrMode();
+void __print_hello(void)
+{
+    kprintf("Hello! This is my first system call\r\n") ;
+    //readCpsrMode();
 }
 
-void __yield(uint32_t userTaskSP){
+void __yield(uint32_t *usrTaskContextOld){
     // check which task's status is running
     // Then change the task satus back to ready
-    //queue.c的back的計算好像有點問題
-    /*
-    int32_t qBack = (taskReadyQ.idxHead + TASK_NUM-1) % TASK_NUM ;
-    if(taskReadyQ.qDataTaskStructPtr[qBack]->taskStatus == TASK_RUNNING)
-    {
-        kprintf("Here #1\r\n") ;
-        taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxBack]->taskStatus = TASK_READY ;
+	for(int32_t id =0 ; id<TASK_NUM; id++)
+	{
+		if(userTask[id].taskStatus == TASK_RUNNING)
+		{
+			// Save old context
+			userTask[id].usrTaskContextSPtr = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
 
-        //update the current saved user stack
-        taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxBack]->usrTaskContextSPtr = (uint32_t *)userTaskSP ;
-    }
-    kprintf("Here #2\r\n") ;
-    sched() ;
-    */
+			// Change the task status to ready
+			userTask[id].taskStatus = TASK_READY ;
+			break ;
+		}
+	}
+
+	//prepare sched() context
+	schedFuncContextPrepare();
+
+	//dataSyncBarrier();
+
+	_call_sched((uint32_t)schedFuncContextSPtr) ;
 }

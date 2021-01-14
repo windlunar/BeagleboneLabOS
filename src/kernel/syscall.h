@@ -10,17 +10,17 @@
 
 
 void svc_handler(void) ;
-extern void syscall_handler(uint32_t syscall_id ,uint32_t userTaskSP);
+extern void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld);
 
 
-//syscall call by user
+//syscall call by user task
 extern void syscall_print_hello() ;
 extern void syscall_yield();
 
 
 
-//Individual svc syscall
+//svc syscall call bu syscall_handler
 void __print_hello(void) ;
-void __yield(uint32_t userTaskSP) ;
+void __yield(uint32_t *usrTaskContextOld);
 
 #endif
