@@ -41,7 +41,9 @@ userTaskRun:
 	/* Jump to user task */
 	// r9 = user task返回位址
 	msr		cpsr, ip
-	msr     CPSR_c, #CPSR_M_USR
+	msr     CPSR_c, #CPSR_M_USR	//如果中斷發生在這行 ,那跳轉回來還是在這行 ,會一直在bx r9卡住?
+
+	
 	bx 		r9
 
 /************************************************************************************************/

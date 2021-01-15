@@ -12,7 +12,7 @@ void usertask0(void){
 
 	while(1)
 	{	
-		kprintf("\r\nUser Task 0 #%d\r\n" ,k);
+		kprintf("Task 0 #%d\r\n" ,k);
 		//readCpsrMode();
     	//syscall_print_hello();	
 		//syscall_yield() ;	
@@ -30,7 +30,7 @@ void usertask1(void){
 
 	while(1)
 	{
-		kprintf("\r\nUser Task 1 #%d\r\n" ,k);
+		kprintf("Task 1 #%d\r\n" ,k);
 		//readCpsrMode();
     	//syscall_print_hello();
 		//syscall_yield() ;			
@@ -47,7 +47,7 @@ void usertask2(void){
 
 	while(1)
 	{
-		kprintf("\r\nUser Task 2 #%d\r\n" ,k);
+		kprintf("Task 2 #%d\r\n" ,k);
 		//readCpsrMode();
     	//syscall_print_hello();		
 		//readCpsrMode();
@@ -63,7 +63,7 @@ void usertask3(void){
 
 	while(1)
 	{
-		kprintf("\r\nUser Task 3 #%d\r\n" ,k);
+		kprintf("Task 3 #%d\r\n" ,k);
 		//readCpsrMode();
     	//syscall_print_hello();		
 		//syscall_yield() ;	
@@ -81,7 +81,7 @@ void usertask4(void){
 
 	while(1)
 	{
-		kprintf("\r\nUser Task 4 #%d\r\n" ,k);
+		kprintf("Task 4 #%d\r\n" ,k);
 		//readCpsrMode();
     	//syscall_print_hello();	
 		//syscall_yield() ;		

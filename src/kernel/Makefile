@@ -15,7 +15,7 @@ CFLAGS  += -march=armv7-a -mtune=cortex-a8
 #CFLAGS = -mcpu=cortex-a8 -marm -Wall -O2 -nostdlib -nostartfiles -ffreestanding -fstack-usage -Wstack-usage=256
 
 
-c_obj=main.o debug.o task.o interrupt.o syscall.o mem.o
+c_obj=main.o debug.o task.o interrupt.o syscall.o memory.o
 
 asm_obj=start.o syscall_asm.o exception.o task_asm.o
 
