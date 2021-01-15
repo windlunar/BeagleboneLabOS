@@ -9,7 +9,6 @@
 #include "../kernel/task.h"
 
 
-
 void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
 {
 	CM_PER_BASE_PTR->CM_PER_TIMER2_CLKCTRL |= (1 << 1) ;
@@ -30,24 +29,43 @@ void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
 }
 
 
-void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
+void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr)
 {
+    // Component interrupt request enable. Write 1 to set (enable interrupt)
+    // 2 TCAR_EN_FLAG   ,IRQ enable for Capture
+    // 1 OVF_EN_FLAG    ,IRQ enable for Overflow
+    // 0 MAT_EN_FLAG    ,IRQ enable for Match
     DMTIMER_struct_ptr->IRQENABLE_SET = (1 << 1);
+
+    // 1 AR 0h = One shot timer ,1h = Auto-reload timer
+    
     DMTIMER_struct_ptr->TCLR = (1 << 1); 
 
-    // 32.768 kHz clk
-    DMTIMER_struct_ptr->TLDR = ~0 - (32768 * msecs / 1000); 
+    // LOAD_VALUE ,Timer counter value loaded on overflow in auto-reload mode or on
+    // TTGR write access ,32.768 kHz clk
+    // When the auto-reload mode is enabled (TCLR AR bit = 1), 
+    // the TCRR is reloaded with the Timer Load
+    // Register (TLDR) value after a counting overflow
+    //
+    // 100 =msec(原本應該要放 ostick的時間)
+    DMTIMER_struct_ptr->TLDR = ~0 - (32768 * 100 / 1000); 
 
-    // load
-    DMTIMER_struct_ptr->TCRR = ~0 - (32768 * msecs / 1000); 
+    // load ,TIMER_COUNTER ,Value of TIMER counter
+    // 改在 task_asm 呼叫 reloadOsTick(r0)來 load 值
+    //DMTIMER_struct_ptr->TCRR = ~0 - (32768 * msecs / 1000); 
 
 	delay(1000); 
 
-    // Start
+    // 0 ST ,1h = Start timer
     DMTIMER_struct_ptr->TCLR |= (1 << 0); 
 }
 
 
+void reloadOsTick(uint32_t msecs)
+{
+    // load ,TIMER_COUNTER ,Value of TIMER counter
+    DMTIMER0_BASE_PTR_t->TCRR = ~0 - (32768 * msecs / 1000); 
+}
 
 void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr){
     // Start

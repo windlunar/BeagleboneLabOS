@@ -1,5 +1,7 @@
 
 #include "syscall.h"
+.equ	ostick_msec	, 5
+
 
 /** 
  * CPSR MODE FIELD :
@@ -37,6 +39,20 @@ syscall_print_hello:
 syscall_yield: 
 	push {r0 ,lr}
 	mov r0, #SYSCALL_ID_yield
+/************************************************************************************************/
+// 在這邊 reload ostimer counter ,tick =1ms (mov r0 #1)
+// 而不要在初始化 timer就load的話
+// 看起來可以解決卡住跳不出去的問題
+/************************************************************************************************/
+	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+	
+	//mov		r0 ,#1
+	mov		r0 ,#(ostick_msec)
+
+	bl 		reloadOsTick
+
+	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+/************************************************************************************************/
 	svc 0x00
 	pop	{r0 ,lr}
 	msr     CPSR_c, #CPSR_M_USR

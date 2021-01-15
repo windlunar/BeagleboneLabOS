@@ -70,7 +70,7 @@ void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr) ;
 
 
 
-void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs);
+void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr);
 void enableOsTick(uint8_t irq_num) ;
 
 #endif

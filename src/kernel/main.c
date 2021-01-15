@@ -43,7 +43,7 @@ int kernal_entry(void)
 	interrupt_init();
 	kprintf("Init interrupt.\r\n");
 
-	OsTickInit(DMTIMER0_BASE_PTR_t ,10);
+	OsTickInit(DMTIMER0_BASE_PTR_t);
 	enableOsTick(IRQ_NUM_TIMER0) ;
 
 	kprintf("Init Timer0 to switch tasks.\r\n");
