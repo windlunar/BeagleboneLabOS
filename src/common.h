@@ -2,6 +2,8 @@
 #ifndef __COMMON_H_
 #define __COMMON_H_
 
+/************************************************************************************************/
+
 typedef unsigned char uint8  ;
 typedef unsigned short uint16 ;
 typedef unsigned int uint32 ;
@@ -21,21 +23,20 @@ typedef char int8_t ;
 typedef short int16_t ;
 typedef int int32_t ;
 
+/************************************************************************************************/
 
-
-extern uint32_t _estack;
+//extern uint32_t _estack;
 extern void WRITE_REG32 (unsigned int address, unsigned int value);
 extern unsigned int READ_REG32 (unsigned int address);
+extern void __attribute__((optimize("O0"))) delay(uint32_t nr_of_nops);
 
+/************************************************************************************************/
 static inline void dataSyncBarrier(void)
 {
 	asm volatile("dsb\n");
 }
 
-
-
-extern void __attribute__((optimize("O0"))) delay(uint32_t nr_of_nops);
-
+/************************************************************************************************/
 
 #define NULL ((void *)(0))
 
@@ -49,5 +50,29 @@ extern void __attribute__((optimize("O0"))) delay(uint32_t nr_of_nops);
 #define UND_MODE    0x1b
 #define SYS_MODE    0x1f
 
+/************************************************************************************************/
+
+// Rounding operations (efficient when n is a power of 2)
+// Round down to the nearest multiple of n
+//捨去到最接近n的倍數
+//cprintf("%d\n",ROUNDDOWN_4K(4100,4096));
+//印出4096
+#define ROUNDDOWN_4K(a, n)			\
+({									\
+	uint32_t __a = (uint32_t) (a);	\
+	(typeof(a)) (__a - __a % (n));	\
+})
+
+
+// Round up to the nearest multiple of n
+//進位到最接近n的倍數
+//cprintf("%d\n",ROUNDUP_4K(4100,4096));
+//印出8192
+#define ROUNDUP_4K(a, n)						\
+({												\
+	uint32_t __n = (uint32_t) (n);				\
+	(typeof(a)) (ROUNDDOWN_4K((uint32_t) (a) + __n - 1, __n));	\
+})
+/************************************************************************************************/
 
 #endif

@@ -19,6 +19,7 @@
 #include "../driver/cm_per.h"
 #include "../driver/gpio_reg.h"
 #include "../lib/queue.h"
+#include "mem.h"
 
 
 
@@ -32,6 +33,8 @@ int kernal_entry(void)
 	kprintf("sp : %x ---CP15_c1 : %x\r\n" ,READ_SP() ,READ_CP15_c1());
 	kprintf("CPSR register %x\r\n", readCpsr());
 	kprintf("Exception Vector Base = %x\r\n",getIntVectorAddr());
+	kprintf("kernel_end address :%p\r\n" ,kernal_end) ;
+	kprintf("First page address start at :%p\r\n" ,FIRST_PAGE_PTR) ;
 
 	usrLedInit();
 	kprintf("\nInitialize user leds...\r\n") ;
@@ -48,6 +51,12 @@ int kernal_entry(void)
 	//enableTimerAndBindISR(IRQ_NUM_TIMER2 ,timer2_ISR);
 
 	//kprintf("Init Timer2.\r\n");
+/*************************************************************************************************
+ * For test
+*************************************************************************************************/
+
+
+	for(;;) ;
 /*************************************************************************************************
  * Init Tasks 
  *************************************************************************************************/
@@ -71,6 +80,7 @@ int kernal_entry(void)
 	for(int32_t id =0 ;id<TASK_NUM ;id++) enQueue(&taskReadyQ, &userTask[id]);
 
 /*************************************************************************************************/
+
 	kprintf("Init Tasks.\r\n");
 	kprintf("Tasks Starting...\r\n");
 
@@ -81,6 +91,7 @@ int kernal_entry(void)
 	//跳到 sched後不再回來 ,原來在kernel_entry的環境全部丟棄
 	_call_sched((uint32_t)schedFuncContextSPtr) ;
 
+/*************************************************************************************************/
 	for(;;);
 
 	return 0;

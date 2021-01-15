@@ -82,41 +82,26 @@ extern SCHED_CONTEXT_t *schedFuncContextSPtr ;
 
 
 
-// -----------------
-// ......
-// lr
-// r12
-// r11
-// r10
-// r9
-// r8
-// r7
-// r6
-// r5
-// r4
-// r3
-// r2
-// r1 -----------------0x9df31000 + 4*1
-// r0 -----------------kernel init stack top = 0x9df31000 (set up in start.s)
-//                      sched sp (start addr of SCHED_CONTEXT_t schedFuncContextSPtr)
+// *******************************************************
+//
+//                 SP------>lr
+//                          r12
+// push=STMFD SP!           r11
+//        |                 r10
+//        |                 r9      ^
+//        |                 r8      |
+//        |                 r7      |
+//        |                 r6      |
+//        |                 r5      |
+//        |                 r4      |
+//        V                 r3      |
+//                          r2  pop=LDMFD SP!      
+//                          r1              
+//                          r0 <------SP
+//
+// *******************************************************
 typedef struct
 {
-    /*
-    uint32_t lr;
-    uint32_t r12;
-    uint32_t r11;
-    uint32_t r10;
-    uint32_t r9_return_lr;
-    uint32_t r8;
-    uint32_t r7;
-    uint32_t r6;
-    uint32_t r5;
-    uint32_t r4;
-    uint32_t r3;
-    uint32_t r2;
-    uint32_t r1;
-    uint32_t l0;
-    */
     uint32_t r0;
     uint32_t r1;
     uint32_t r2;
