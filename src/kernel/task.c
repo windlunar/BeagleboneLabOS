@@ -1,6 +1,6 @@
 
 #include "task.h"
-#include "../lib/queue.h"
+#include "../klib/queue.h"
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
 USERTASK_t userTask[TASK_NUM] ;

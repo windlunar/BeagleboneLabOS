@@ -1,6 +1,6 @@
 
 #include "user_task.h"
-#include "../lib/print.h"
+#include "../klib/print.h"
 #include "../driver/uart.h"
 #include "../kernel/debug.h"
 
@@ -15,7 +15,7 @@ void usertask0(void){
 		kprintf("Task 0 #%d\r\n" ,k);
 		//readCpsrMode();
     	//syscall_print_hello();	
-		syscall_yield() ;	
+		//syscall_yield() ;	
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
@@ -33,7 +33,7 @@ void usertask1(void){
 		kprintf("Task 1 #%d\r\n" ,k);
 		//readCpsrMode();
     	//syscall_print_hello();
-		syscall_yield() ;			
+		//syscall_yield() ;			
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
@@ -49,7 +49,7 @@ void usertask2(void){
 	{
 		kprintf("Task 2 #%d\r\n" ,k);
 		//readCpsrMode();
-    	syscall_print_hello();		
+    	//syscall_print_hello();		
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
@@ -84,7 +84,7 @@ void usertask4(void){
 		kprintf("Task 4 #%d\r\n" ,k);
 		//readCpsrMode();
     	//syscall_print_hello();	
-		syscall_yield() ;		
+		//syscall_yield() ;		
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;

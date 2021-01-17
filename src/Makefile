@@ -7,7 +7,7 @@
 all:
 	make -C ./driver
 	make -C ./kernel
-	make -C ./lib
+	make -C ./klib
 	make -C ./userproc
 
 

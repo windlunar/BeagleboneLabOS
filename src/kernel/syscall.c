@@ -1,10 +1,10 @@
 
 
 #include "syscall.h"
-#include "../lib/print.h"
+#include "../klib/print.h"
 #include "debug.h"
 #include "task.h"
-#include "../lib/queue.h"
+#include "../klib/queue.h"
 
 
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld) ;

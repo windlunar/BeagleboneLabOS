@@ -8,7 +8,7 @@
 #include "../driver/usr_led.h"
 #include "../common.h"
 #include "../driver/uart.h"
-#include "../lib/print.h"
+#include "../klib/print.h"
 #include "../userproc/user_task.h"
 #include "syscall.h"
 #include "debug.h"
@@ -18,9 +18,9 @@
 #include "../driver/rtc_reg.h"
 #include "../driver/cm_per.h"
 #include "../driver/gpio_reg.h"
-#include "../lib/queue.h"
+#include "../klib/queue.h"
 #include "memory.h"
-#include "../lib/mem.h"
+#include "../klib/mem.h"
 
 
 
@@ -35,7 +35,7 @@ int kernal_entry(void)
 	kprintf("CPSR register %x\r\n", readCpsr());
 	kprintf("Exception Vector Base = %x\r\n",getIntVectorAddr());
 	kprintf("kernel_end address :%p\r\n" ,kernal_end) ;
-	kprintf("First page address start at :%p\r\n" ,FIRST_PAGE_PTR) ;
+	kprintf("First part of memeory address start at :%p\r\n" ,FIRST_PART_PTR) ;
 
 	usrLedInit();
 	kprintf("\nInitialize user leds...\r\n") ;
@@ -55,8 +55,26 @@ int kernal_entry(void)
 /*************************************************************************************************
  * For test
 *************************************************************************************************/
-	cleanPageConntent((void *)FIRST_PAGE_PTR) ;
-	//for(int32_t i=0 ;i<10000 ;i++) ;
+	mem_parts_list_init();
+	print_free_part_list_start_addr();
+
+	kprintf("Test alloc\r\n") ;
+
+	PART_INFO_t *mem_part0 = alloc_one_mem_part() ;
+	PART_INFO_t *mem_part1 = alloc_one_mem_part() ;
+	PART_INFO_t *mem_part2 = alloc_one_mem_part() ;
+
+	print_free_part_list_start_addr();
+	print_inuse_part_list_start_addr();
+
+	kprintf("Test free\r\n") ;
+
+	free_part_mem(mem_part0) ;
+	free_part_mem(mem_part1) ;
+
+	print_free_part_list_start_addr();
+	print_inuse_part_list_start_addr();
+
 	//for(;;) ;
 /*************************************************************************************************
  * Init Tasks 
