@@ -61,12 +61,14 @@ void usertask3(void){
 	kprintf("Starting User Task 3 \r\n");
 
 	int k = 0 ;
+	int tid = 0 ;
 
 	while(1)
 	{
-		kprintf("Task 3 #%d\r\n" ,k);
+		syscall_get_tid(&tid) ;	
+		kprintf("Task 3 #%d ,task id=%d\r\n" ,k ,tid);
 		//readCpsrMode();
-    	//syscall_print_hello();		
+    	//syscall_print_hello();	
 		//syscall_yield() ;	
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;

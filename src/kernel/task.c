@@ -6,6 +6,7 @@ SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ;
 TASK_t Task[TASK_NUM] ;
 uint32_t task_stack[TASK_NUM][TASK_STACK_SIZE] ;
 TASK_t *task_list_head = NULL;
+TASK_t *curr_running_task = NULL ;
 
 //每個陣列皆為一個指標, 指向該函式起始位置
 QUEUE_TASK_t taskReadyQ ;
@@ -34,6 +35,7 @@ void sched(void)
 			//And the put it to back ,and set it to running
 			enQueue(&taskReadyQ ,TaskStructPtr) ;
 			TaskStructPtr->task_status = TASK_RUNNING ;
+			curr_running_task = TaskStructPtr ;
 
 			//Switch to user mode and run the task
 			TaskRun((uint32_t *)TaskStructPtr->task_context_sp) ;

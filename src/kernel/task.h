@@ -120,7 +120,7 @@ extern TASK_t *task_list_head;
 
 extern TASK_t Task[TASK_NUM] ;
 extern uint32_t task_stack[TASK_NUM][TASK_STACK_SIZE] ;
-
+extern TASK_t *curr_running_task ;
 /***********************************************************************************************/
 void sched(void);
 void schedFuncContextPrepare(void);

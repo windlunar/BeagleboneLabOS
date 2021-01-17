@@ -227,6 +227,7 @@ void timer0_ISR(uint32_t *usrTaskContextOld)
 
 			// Change the task status to ready
 			Task[id].task_status = TASK_READY ;
+			curr_running_task = NULL ;
 			break ;
 		}
 	}
