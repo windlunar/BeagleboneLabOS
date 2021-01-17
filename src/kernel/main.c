@@ -60,7 +60,7 @@ int kernal_entry(void)
 
 
 
-	for(;;) ;
+	//for(;;) ;
 
 
 

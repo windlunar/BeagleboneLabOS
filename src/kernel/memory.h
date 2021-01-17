@@ -14,7 +14,7 @@ extern uint32_t *kernal_end ;
 #define PART_SIZE	        4096	//bytes
 #define KB_SIZE             1024
 #define MB_SIZE             1024 * 1024
-#define VALUABLE_MEM_SIZE   128 * 1024 * 1024  
+#define VALUABLE_MEM_SIZE   128 * 1024 * 1024  //128 MB
 #define TOTAL_PART_NUM      VALUABLE_MEM_SIZE/4096  //32*1024個parts
 
 // 如果第一個part的adde = 0x82004000
@@ -31,21 +31,8 @@ extern uint32_t *kernal_end ;
 #define INUSE_FULL  2
 
 
-//將 PART_INFO_STRUCT_t 串起來
-typedef struct
-{
-    uint8_t block_size ;    //單位為 bytes ,最大256個bytes
-    uint16_t block_num ;    //一個part block數量 ,最多16*256個(一個part的byte大小)
-    
-}BLOCK_INFO_t;
-
-// 如果是last node ,則 nextnode_ptr = NULL
+// 如果是last node ,則 next_ptr = NULL
 // next_ptr 指向下一個node address
-// 
-// 該結構體總共 12個bytes ,1個part可以容納 341個結構體
-// 共有 32 * 1024個 parts(128MB) ,
-// 所以需要 32 * 1024 * 12 bytes的空間存放 所有的 PART_INFO結構體
-// 這樣需要 (32 * 1024 * 12)/(4 * 1024) = 96 個 parts來存放
 struct PART_INFO{
     struct PART_INFO *next_ptr ;
     struct PART_INFO *prev_ptr ;
@@ -53,26 +40,29 @@ struct PART_INFO{
     uint32_t part_id ;
     uint32_t *part_mem_start_ptr ;
 
-    BLOCK_INFO_t *block_info_ptr ; //part中block的info     
+    uint8_t *available_ptr ; //在 page中可用的起始位址
 };
 
-typedef struct PART_INFO PART_INFO_t ;
-extern PART_INFO_t *free_part_list_head;
-extern PART_INFO_t *inuse_part_list_head;
-extern PART_INFO_t parts_list[TOTAL_PART_NUM] ;
+typedef struct PART_INFO MEM_PART_INFO_t ;
+extern MEM_PART_INFO_t *free_part_list_head;
+extern MEM_PART_INFO_t *inuse_part_list_head;
+extern MEM_PART_INFO_t parts_list[TOTAL_PART_NUM] ;
 
 /***********************************************************************************************/
 // Functions
 /***********************************************************************************************/
 
 void mem_parts_list_init();
-PART_INFO_t *alloc_one_mem_part(void);
-void free_part_mem(PART_INFO_t *part_node);
-void add_to_free_list_end(PART_INFO_t *part_node);
-void insert_to_inuse_list(PART_INFO_t *part_node);
-void delete_from_inuse_list(PART_INFO_t *part_node);
+MEM_PART_INFO_t *alloc_one_mem_part(void);
+void free_part_mem(MEM_PART_INFO_t *part_node);
+void add_to_free_list_end(MEM_PART_INFO_t *part_node);
+void insert_to_inuse_list(MEM_PART_INFO_t *part_node);
+void delete_from_inuse_list(MEM_PART_INFO_t *part_node);
 void clean_part_mem_content(void *start);
 
-
+/***********************************************************************************************/
+// alloc 小塊記憶體相關function
+/***********************************************************************************************/
+void *kmalloc(uint32_t size_in_bytes);
 
 #endif

@@ -70,7 +70,7 @@ void print_R0_R1_R2_R3(uint32_t r0 ,uint32_t r1 ,uint32_t r2 ,uint32_t r3){
 
 void print_free_part_list_from_head()
 {
-    PART_INFO_t *head = free_part_list_head ;
+    MEM_PART_INFO_t *head = free_part_list_head ;
 
     //Just print first 10 nodes for test
     kprintf("Print free list from head\r\n");
@@ -85,12 +85,12 @@ void print_free_part_list_from_head()
 
 void print_free_part_list_from_end()
 {
-    PART_INFO_t *head = free_part_list_head ;
+    MEM_PART_INFO_t *head = free_part_list_head ;
 
     while(head->next_ptr != NULL){
         head = head->next_ptr ;
     }
-    PART_INFO_t *end = head ;
+    MEM_PART_INFO_t *end = head ;
 
     //Just print first 10 nodes for test
     kprintf("Print free list from end\r\n");
@@ -105,7 +105,7 @@ void print_free_part_list_from_end()
 
 void print_inuse_part_list_from_head()
 {
-    PART_INFO_t *head = inuse_part_list_head ;
+    MEM_PART_INFO_t *head = inuse_part_list_head ;
 
     //Just print first 10 nodes for test
     kprintf("Print inuse list\r\n");
@@ -125,9 +125,9 @@ void mem_part_alloc_free_test()
 
 	kprintf("Test alloc\r\n") ;
 
-	PART_INFO_t *mem_part0 = alloc_one_mem_part() ;
-	PART_INFO_t *mem_part1 = alloc_one_mem_part() ;
-	PART_INFO_t *mem_part2 = alloc_one_mem_part() ;
+	MEM_PART_INFO_t *mem_part0 = alloc_one_mem_part() ;
+	MEM_PART_INFO_t *mem_part1 = alloc_one_mem_part() ;
+	MEM_PART_INFO_t *mem_part2 = alloc_one_mem_part() ;
 
 	print_free_part_list_from_head();
 	print_inuse_part_list_from_head();
@@ -138,5 +138,10 @@ void mem_part_alloc_free_test()
 	free_part_mem(mem_part1) ;
 
 	print_free_part_list_from_end();
-	print_inuse_part_list_from_head();    
+	print_inuse_part_list_from_head();   
+
+    uint32_t *p= kmalloc(4) ;
+    kprintf("Part's start addr =%p\r\n" ,mem_part2->part_mem_start_ptr) ;
+    kprintf("Part's available_ptr addr =%p\r\n",mem_part2->available_ptr) ;
+
 }
