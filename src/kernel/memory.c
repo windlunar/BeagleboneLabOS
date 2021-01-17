@@ -87,6 +87,7 @@ void add_to_free_list_end(PART_INFO_t *part_node)
 
     end_ptr->next_ptr = part_node ;
     part_node->next_ptr = NULL ;
+    part_node->prev_ptr = end_ptr ;
 
 }
 
@@ -158,35 +159,7 @@ void clean_part_mem_content(void *start)
 
 
 
-void print_free_part_list_start_addr()
-{
-    PART_INFO_t *head = free_part_list_head ;
 
-    //Just print first 10 nodes for test
-    kprintf("Print free list\r\n");
-    for(int i =0 ;i<10;i++){
-        kprintf("%p  ",head->part_mem_start_ptr) ;
-        kprintf("mem part id:%d  ",head->part_id) ;
-        kprintf("mem part status:%d\r\n",head->part_status) ;
-        head = head->next_ptr ;
-    }
-}
-
-void print_inuse_part_list_start_addr()
-{
-    PART_INFO_t *head = inuse_part_list_head ;
-
-    //Just print first 10 nodes for test
-    kprintf("Print inuse list\r\n");
-    for(int i =0 ;i<10;i++){
-        kprintf("%p  ",head->part_mem_start_ptr) ;
-        kprintf("mem part id:%d  ",head->part_id) ;
-        kprintf("mem part status:%d\r\n",head->part_status) ;
-
-        if(head->next_ptr == NULL) break ;
-        head = head->next_ptr ;
-    }
-}
 /***********************************************************************************************/
 
 

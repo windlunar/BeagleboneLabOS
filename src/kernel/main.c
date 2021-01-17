@@ -56,26 +56,14 @@ int kernal_entry(void)
  * For test
 *************************************************************************************************/
 	mem_parts_list_init();
-	print_free_part_list_start_addr();
+	mem_part_alloc_free_test();
 
-	kprintf("Test alloc\r\n") ;
 
-	PART_INFO_t *mem_part0 = alloc_one_mem_part() ;
-	PART_INFO_t *mem_part1 = alloc_one_mem_part() ;
-	PART_INFO_t *mem_part2 = alloc_one_mem_part() ;
 
-	print_free_part_list_start_addr();
-	print_inuse_part_list_start_addr();
+	for(;;) ;
 
-	kprintf("Test free\r\n") ;
 
-	free_part_mem(mem_part0) ;
-	free_part_mem(mem_part1) ;
 
-	print_free_part_list_start_addr();
-	print_inuse_part_list_start_addr();
-
-	//for(;;) ;
 /*************************************************************************************************
  * Init Tasks 
  *************************************************************************************************/

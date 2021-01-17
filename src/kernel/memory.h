@@ -73,7 +73,6 @@ void insert_to_inuse_list(PART_INFO_t *part_node);
 void delete_from_inuse_list(PART_INFO_t *part_node);
 void clean_part_mem_content(void *start);
 
-void print_free_part_list_start_addr();
-void print_inuse_part_list_start_addr();
+
 
 #endif

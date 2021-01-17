@@ -6,6 +6,7 @@
 #include "../common.h"
 #include "../driver/uart.h"
 #include "../klib/print.h"
+#include "memory.h"
 
 
 
@@ -22,5 +23,10 @@ int32_t readCpsr() ;
 int32_t readCpsrMode() ;
 
 void print_R1_R2_R3(uint32_t r1 ,uint32_t r2 ,uint32_t r3) ;
+
+void print_free_part_list_from_head();
+void print_free_part_list_from_end();
+void print_inuse_part_list_from_head();
+void mem_part_alloc_free_test();
 
 #endif
