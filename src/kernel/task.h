@@ -7,27 +7,6 @@
 #include "debug.h"
 
 
-/*
-typedef struct
-{
-    uint32_t r0 ;
-    uint32_t lr_usr_own ;       //store user proc's originak lr reg
-    uint32_t r1 ;
-    uint32_t r2 ;
-    uint32_t r3 ;
-    uint32_t r4 ;
-    uint32_t r5 ;
-    uint32_t r6 ;
-    uint32_t r7 ;
-    uint32_t r8 ;
-    uint32_t r9_return_lr ;     
-    uint32_t r10 ;
-    uint32_t fp ;
-    uint32_t ip_store_spsr ;    //store previos mode's cpsr
-    uint32_t lr ;               //store user proc's return addr  
-}CONTEXT_t;
-*/
-
 /***********************************************************************************************/
 #define TASK_RUNNING    0
 #define TASK_READY      1
@@ -37,10 +16,6 @@ typedef struct
 
 
 /***********************************************************************************************/
-
-
-
-
 
 // -----------------
 // ......

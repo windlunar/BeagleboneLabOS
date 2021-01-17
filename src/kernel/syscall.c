@@ -7,12 +7,12 @@
 #include "../klib/queue.h"
 
 
-void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld) ;
-void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld){
+void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
+void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args){
     switch (syscall_id)
     {
     case SYSCALL_ID_print_hello:
-        __print_hello() ;
+        __print_hello(*(uint32_t *)args) ;
         break;
 
     case SYSCALL_ID_yield:
@@ -25,10 +25,11 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld){
 }
 
 
-void __print_hello(void)
+void  __print_hello(uint32_t input)
 {
-    kprintf("Hello! This is my first system call\r\n") ;
+    kprintf("Hello! This is my first system call,In put value =%d\r\n" ,input) ;
     //readCpsrMode();
+
 }
 
 void __yield(uint32_t *usrTaskContextOld){
@@ -54,3 +55,5 @@ void __yield(uint32_t *usrTaskContextOld){
 
 	_call_sched((uint32_t)schedFuncContextSPtr) ;
 }
+
+/************************************************************************************************/

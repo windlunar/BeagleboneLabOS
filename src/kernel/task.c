@@ -4,6 +4,7 @@
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
 USERTASK_t userTask[TASK_NUM] ;
+uint32_t *syscall_return_val = (uint32_t *)0x9df31064 ;
 
 //每個陣列皆為一個指標, 指向該函式起始位置
 void (*userTaskFuncsVector[TASK_NUM])(void);

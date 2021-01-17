@@ -126,7 +126,7 @@ svc_handler:
 	mov		lr ,r9	
 
 	// push ,準備原來user task的context 結構
-	// 然後存到 r1 作為 irq_handler的傳入參數 ,因為r0已經作為 syscall id
+	// 然後存到 r1 作為傳入irq_handler的user task的context 結構 
 	stmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	mov		r1,	sp	
 
@@ -138,9 +138,11 @@ svc_handler:
 	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
 	msr 	cpsr, r10
 
-	//call syscall handler ,r0 is the syscall id
+	//call syscall handler ,
+	//r0 is the syscall id ,
+	//r1 is the original context
+	//r2 is input args(pointer)
 	push	{r0 ,r1 ,r2 ,r3}
-
 	bl 		syscall_handler
 
 	pop		{r0 ,r1 ,r2 ,r3}

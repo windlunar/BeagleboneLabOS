@@ -25,11 +25,13 @@
 
 .global syscall_print_hello; 
 .align	4
-syscall_print_hello: 
-	push {r0 ,lr}
+syscall_print_hello:
+	//保存傳入參數
+	push {r0 ,r2 ,lr}
+	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_print_hello
 	svc 0x00
-	pop	{r0 ,lr}
+	pop	{r0 ,r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
 	bx lr	//返回 user proc
 
@@ -46,9 +48,7 @@ syscall_yield:
 /************************************************************************************************/
 	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 	
-	//mov		r0 ,#1
 	mov		r0 ,#(ostick_msec)
-
 	bl 		reloadOsTick
 
 	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}

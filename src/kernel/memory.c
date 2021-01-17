@@ -174,6 +174,7 @@ void *kmalloc(uint32_t size_in_bytes)
 
             //判斷剩餘空間夠不夠
             uint32_t avail_size = (uint32_t)curr->part_mem_start_ptr+PART_SIZE - (uint32_t)curr->available_ptr ;
+            if(avail_size == 0) curr->part_status == INUSE_FULL ;
             if(avail_size < size_in_bytes) break ;
            
             //移動可用空間的ptr
@@ -190,6 +191,10 @@ void *kmalloc(uint32_t size_in_bytes)
     return (void *)mem_part->available_ptr ;
 }
 
+
+void kfree(void *p){
+    //Not implement Yet.
+}
 /***********************************************************************************************/
 
 
