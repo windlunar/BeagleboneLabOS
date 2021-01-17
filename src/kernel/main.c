@@ -52,17 +52,6 @@ int kernal_entry(void)
 	//enableTimerAndBindISR(IRQ_NUM_TIMER2 ,timer2_ISR);
 
 	//kprintf("Init Timer2.\r\n");
-/*************************************************************************************************
- * For test
-*************************************************************************************************/
-	mem_parts_list_init();
-	mem_part_alloc_free_test();
-
-
-
-	//for(;;) ;
-
-
 
 /*************************************************************************************************
  * Init Tasks 
@@ -70,21 +59,30 @@ int kernal_entry(void)
 
 	for(int32_t id =0 ;id<TASK_NUM ;id++)
 	{
-		userTask[id].usrTaskContextSPtr = NULL ;
-		userTaskFuncsVector[id] = NULL ;
+		Task[id].task_context_sp = NULL ;
 	}
 
-	userTaskFuncsVector[0] = usertask0 ; 
-	userTaskFuncsVector[1] = usertask1 ; 
-	userTaskFuncsVector[2] = usertask2 ; 
-	userTaskFuncsVector[3] = usertask3 ; 
-	userTaskFuncsVector[4] = usertask4 ; 
-
-	for(int32_t id =0 ;id<TASK_NUM ;id++) userTasksInit(id ,&userTask[id] ,userTaskFuncsVector[id]);
+	TaskCreate(&Task[0] ,&usertask0 ,task_stack[0]);
+	TaskCreate(&Task[1] ,&usertask1 ,task_stack[1]);
+	TaskCreate(&Task[2] ,&usertask2 ,task_stack[2]);
+	TaskCreate(&Task[3] ,&usertask3 ,task_stack[3]);
+	TaskCreate(&Task[4] ,&usertask4 ,task_stack[4]);
 
 	//Init Task queue
 	queueInit(&taskReadyQ ,TASK_NUM) ;
-	for(int32_t id =0 ;id<TASK_NUM ;id++) enQueue(&taskReadyQ, &userTask[id]);
+	for(int32_t id =0 ;id<TASK_NUM ;id++) enQueue(&taskReadyQ, &Task[id]);
+
+/*************************************************************************************************
+ * For test
+*************************************************************************************************/
+	mem_parts_list_init();
+	mem_part_alloc_free_test();
+	print_task_id_from_head();
+
+
+	//for(;;) ;
+
+
 
 /*************************************************************************************************/
 

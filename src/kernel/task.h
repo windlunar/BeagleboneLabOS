@@ -94,37 +94,43 @@ typedef struct
 
 }USR_TASK_CONTEXT_t;
 
-typedef struct
+struct _TASK
 {
-    uint32_t task_stack[TASK_STACK_SIZE] ;
-    //uint32_t *usrTaskContextSPtr; //指向task_stack的某個位址
+    struct _TASK *next_ptr ;
+    struct _TASK *prev_ptr ;   
 
+    // task 的 stack空間 的pointer
+    uint32_t *task_stack_ptr ;  
+
+    // task function pointer
     void (*taskCallBack)() ;
 
-    int32_t taskID;
-    int32_t taskStatus ;
+    int32_t task_id;
+    int32_t task_status ;
 
-    USR_TASK_CONTEXT_t *usrTaskContextSPtr ; 
+    // task context
+    USR_TASK_CONTEXT_t *task_context_sp ; 
 
-    //int32_t priority ;
+    //int32_t priority ; //not implement yet ;
 
-}USERTASK_t;
+};
+typedef struct _TASK TASK_t ;
+extern TASK_t *task_list_head;
 /***********************************************************************************************/
 
-extern USERTASK_t userTask[TASK_NUM] ;
+extern TASK_t Task[TASK_NUM] ;
+extern uint32_t task_stack[TASK_NUM][TASK_STACK_SIZE] ;
 
-//user tasks的函式指標
-extern void (*userTaskFuncsVector[TASK_NUM])(void);
-extern void _call_sched(uint32_t schedContext) ;
 /***********************************************************************************************/
-
 void sched(void);
-void userTasksInit(int32_t taskid, USERTASK_t *userTaskStructPtr ,void (*taskFunc)()) ;
-
-//輸入參數 stack(Process stack pointer)會存到r0
-//USR_TASK_CONTEXT_t *userTaskRun(uint32_t sp); 
-void userTaskRun(uint32_t *sp); 
 void schedFuncContextPrepare(void);
+extern void _call_sched(uint32_t schedContext) ;    //定義在task_asm.s
+void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
+
+
+uint32_t TaskCreate(TASK_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack);
+void task_list_insert_from_end(TASK_t *task_node) ;
+void print_task_id_from_head() ;
 
 /***********************************************************************************************/
 #endif

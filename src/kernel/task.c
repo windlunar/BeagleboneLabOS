@@ -3,11 +3,11 @@
 #include "../klib/queue.h"
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
-USERTASK_t userTask[TASK_NUM] ;
-uint32_t *syscall_return_val = (uint32_t *)0x9df31064 ;
+TASK_t Task[TASK_NUM] ;
+uint32_t task_stack[TASK_NUM][TASK_STACK_SIZE] ;
+TASK_t *task_list_head = NULL;
 
 //每個陣列皆為一個指標, 指向該函式起始位置
-void (*userTaskFuncsVector[TASK_NUM])(void);
 QUEUE_TASK_t taskReadyQ ;
 
 
@@ -24,24 +24,35 @@ void sched(void)
 	for(;;)
 	{
 		//判斷 head是否 Ready
-		if(taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxHead]->taskStatus == TASK_READY)
+		if(taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxHead]->task_status == TASK_READY)
 		{
-			USERTASK_t *TaskStructPtr = taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxHead] ;
+			TASK_t *TaskStructPtr = taskReadyQ.qDataTaskStructPtr[taskReadyQ.idxHead] ;
 
 			//dequeue task
 			deQueue(&taskReadyQ) ;
 
 			//And the put it to back ,and set it to running
 			enQueue(&taskReadyQ ,TaskStructPtr) ;
-			TaskStructPtr->taskStatus = TASK_RUNNING ;
+			TaskStructPtr->task_status = TASK_RUNNING ;
 
 			//Switch to user mode and run the task
-			userTaskRun((uint32_t *)TaskStructPtr->usrTaskContextSPtr) ;
+			TaskRun((uint32_t *)TaskStructPtr->task_context_sp) ;
 		}
 	}
 }
 
-void userTasksInit(int32_t taskid, USERTASK_t *userTaskStructPtr ,void (*taskFunc)()){
+
+void schedFuncContextPrepare(void)
+{
+	schedFuncContextSPtr->lr = (uint32_t)sched ;	//跳轉address為 task.c的函式shed()
+}
+
+
+//
+// arg2 : task 結構體
+// arg3 : user task function pointer
+// arg4 : user task的 stack起始位址(low addr)
+uint32_t TaskCreate(TASK_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack){
 	/* Initialization of process stack.
 	 * r0 ,r1 ,r2 ,r3 ,r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr 
      * 
@@ -55,18 +66,64 @@ void userTasksInit(int32_t taskid, USERTASK_t *userTaskStructPtr ,void (*taskFun
      * lr 存放該 user自己本身的 lr值(如返回其他函數用)
      * 所以要把 usertask 的 entry位址放在 usertask_stack_start[9] 的位址上
      */
-	uint32_t *userTaskStackTop = userTaskStructPtr->task_stack + TASK_STACK_SIZE;
-    userTaskStructPtr->usrTaskContextSPtr = (USR_TASK_CONTEXT_t *)(userTaskStackTop - 16);
+	task_list_insert_from_end(task_ptr) ;
 
-	userTaskStructPtr->usrTaskContextSPtr->r9_return_lr = (uint32_t) taskFunc;
+	//設定task stack的起始位址(low address開始)
+	task_ptr->task_stack_ptr = task_stack ;
 
-     userTaskStructPtr->taskID = taskid ;
-     userTaskStructPtr->taskStatus = TASK_READY ;
+	//因為 task是從高位址往下增長 ,所以找 stack top(stack的最高位址)
+	uint32_t *task_stack_top = task_ptr->task_stack_ptr + TASK_STACK_SIZE;
+
+	//設定sp
+    task_ptr->task_context_sp = (USR_TASK_CONTEXT_t *)(task_stack_top - 16);
+
+	//設定task的跳轉address
+	task_ptr->task_context_sp->r9_return_lr = (uint32_t) taskFunc;
+	task_ptr->taskCallBack = taskFunc ;
+
+	//設定task的狀態為ready
+    task_ptr->task_status = TASK_READY ;
+
+	//回傳task id
+	return task_ptr->task_id ;
 
 }
 
-
-void schedFuncContextPrepare(void)
+void task_list_insert_from_end(TASK_t *task_node)
 {
-	schedFuncContextSPtr->lr = (uint32_t)sched ;	//跳轉address為 task.c的函式shed()
+	if(task_list_head == NULL){
+		//create the first node
+		kprintf("Create first node\r\n") ;
+		task_node->next_ptr = NULL ;
+		task_node->prev_ptr = NULL ;
+		task_node->task_id = 0 ;
+		task_list_head = task_node ;
+		return ;
+	}
+	kprintf("Not first node\r\n") ;
+	// 不是第一個node
+	// 從head找最後一個node
+	TASK_t *head = task_list_head ;
+	while(head->next_ptr != NULL){
+		head = head->next_ptr ;
+	}
+	TASK_t *end = head ;
+
+	end->next_ptr = task_node ;
+	task_node->prev_ptr = end ;
+	task_node->next_ptr = NULL ;
+	task_node->task_id = end->task_id+1 ;
+	
+}
+
+
+void print_task_id_from_head()
+{
+	TASK_t *head = task_list_head ;
+	while(head->next_ptr != NULL)
+	{
+		kprintf("task id = %d\r\n" ,head->task_id) ;
+		head = head->next_ptr ;
+	}
+	kprintf("task id = %d\r\n" ,head->task_id) ;
 }

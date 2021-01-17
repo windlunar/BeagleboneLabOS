@@ -22,7 +22,7 @@ typedef struct{
     int32_t idxHead ;
     int32_t idxBack ;
     int32_t NumDataInQueue;
-    USERTASK_t *qDataTaskStructPtr[TASK_NUM];  //存放 USERTASK_t 結構指標
+    TASK_t *qDataTaskStructPtr[TASK_NUM];  //存放 TASK_t 結構指標
 
 }QUEUE_TASK_t;
 
@@ -35,8 +35,8 @@ void queueInit(QUEUE_TASK_t *qPtr ,int qSize);
 void queueDelete(QUEUE_TASK_t *qPtr);
 int32_t queueIsEmpty(QUEUE_TASK_t *qPtr);
 int32_t queueIsFull(QUEUE_TASK_t *qPtr);
-int32_t enQueue(QUEUE_TASK_t *qPtr, USERTASK_t *data);
-USERTASK_t *deQueue(QUEUE_TASK_t *qPtr);
+int32_t enQueue(QUEUE_TASK_t *qPtr, TASK_t *data);
+TASK_t *deQueue(QUEUE_TASK_t *qPtr);
 void printDataInQueue(QUEUE_TASK_t *qPtr);
 
 

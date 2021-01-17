@@ -73,7 +73,7 @@ int32_t queueIsFull(QUEUE_TASK_t *qPtr){
  * 作用 : 將data從尾部放入queue
  * 回傳值 : 0代表成功, -1代表失敗(因為queue已經滿了)
 */
-int32_t enQueue(QUEUE_TASK_t *qPtr, USERTASK_t *data)
+int32_t enQueue(QUEUE_TASK_t *qPtr, TASK_t *data)
 {
     if(queueIsFull(qPtr) == 1){
         kprintf("Warning : Can't not put data to queue. Queue is Full. Return -1.\r\n");
@@ -92,14 +92,14 @@ int32_t enQueue(QUEUE_TASK_t *qPtr, USERTASK_t *data)
  * 作用 : 將data從頭部取出
  * 回傳值 : 0代表成功, -1代表失敗(因為queue為空)
 */
-USERTASK_t *deQueue(QUEUE_TASK_t *qPtr)
+TASK_t *deQueue(QUEUE_TASK_t *qPtr)
 {
     if(queueIsEmpty(qPtr) == 1){
         kprintf("Warning : Can't not get data from queue. Queue is Empty. Return -1.\r\n");
         return NULL ;
     }
 
-    USERTASK_t *data = qPtr->qDataTaskStructPtr[qPtr->idxHead] ;
+    TASK_t *data = qPtr->qDataTaskStructPtr[qPtr->idxHead] ;
     qPtr->qDataTaskStructPtr[qPtr->idxHead] = NULL ;
     qPtr->NumDataInQueue--;
 
@@ -126,16 +126,16 @@ void printDataInQueue(QUEUE_TASK_t *qPtr){
         for(int i = 0 ; i<qPtr->NumDataInQueue ;i++){
 
             kprintf("queue[%d] : id=%d ,status=%d\r\n",idx
-            ,qPtr->qDataTaskStructPtr[idx]->taskID
-            ,qPtr->qDataTaskStructPtr[idx]->taskStatus);
+            ,qPtr->qDataTaskStructPtr[idx]->task_id
+            ,qPtr->qDataTaskStructPtr[idx]->task_status);
 
             idx = (idx+1) % (qPtr->size);
         }
 
         kprintf("queue[%d] is the back ,id=%d ,status=%d\r\n" 
         ,qPtr->idxBack
-        ,qPtr->qDataTaskStructPtr[qPtr->idxBack]->taskID
-        ,qPtr->qDataTaskStructPtr[idx]->taskStatus);
+        ,qPtr->qDataTaskStructPtr[qPtr->idxBack]->task_id
+        ,qPtr->qDataTaskStructPtr[idx]->task_status);
         
     }
     kprintf("++++++++++++++++++++++++++++++++++\r\n\r\n");

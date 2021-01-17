@@ -37,13 +37,13 @@ void __yield(uint32_t *usrTaskContextOld){
     // Then change the task satus back to ready
 	for(int32_t id =0 ; id<TASK_NUM; id++)
 	{
-		if(userTask[id].taskStatus == TASK_RUNNING)
+		if(Task[id].task_status == TASK_RUNNING)
 		{
 			// Save old context
-			userTask[id].usrTaskContextSPtr = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+			Task[id].task_context_sp = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
 
 			// Change the task status to ready
-			userTask[id].taskStatus = TASK_READY ;
+			Task[id].task_status = TASK_READY ;
 			break ;
 		}
 	}
