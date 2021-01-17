@@ -27,7 +27,7 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
 
 void  __print_hello(uint32_t input)
 {
-    kprintf("Hello! This is my first system call,In put value =%d\r\n" ,input) ;
+    kprintf("Hello! This is my first system call,Input value =%d\r\n" ,input) ;
     //readCpsrMode();
 
 }
