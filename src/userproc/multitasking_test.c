@@ -10,7 +10,7 @@ void usertask0(void){
 
 	int k = 0 ;
 	int tid = 0 ;
-	while(1)
+	while(k<100)
 	{	
 		syscall_get_tid(&tid) ;	
 		kprintf("Task 0 #%d ,task id=%d\r\n" ,k ,tid);
@@ -30,17 +30,18 @@ void usertask1(void){
 
 	int k = 0 ;
 	int tid = 0 ;
-	while(1)
+	while(k<100)
 	{
 		syscall_get_tid(&tid) ;	
 		kprintf("Task 1 #%d ,task id=%d\r\n" ,k ,tid);
 		//readCpsrMode();
-    	syscall_print_hello(&k);
+    	//syscall_print_hello(&k);
 		//syscall_yield() ;			
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
+	syscall_exit();
 }
 
 void usertask2(void){
@@ -48,17 +49,18 @@ void usertask2(void){
 
 	int k = 0 ;
 	int tid = 0 ;
-	while(1)
+	while(k<100)
 	{
 		syscall_get_tid(&tid) ;	
 		kprintf("Task 2 #%d ,task id=%d\r\n" ,k ,tid);
 		//readCpsrMode();
     	//syscall_print_hello();	
-		syscall_yield() ;			
+		//syscall_yield() ;			
 		//readCpsrMode();
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
+	syscall_exit();
 }
 
 void usertask3(void){
@@ -67,7 +69,7 @@ void usertask3(void){
 	int k = 0 ;
 	int tid = 0 ;
 
-	while(1)
+	while(k<100)
 	{
 		syscall_get_tid(&tid) ;	
 		kprintf("Task 3 #%d ,task id=%d\r\n" ,k ,tid);
@@ -78,6 +80,7 @@ void usertask3(void){
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
+	syscall_exit();
 }
 
 
@@ -98,6 +101,7 @@ void usertask4(void){
 		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
+	//syscall_exit();
 }
 
 

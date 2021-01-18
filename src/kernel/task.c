@@ -31,7 +31,7 @@ void sched(void)
 		{
 			TASK_t *origin_head = task_ready_queue_head ;
 
-			//dequeue task
+			//dequeue task ,回傳值目前不需要用到
 			TASK_t *r = task_dequeue() ;
 
 			//And the put it to back ,and set it to running
@@ -177,5 +177,5 @@ void print_task_id_from_head()
 		kprintf("task id = %d\r\n" ,head->task_id) ;
 		head = head->next_ptr ;
 	}
-	kprintf("task id = %d\r\n" ,head->task_id) ;
+	kprintf("task id = %d\r\n\r\n" ,head->task_id) ;
 }

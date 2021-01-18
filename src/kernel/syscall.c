@@ -8,7 +8,9 @@
 
 
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
-void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args){
+void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args)
+{
+    //kprintf("syscall_id=%d\r\n",syscall_id) ;
     switch (syscall_id)
     {
     case SYSCALL_ID_print_hello:
@@ -68,11 +70,13 @@ void __get_tid(uint32_t *tid_return)
 // 將task設定為 terminate
 void __exit()
 {
+    kprintf("in exit\r\n") ;
     curr_running_task->task_status = TASK_TERMINATE ;
 
-    //從queue中移除暫時在sched的else裡作
-    task_dequeue(curr_running_task) ;
+    //從queue中移除
+    remove_from_readylist(curr_running_task) ;
 
+    //釋放空間
     MEM_PART_INFO_t *curr_mpinfo = which_mem_part(curr_running_task->task_stack_ptr) ;
     free_part_mem(curr_mpinfo) ;
     

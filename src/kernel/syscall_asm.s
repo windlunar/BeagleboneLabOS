@@ -80,6 +80,14 @@ syscall_exit:
 	push {r0 ,r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_exit
+/************************************************************************************************/
+	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+	
+	mov		r0 ,#(ostick_msec)
+	bl 		reloadOsTick
+
+	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+/************************************************************************************************/
 	svc 0x00
 	pop	{r0 ,r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR

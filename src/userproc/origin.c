@@ -25,4 +25,8 @@ void main_origin()
 	for(int32_t i =0 ;i<5 ;i++) task_enqueue(&Task[i]) ; 
 
 	for(;;) ;
+	
+	//結束程式
+	syscall_exit();
+	
 }
