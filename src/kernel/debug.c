@@ -142,6 +142,56 @@ void mem_part_alloc_free_test()
 
     uint32_t *p= kmalloc(4) ;
     kprintf("Part's start addr =%p\r\n" ,mem_part2->part_mem_start_ptr) ;
-    kprintf("Part's available_ptr addr =%p\r\n",mem_part2->available_ptr) ;
+    kprintf("Part's blk_head_ptr addr =%p\r\n",mem_part2->blk_head_ptr) ;
 
+}
+
+
+void mem_part_blk_init_test()
+{
+	print_free_part_list_from_head();
+
+	kprintf("Test alloc\r\n") ;
+
+	MEM_PART_INFO_t *mem_part = alloc_one_mem_part() ;
+
+	print_free_part_list_from_head();
+	print_inuse_part_list_from_head();
+
+    memblks_init(mem_part ,28) ;
+    kprintf("Part's blk_head_ptr addr =%p\r\n",mem_part->blk_head_ptr) ;
+
+    uint32_t *head = mem_part->blk_head_ptr ;
+    while(head != NULL)
+    {
+        kprintf("Part's blks link addr =%p ,%x\r\n",head ,*head) ;
+        head = (uint32_t *)*head ;
+    }
+    kprintf("Part's blks link addr =%p\r\n",head) ;
+
+    uint32_t *p1 = blk_alloc(mem_part) ;
+    kprintf("return ptr =%p\r\n" ,p1) ;
+    kprintf("blk head =%p\r\n",mem_part->blk_head_ptr) ;
+
+    uint32_t *p2 = blk_alloc(mem_part) ;
+    kprintf("return ptr =%p\r\n" ,p2) ;
+    kprintf("blk head =%p\r\n",mem_part->blk_head_ptr) ;
+
+
+    kprintf("Test free_blk\r\n") ;
+    free_blk(p2) ;
+    print_from_blk_head(mem_part) ;
+
+}
+
+
+void print_from_blk_head(MEM_PART_INFO_t *mem_part)
+{
+    uint32_t *blkstart = mem_part->blk_head_ptr ;
+
+    while(*blkstart != 0)
+    {
+        kprintf("addr=%p ,content=%x\r\n",blkstart ,*blkstart) ;
+        blkstart = (uint32_t *)*blkstart ;
+    }
 }

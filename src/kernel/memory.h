@@ -40,7 +40,8 @@ struct PART_INFO{
     uint32_t part_id ;
     uint32_t *part_mem_start_ptr ;
 
-    uint8_t *available_ptr ; //在 page中可用的起始位址
+    uint32_t *blk_head_ptr ; //在memory part(page)中可用的起始位址 head
+    uint32_t blksize ;
 };
 
 typedef struct PART_INFO MEM_PART_INFO_t ;
@@ -51,20 +52,32 @@ extern MEM_PART_INFO_t parts_list[TOTAL_PART_NUM] ;
 /***********************************************************************************************/
 // Functions
 /***********************************************************************************************/
-
+//主要
 void mem_parts_list_init();
 MEM_PART_INFO_t *alloc_one_mem_part(void);
 void free_part_mem(MEM_PART_INFO_t *part_node);
+
+//次要
 void add_to_free_list_end(MEM_PART_INFO_t *part_node);
 void insert_to_inuse_list(MEM_PART_INFO_t *part_node);
 void delete_from_inuse_list(MEM_PART_INFO_t *part_node);
 void clean_part_mem_content(void *start);
 
 /***********************************************************************************************/
+// alloc block
+/***********************************************************************************************/
+//主要
+MEM_PART_INFO_t * memblks_init(MEM_PART_INFO_t *mpinfo ,uint32_t blk_size);
+void *blk_alloc(MEM_PART_INFO_t *mpinfo);
+void free_blk(void *blk_aval_start);
+
+//次要
+MEM_PART_INFO_t *which_mem_part(uint32_t *address);
+void put_to_blklist_end(uint32_t *blkstart);
+/***********************************************************************************************/
 // alloc 小塊記憶體相關function
-// 感覺應該要在把1個part的記憶體空間在切成一小塊一小塊的block
 /***********************************************************************************************/
 void *kmalloc(uint32_t size_in_bytes);
 void kfree(void *p);
-
+/***********************************************************************************************/
 #endif

@@ -28,5 +28,7 @@ void print_free_part_list_from_head();
 void print_free_part_list_from_end();
 void print_inuse_part_list_from_head();
 void mem_part_alloc_free_test();
+void mem_part_blk_init_test();
+void print_from_blk_head(MEM_PART_INFO_t *mem_part);
 
 #endif

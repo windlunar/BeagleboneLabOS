@@ -76,8 +76,11 @@ int kernal_entry(void)
  * For test
 *************************************************************************************************/
 	mem_parts_list_init();
-	mem_part_alloc_free_test();
-	print_task_id_from_head();
+	
+	
+	//mem_part_alloc_free_test();
+	mem_part_blk_init_test();
+	//print_task_id_from_head();
 
 
 	//for(;;) ;
