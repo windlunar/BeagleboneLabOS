@@ -48,31 +48,19 @@ int kernal_entry(void)
 
 	kprintf("Init Timer0 to switch tasks.\r\n");
 
-	//timer_init(DMTIMER2_BASE_PTR_t ,1000);
-	//enableTimerAndBindISR(IRQ_NUM_TIMER2 ,timer2_ISR);
-
-	//kprintf("Init Timer2.\r\n");
-
 /*************************************************************************************************
- * Init Task Origin
+ * Init Task First thread :Origin
  *************************************************************************************************/
-
-	for(int32_t id =0 ;id<TASK_NUM_MAX ;id++)
-	{
-		Task[id].task_context_sp = NULL ;
-	}
-
-	TaskCreate(&Task[0] ,&usertask0 ,task_stack[0]);
-	TaskCreate(&Task[1] ,&usertask1 ,task_stack[1]);
-	TaskCreate(&Task[2] ,&usertask2 ,task_stack[2]);
-	TaskCreate(&Task[3] ,&usertask3 ,task_stack[3]);
-	TaskCreate(&Task[4] ,&usertask4 ,task_stack[4]);
-
-	//Init Task queue
+	//Init task ready queue
 	queueInit(&taskReadyQ ,TASK_NUM_MAX) ;
-	for(int32_t id =0 ;id<TASK_NUM_MAX ;id++) enQueue(&taskReadyQ, &Task[id]);
 
-	kprintf("Init Tasks.\r\n");
+	//Init the first thread
+	taskCreate(&task_origin ,&main_origin ,task_origin_stack) ;
+
+	//enqueue the first thread's info structure
+	enQueue(&taskReadyQ, &task_origin);
+
+	kprintf("Init Tasks Origin.\r\n");
 
 /*************************************************************************************************
  * Init memory-part lists

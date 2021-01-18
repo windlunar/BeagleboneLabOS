@@ -3,8 +3,10 @@
 #include "../klib/queue.h"
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
-TASK_t Task[TASK_NUM_MAX] ;
-uint32_t task_stack[TASK_NUM_MAX][TASK_STACK_SIZE] ;
+//TASK_t Task[TASK_NUM_MAX] ;
+//uint32_t task_stack[TASK_NUM_MAX][TASK_STACK_SIZE] ;
+TASK_t task_origin ;
+uint32_t task_origin_stack[TASK_STACK_SIZE] ;
 TASK_t *task_list_head = NULL;
 TASK_t *curr_running_task = NULL ;
 
@@ -56,7 +58,7 @@ void schedFuncContextPrepare(void)
 // arg2 : task 結構體
 // arg3 : user task function pointer
 // arg4 : user task的 stack起始位址(low addr)
-uint32_t TaskCreate(TASK_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack){
+uint32_t taskCreate(TASK_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack){
 	/* Initialization of process stack.
 	 * r0 ,r1 ,r2 ,r3 ,r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr 
      * 

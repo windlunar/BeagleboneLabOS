@@ -6,6 +6,7 @@
 #include "../kernel/task.h"
 #include "../kernel/syscall.h"
 
+void main_origin(void) ;
 
 void usertask0(void);
 void usertask1(void);

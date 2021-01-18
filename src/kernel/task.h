@@ -12,7 +12,7 @@
 #define TASK_READY      1
 
 #define TASK_STACK_SIZE 256
-#define TASK_NUM_MAX 5
+#define TASK_NUM_MAX 32
 
 
 /***********************************************************************************************/
@@ -118,8 +118,10 @@ typedef struct _TASK TASK_t ;
 extern TASK_t *task_list_head;
 /***********************************************************************************************/
 
-extern TASK_t Task[TASK_NUM_MAX] ;
-extern uint32_t task_stack[TASK_NUM_MAX][TASK_STACK_SIZE] ;
+//extern TASK_t Task[TASK_NUM_MAX] ;
+//extern uint32_t task_stack[TASK_NUM_MAX][TASK_STACK_SIZE] ;
+extern TASK_t task_origin ;
+extern uint32_t task_origin_stack[TASK_STACK_SIZE] ;
 extern TASK_t *curr_running_task ;
 /***********************************************************************************************/
 void sched(void);
@@ -128,7 +130,7 @@ extern void _call_sched(uint32_t schedContext) ;    //定義在task_asm.s
 void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
 
 
-uint32_t TaskCreate(TASK_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack);
+uint32_t taskCreate(TASK_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack);
 void task_list_insert_from_end(TASK_t *task_node) ;
 void print_task_id_from_head() ;
 
