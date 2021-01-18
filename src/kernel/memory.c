@@ -20,8 +20,9 @@ void mem_parts_list_init()
     {
         parts_list[i].part_status = FREE ; 
         parts_list[i].part_id = i ;
-        parts_list[i].part_mem_start_ptr = FIRST_PART_PTR + i*1024 ;
-        parts_list[i].blk_head_ptr = (uint32_t *)parts_list[i].part_mem_start_ptr ;
+        parts_list[i].mempart_start_ptr = FIRST_PART_PTR + i*1024 ;
+        parts_list[i].blk_head_ptr = (uint32_t *)parts_list[i].mempart_start_ptr ;
+        parts_list[i].mempart_top_ptr = parts_list[i].mempart_start_ptr + 1024 -1 ;
         parts_list[i].blksize = 0 ; //0 means blks not init
 
         if(i == TOTAL_PART_NUM-1){
@@ -294,7 +295,7 @@ MEM_PART_INFO_t *which_mem_part(uint32_t *address)
     MEM_PART_INFO_t *part_head = inuse_part_list_head ;
     while(part_head->next_ptr != NULL)
     {
-        if(part_head->part_mem_start_ptr == mempart) break ;
+        if(part_head->mempart_start_ptr == mempart) break ;
         part_head = part_head->next_ptr ;
     }
     MEM_PART_INFO_t *target = part_head ;

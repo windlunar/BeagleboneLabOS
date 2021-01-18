@@ -38,7 +38,8 @@ struct PART_INFO{
     struct PART_INFO *prev_ptr ;
     uint32_t part_status;
     uint32_t part_id ;
-    uint32_t *part_mem_start_ptr ;
+    uint32_t *mempart_start_ptr ;
+    uint32_t *mempart_top_ptr ;
 
     uint32_t *blk_head_ptr ; //在memory part(page)中可用的起始位址 head
     uint32_t blksize ;

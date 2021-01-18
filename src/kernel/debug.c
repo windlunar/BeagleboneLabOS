@@ -75,7 +75,7 @@ void print_free_part_list_from_head()
     //Just print first 10 nodes for test
     kprintf("Print free list from head\r\n");
     for(int i =0 ;i<10;i++){
-        kprintf("%p  ",head->part_mem_start_ptr) ;
+        kprintf("%p  ",head->mempart_start_ptr) ;
         kprintf("mem part id:%d  ",head->part_id) ;
         kprintf("mem part status:%d\r\n",head->part_status) ;
         head = head->next_ptr ;
@@ -95,7 +95,7 @@ void print_free_part_list_from_end()
     //Just print first 10 nodes for test
     kprintf("Print free list from end\r\n");
     for(int i =0 ;i<10;i++){
-        kprintf("%p  ",end->part_mem_start_ptr) ;
+        kprintf("%p  ",end->mempart_start_ptr) ;
         kprintf("mem part id:%d  ",end->part_id) ;
         kprintf("mem part status:%d\r\n",end->part_status) ;
         end = end->prev_ptr ;
@@ -110,7 +110,7 @@ void print_inuse_part_list_from_head()
     //Just print first 10 nodes for test
     kprintf("Print inuse list\r\n");
     for(int i =0 ;i<10;i++){
-        kprintf("%p  ",head->part_mem_start_ptr) ;
+        kprintf("%p  ",head->mempart_start_ptr) ;
         kprintf("mem part id:%d  ",head->part_id) ;
         kprintf("mem part status:%d\r\n",head->part_status) ;
 
@@ -141,10 +141,10 @@ void mem_part_alloc_free_test()
 	print_inuse_part_list_from_head();   
 
     kprintf("Part's blk_head_ptr addr =%p\r\n",mem_part2->blk_head_ptr) ;
-    
+
     uint32_t *p= kmalloc() ;
     kprintf("p =%p\r\n" ,p) ;
-    kprintf("Part's start addr =%p\r\n" ,mem_part2->part_mem_start_ptr) ;
+    kprintf("Part's start addr =%p\r\n" ,mem_part2->mempart_start_ptr) ;
     kprintf("Part's blk_head_ptr addr =%p\r\n",mem_part2->blk_head_ptr) ;
 
 }
