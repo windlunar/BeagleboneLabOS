@@ -3,8 +3,8 @@
 #include "../klib/queue.h"
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
-TASK_t Task[TASK_NUM] ;
-uint32_t task_stack[TASK_NUM][TASK_STACK_SIZE] ;
+TASK_t Task[TASK_NUM_MAX] ;
+uint32_t task_stack[TASK_NUM_MAX][TASK_STACK_SIZE] ;
 TASK_t *task_list_head = NULL;
 TASK_t *curr_running_task = NULL ;
 
@@ -35,6 +35,8 @@ void sched(void)
 			//And the put it to back ,and set it to running
 			enQueue(&taskReadyQ ,TaskStructPtr) ;
 			TaskStructPtr->task_status = TASK_RUNNING ;
+
+			//設定 現在正在 running 的 task結構
 			curr_running_task = TaskStructPtr ;
 
 			//Switch to user mode and run the task

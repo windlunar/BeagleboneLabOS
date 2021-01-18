@@ -22,7 +22,7 @@ typedef struct{
     int32_t idxHead ;
     int32_t idxBack ;
     int32_t NumDataInQueue;
-    TASK_t *qDataTaskStructPtr[TASK_NUM];  //存放 TASK_t 結構指標
+    TASK_t *qDataTaskStructPtr[TASK_NUM_MAX];  //存放 TASK_t 結構指標
 
 }QUEUE_TASK_t;
 

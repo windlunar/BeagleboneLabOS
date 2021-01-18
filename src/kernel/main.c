@@ -9,7 +9,7 @@
 #include "../common.h"
 #include "../driver/uart.h"
 #include "../klib/print.h"
-#include "../userproc/user_task.h"
+#include "../userproc/usrtasks.h"
 #include "syscall.h"
 #include "debug.h"
 #include "task.h"
@@ -54,10 +54,10 @@ int kernal_entry(void)
 	//kprintf("Init Timer2.\r\n");
 
 /*************************************************************************************************
- * Init Tasks 
+ * Init Task Origin
  *************************************************************************************************/
 
-	for(int32_t id =0 ;id<TASK_NUM ;id++)
+	for(int32_t id =0 ;id<TASK_NUM_MAX ;id++)
 	{
 		Task[id].task_context_sp = NULL ;
 	}
@@ -69,28 +69,30 @@ int kernal_entry(void)
 	TaskCreate(&Task[4] ,&usertask4 ,task_stack[4]);
 
 	//Init Task queue
-	queueInit(&taskReadyQ ,TASK_NUM) ;
-	for(int32_t id =0 ;id<TASK_NUM ;id++) enQueue(&taskReadyQ, &Task[id]);
+	queueInit(&taskReadyQ ,TASK_NUM_MAX) ;
+	for(int32_t id =0 ;id<TASK_NUM_MAX ;id++) enQueue(&taskReadyQ, &Task[id]);
+
+	kprintf("Init Tasks.\r\n");
+
+/*************************************************************************************************
+ * Init memory-part lists
+*************************************************************************************************/
+
+	mem_parts_list_init();
 
 /*************************************************************************************************
  * For test
 *************************************************************************************************/
-	mem_parts_list_init();
-	
-	
+
 	//mem_part_alloc_free_test();
-	mem_part_blk_init_test();
+	//mem_part_blk_init_test();
 	//print_task_id_from_head();
 
 
 	//for(;;) ;
 
-
-
 /*************************************************************************************************/
-
-	kprintf("Init Tasks.\r\n");
-	kprintf("Tasks Starting...\r\n");
+	kprintf("Sched Starting...\r\n");
 
 	//設定要跳進去sched()的context
 	schedFuncContextPrepare();

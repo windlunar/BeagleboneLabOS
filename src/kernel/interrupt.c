@@ -218,19 +218,12 @@ void timer0_ISR(uint32_t *usrTaskContextOld)
 	(DMTIMER0_BASE_PTR_t->IRQSTATUS) = (1 << 1);
 	usrLedToggle(3);
 
-	for(int32_t id =0 ; id<TASK_NUM; id++)
-	{
-		if(Task[id].task_status == TASK_RUNNING)
-		{
-			// Save old context
-			Task[id].task_context_sp = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+	// Save old context
+	curr_running_task->task_context_sp = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
 
-			// Change the task status to ready
-			Task[id].task_status = TASK_READY ;
-			curr_running_task = NULL ;
-			break ;
-		}
-	}
+	// Change the task status to ready
+	curr_running_task->task_status = TASK_READY ;
+	curr_running_task = NULL ;
 
 	//prepare sched() context
 	schedFuncContextPrepare();

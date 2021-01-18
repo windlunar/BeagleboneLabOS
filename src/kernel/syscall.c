@@ -36,21 +36,14 @@ void  __print_hello(uint32_t input)
 
 }
 
-void __yield(uint32_t *usrTaskContextOld){
-    // check which task's status is running
-    // Then change the task satus back to ready
-	for(int32_t id =0 ; id<TASK_NUM; id++)
-	{
-		if(Task[id].task_status == TASK_RUNNING)
-		{
-			// Save old context
-			Task[id].task_context_sp = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+void __yield(uint32_t *usrTaskContextOld)
+{
+	// Save old context
+	curr_running_task->task_context_sp = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
 
-			// Change the task status to ready
-			Task[id].task_status = TASK_READY ;
-			break ;
-		}
-	}
+	// Change the task status to ready
+	curr_running_task->task_status = TASK_READY ;
+	curr_running_task = NULL ;
 
 	//prepare sched() context
 	schedFuncContextPrepare();

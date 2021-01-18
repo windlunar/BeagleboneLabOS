@@ -148,7 +148,7 @@ void delete_from_inuse_list(MEM_PART_INFO_t *part_node)
 }
 
 
-void clean_part_mem_content(void *start)
+void clean_mem_part_content(void *start)
 {
     uint32_t *startPtr = (uint32_t *)start ;
 
@@ -159,6 +159,38 @@ void clean_part_mem_content(void *start)
     }
 }
 
+
+uint32_t aleast_a_mempart_alloc(void)
+{
+    if(inuse_part_list_head == NULL){
+        return FALSE ;
+    }else{
+        return TRUE ;
+    }
+}
+
+MEM_PART_INFO_t *find_mpinfo_end(MEM_PART_INFO_t *headnode)
+{
+    MEM_PART_INFO_t *head =headnode ;
+    while(head != NULL){
+        head = head->next_ptr ;
+    }
+    return head ;
+}
+
+
+MEM_PART_INFO_t *find_aval_inuse_mempart(void)
+{
+    MEM_PART_INFO_t *head = inuse_part_list_head ;
+
+    while(head != NULL){
+        if(head->part_status = INUSE_PARTIALLY_FREE){
+            return head;
+        }
+        head = head->next_ptr ;
+    }
+    return NULL ;
+}
 
 /***********************************************************************************************/
 //Blocks
@@ -237,6 +269,16 @@ void *blk_alloc(MEM_PART_INFO_t *mpinfo)
         return mpinfo->blk_head_ptr+1 ;        
     }
 
+    if(mpinfo->blk_head_ptr == NULL){
+        mpinfo->part_status = INUSE_FULL ;
+
+        mpinfo = alloc_one_mem_part();
+        mpinfo = memblks_init(mpinfo ,32) ;
+        void *ptr_return = (void *)(mpinfo->blk_head_ptr + 1) ;
+        mpinfo->blk_head_ptr = (uint32_t *)*mpinfo->blk_head_ptr ;
+
+        return mpinfo->blk_head_ptr+1 ;
+    }
     void *ptr_return = (void *)(mpinfo->blk_head_ptr + 1) ;
     mpinfo->blk_head_ptr = (uint32_t *)*mpinfo->blk_head_ptr ;
 
@@ -269,6 +311,8 @@ uint32_t *find_prev_blk(MEM_PART_INFO_t *mempart ,uint32_t *blk_start)
     return prevblk ;
 }
 
+
+
 void put_to_blklist_end(uint32_t *blkstart){
 
     uint32_t *start = blkstart ;
@@ -299,44 +343,72 @@ void free_blk(void *blk_aval_start)
     put_to_blklist_end(blk_start) ;
 }
 
-
-/***********************************************************************************************/
-// alloc 小塊記憶體相關function
-/***********************************************************************************************/
-void *kmalloc(uint32_t size_in_bytes)
+uint32_t is_blk_init(MEM_PART_INFO_t *mpinfo)
 {
-    MEM_PART_INFO_t *curr = inuse_part_list_head ;
-
-    //遍尋inuse_list先看 inuse的page還有沒有空閒的空間
-    while(curr != NULL){
-        //有可用空間
-        if(curr->part_status == INUSE_PARTIALLY_FREE){
-            //設定返回 ptr
-            void * rtn_start_ptr = (void *)(curr->blk_head_ptr) ; 
-
-            //判斷剩餘空間夠不夠
-            uint32_t avail_size = (uint32_t)curr->part_mem_start_ptr+PART_SIZE - (uint32_t)curr->blk_head_ptr ;
-            if(avail_size == 0) curr->part_status == INUSE_FULL ;
-            if(avail_size < size_in_bytes) break ;
-           
-            //移動可用空間的ptr
-            inuse_part_list_head->blk_head_ptr += size_in_bytes ;
-            return rtn_start_ptr ;
-        }
-
-        curr = curr->next_ptr ;
+    if(mpinfo->blksize <= 4){
+        return FALSE ;
+    }else{
+        return TRUE ;
     }
-
-    //沒有可用空間則直接分配一個part
-    MEM_PART_INFO_t *mem_part = alloc_one_mem_part() ;
-
-    return (void *)mem_part->blk_head_ptr ;
 }
 
 
 
+/***********************************************************************************************/
+// alloc 小塊記憶體相關function
+// 都沒空間的話,要先呼叫 
+// mem_parts_list_init()
+// alloc_one_mem_part()
+// memblks_init();
+// blk_alloc() ;
+/***********************************************************************************************/
+void *demand_a_blk()
+{
+    MEM_PART_INFO_t *mpinfo ;
+    // 尚未 alloc 一個 mem part
+    if(aleast_a_mempart_alloc() == FALSE)
+    {
+        mpinfo = alloc_one_mem_part() ;
+        mpinfo = memblks_init(mpinfo ,60);
+        void *p = blk_alloc(mpinfo);
+        return p ;
+    }
+
+    //已經至少alloc過一個part
+    mpinfo = find_aval_inuse_mempart();
+
+    //沒有可用的 mem part
+    //預設1個block 64bytes(前4個用作blks linklist指標)
+    if(mpinfo == NULL){
+        mpinfo = alloc_one_mem_part() ;
+        mpinfo = memblks_init(mpinfo ,DEFAULT_AVAL_BLK_SIZE);  
+        void *p = blk_alloc(mpinfo);
+        return p ;
+    }
+
+    //有可用的 mem part
+    //判斷有無 init blocks
+    if(is_blk_init(mpinfo) == FALSE)
+    {
+        mpinfo = memblks_init(mpinfo ,DEFAULT_AVAL_BLK_SIZE);
+        void *p = blk_alloc(mpinfo);
+        return p ;       
+    }
+
+    void *p = blk_alloc(mpinfo);
+    return p ;  
+
+}
+
+
+void *kmalloc(void)
+{
+    return demand_a_blk() ;
+}
+
+
 void kfree(void *p){
-    //Not implement Yet.
+    free_blk(p) ;
 }
 
 /***********************************************************************************************/

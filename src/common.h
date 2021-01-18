@@ -2,6 +2,9 @@
 #ifndef __COMMON_H_
 #define __COMMON_H_
 
+
+#define FALSE	0
+#define TRUE	1
 /************************************************************************************************/
 
 typedef unsigned char uint8  ;

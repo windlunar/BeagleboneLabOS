@@ -61,23 +61,33 @@ void free_part_mem(MEM_PART_INFO_t *part_node);
 void add_to_free_list_end(MEM_PART_INFO_t *part_node);
 void insert_to_inuse_list(MEM_PART_INFO_t *part_node);
 void delete_from_inuse_list(MEM_PART_INFO_t *part_node);
-void clean_part_mem_content(void *start);
+void clean_mem_part_content(void *start);
 
+uint32_t aleast_a_mempart_alloc(void) ;
+MEM_PART_INFO_t *find_mpinfo_end(MEM_PART_INFO_t *headnode);
+MEM_PART_INFO_t *find_aval_inuse_mempart(void);
 /***********************************************************************************************/
 // alloc block
 /***********************************************************************************************/
+#define DEFAULT_BLK_SIZE    64
+#define DEFAULT_AVAL_BLK_SIZE   DEFAULT_BLK_SIZE-4
+
 //主要
 MEM_PART_INFO_t * memblks_init(MEM_PART_INFO_t *mpinfo ,uint32_t blk_size);
 void *blk_alloc(MEM_PART_INFO_t *mpinfo);
+void *demand_a_blk();
 void free_blk(void *blk_aval_start);
 
 //次要
 MEM_PART_INFO_t *which_mem_part(uint32_t *address);
+uint32_t *find_prev_blk(MEM_PART_INFO_t *mempart ,uint32_t *blk_start);
 void put_to_blklist_end(uint32_t *blkstart);
+uint32_t is_blk_init(MEM_PART_INFO_t *mpinfo) ;
 /***********************************************************************************************/
 // alloc 小塊記憶體相關function
 /***********************************************************************************************/
-void *kmalloc(uint32_t size_in_bytes);
+
+void *kmalloc(void);
 void kfree(void *p);
 /***********************************************************************************************/
 #endif

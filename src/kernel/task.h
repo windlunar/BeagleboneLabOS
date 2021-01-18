@@ -12,7 +12,7 @@
 #define TASK_READY      1
 
 #define TASK_STACK_SIZE 256
-#define TASK_NUM 5
+#define TASK_NUM_MAX 5
 
 
 /***********************************************************************************************/
@@ -118,8 +118,8 @@ typedef struct _TASK TASK_t ;
 extern TASK_t *task_list_head;
 /***********************************************************************************************/
 
-extern TASK_t Task[TASK_NUM] ;
-extern uint32_t task_stack[TASK_NUM][TASK_STACK_SIZE] ;
+extern TASK_t Task[TASK_NUM_MAX] ;
+extern uint32_t task_stack[TASK_NUM_MAX][TASK_STACK_SIZE] ;
 extern TASK_t *curr_running_task ;
 /***********************************************************************************************/
 void sched(void);
