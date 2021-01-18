@@ -58,7 +58,7 @@ int kernal_entry(void)
 	taskCreate(&task_origin ,&main_origin ,task_origin_stack) ;
 
 	//enqueue the first thread's info structure
-	enQueue(&taskReadyQ, &task_origin);
+	task_enqueue(&task_origin) ;
 
 	kprintf("Init Tasks Origin.\r\n");
 

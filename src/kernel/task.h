@@ -10,10 +10,11 @@
 /***********************************************************************************************/
 #define TASK_RUNNING    0
 #define TASK_READY      1
+#define TASK_TERMINATE  2
 
+/***********************************************************************************************/
 #define TASK_STACK_SIZE 256
 #define TASK_NUM_MAX 32
-
 
 /***********************************************************************************************/
 
@@ -115,7 +116,7 @@ struct _TASK
 
 };
 typedef struct _TASK TASK_t ;
-extern TASK_t *task_list_head;
+extern TASK_t *task_ready_queue_head;
 /***********************************************************************************************/
 
 //extern TASK_t Task[TASK_NUM_MAX] ;
@@ -131,7 +132,9 @@ void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會�
 
 
 uint32_t taskCreate(TASK_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack);
-void task_list_insert_from_end(TASK_t *task_node) ;
+void task_enqueue(TASK_t *task_node) ;
+TASK_t *task_dequeue() ;
+void remove_from_readylist(TASK_t *task_node);
 void print_task_id_from_head() ;
 
 /***********************************************************************************************/

@@ -22,7 +22,7 @@ void main_origin()
 	taskCreate(&Task[4] ,&usertask4 ,stack_4->mempart_top_ptr);
 
 	//Init Task queue
-	for(int32_t i =0 ;i<5 ;i++) enQueue(&taskReadyQ, &Task[i]);
+	for(int32_t i =0 ;i<5 ;i++) task_enqueue(&Task[i]) ; 
 
-	for(;;);
+	for(;;) ;
 }

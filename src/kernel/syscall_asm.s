@@ -21,6 +21,7 @@
 .equ	 SYSCALL_ID_print_hello ,   1
 .equ	 SYSCALL_ID_yield ,   		2
 .equ	 SYSCALL_ID_get_tid	,		3
+.equ	 SYSCALL_ID_exit	,		4
 
 
 .global syscall_print_hello; 
@@ -72,5 +73,15 @@ syscall_get_tid:
 	bx lr	//返回 user proc
 	
 
-
+.global syscall_exit; 
+.align	4
+syscall_exit:
+	//保存傳入參數
+	push {r0 ,r2 ,lr}
+	mov	r2 ,r0
+	mov r0, #SYSCALL_ID_exit
+	svc 0x00
+	pop	{r0 ,r2 ,lr}
+	msr     CPSR_c, #CPSR_M_USR
+	bx lr	//返回 user proc
 
