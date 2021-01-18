@@ -11,8 +11,7 @@ TASK_t *curr_running_task = NULL ;
 int32_t taskid = -1 ;
 
 //每個陣列皆為一個指標, 指向該函式起始位置
-QUEUE_TASK_t taskReadyQ ;
-
+int32_t task_origin_end =FALSE;
 
 
 // 如果 _yield ,timer interrupt ,都從sched開始執行的話?
@@ -21,28 +20,56 @@ void sched(void)
 {
 	//Return from user mode(context switch through timer irq) 
 	//,and set the task status to READY
-	kprintf("In kernel\r\n\r\n") ;
+	//kprintf("In kernel\r\n\r\n") ;
 
 	//choose a task to run
 	for(;;)
 	{
-		//判斷 head是否 Ready
-		if(task_ready_queue_head->task_status == TASK_READY)
-		{
-			TASK_t *origin_head = task_ready_queue_head ;
+/*************************************************************************************************/
+//
+/*************************************************************************************************
+		if(task_ready_queue_head == NULL){
+
+			kprintf("There is no task in ready queue.\r\n") ;
+			kprintf("So get the task 'Origin' ready.\r\n") ;
+			kprintf("The task 'Origin' may enter the finite loop.\r\n") ;
+
+			task_enqueue(&task_origin) ;
+			(&task_origin)->task_status = TASK_READY ;
+			task_origin_end = FALSE ;
+
+		}else if(task_origin_end == TRUE){
+
+			if((&task_origin)->task_status == TASK_READY){
+				kprintf("Suspend task 'Origin'\r\n") ;
+				remove_from_readylist(&task_origin) ;
+
+				(&task_origin)->task_status = TASK_SUSPEND ;
+			}
+
+		}else if(task_ready_queue_head->task_id != 0){
+
+			task_origin_end = TRUE ;
+		}
+*************************************************************************************************/
+
+
+		//將task 從ready list 的 head 拿出 ,然後執行 TaskRun,切換到user mode跑task
+		if(task_ready_queue_head->task_status == TASK_READY){
+			TASK_t *_head = task_ready_queue_head ;
 
 			//dequeue task ,回傳值目前不需要用到
 			TASK_t *r = task_dequeue() ;
 
 			//And the put it to back ,and set it to running
-			task_enqueue(origin_head) ;
-			origin_head->task_status = TASK_RUNNING ;
+			task_enqueue(_head) ;
+			_head->task_status = TASK_RUNNING ;
 
 			//設定 現在正在 running 的 task結構
-			curr_running_task = origin_head ;
+			curr_running_task = _head ;
 
 			//Switch to user mode and run the task
-			TaskRun((uint32_t *)origin_head->task_context_sp) ;
+			TaskRun((uint32_t *)_head->task_context_sp) ;
 		}
 	}
 }
@@ -150,10 +177,21 @@ TASK_t *task_dequeue()
 
 void remove_from_readylist(TASK_t *task_node)
 {
+	if(task_node ==NULL){
+		return ;
+	}
+
+	//list沒有node
 	if(task_ready_queue_head == NULL){
 		kprintf("Task queue is empty\r\n") ;
 		return;		
 	}
+
+	//list中只有自己
+	if(task_ready_queue_head->next_ptr == NULL){
+		task_ready_queue_head = NULL ;
+	}
+
 	TASK_t *prev = task_node->prev_ptr ;
 	TASK_t *next = task_node->next_ptr ;
 

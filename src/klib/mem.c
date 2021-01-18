@@ -31,3 +31,17 @@ void _showMem(void *start ,uint32_t SizeofBytes)
         startPtr += 1 ;
     }    
 }
+
+
+void _memcpy(void *dest ,void *src ,uint32_t nbytes)
+{
+    uint8_t *d = (uint8_t *)dest ;
+    uint8_t *s = (uint8_t *)src ;
+    while(nbytes != 0)
+    {
+        *d = *s ;
+        d++ ;
+        s++ ;
+        nbytes-- ;
+    }
+}

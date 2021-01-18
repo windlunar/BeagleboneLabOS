@@ -7,6 +7,8 @@
 #define TRUE	1
 /************************************************************************************************/
 
+
+
 typedef unsigned char uint8  ;
 typedef unsigned short uint16 ;
 typedef unsigned int uint32 ;
@@ -77,5 +79,6 @@ static inline void dataSyncBarrier(void)
 	(typeof(a)) (ROUNDDOWN_4K((uint32_t) (a) + __n - 1, __n));	\
 })
 /************************************************************************************************/
+extern int32_t task_origin_end ;
 
 #endif

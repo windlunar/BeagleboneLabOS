@@ -6,12 +6,12 @@
 #include "../klib/print.h"
 #include "debug.h"
 
-
+extern int32_t taskid;
 /***********************************************************************************************/
 #define TASK_RUNNING    0
 #define TASK_READY      1
 #define TASK_TERMINATE  2
-
+#define TASK_SUSPEND    3
 /***********************************************************************************************/
 #define TASK_STACK_SIZE 256
 #define TASK_NUM_MAX 32
@@ -119,8 +119,6 @@ typedef struct _TASK TASK_t ;
 extern TASK_t *task_ready_queue_head;
 /***********************************************************************************************/
 
-//extern TASK_t Task[TASK_NUM_MAX] ;
-//extern uint32_t task_stack[TASK_NUM_MAX][TASK_STACK_SIZE] ;
 extern TASK_t task_origin ;
 extern uint32_t task_origin_stack[TASK_STACK_SIZE] ;
 extern TASK_t *curr_running_task ;

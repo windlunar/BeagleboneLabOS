@@ -51,9 +51,6 @@ int kernal_entry(void)
 /*************************************************************************************************
  * Init Task First thread :Origin
  *************************************************************************************************/
-	//Init task ready queue
-	queueInit(&taskReadyQ ,TASK_NUM_MAX) ;
-
 	//Init the first thread
 	taskCreate(&task_origin ,&main_origin ,task_origin_stack) ;
 
@@ -75,6 +72,11 @@ int kernal_entry(void)
 	//mem_part_alloc_free_test();
 	//mem_part_blk_init_test();
 	//print_task_id_from_head();
+	//_memset((void *)FIRST_PART_PTR ,0x05 ,9) ;
+	//_memcpy((void *)(FIRST_PART_PTR+1024) ,(void *)FIRST_PART_PTR ,9) ;
+
+	//_showMem((void *)FIRST_PART_PTR ,10) ;
+	//_showMem((void *)(FIRST_PART_PTR+1024) ,10) ;
 
 
 	//for(;;) ;

@@ -4,21 +4,18 @@
 #include "../driver/uart.h"
 #include "../kernel/debug.h"
 
+#define LOOP_NUM	50
 
 void usertask0(void){
 	kprintf("Starting User Task 0 \r\n");
 
 	int k = 0 ;
 	int tid = 0 ;
-	while(k<100)
+	while(k<LOOP_NUM)
 	{	
 		syscall_get_tid(&tid) ;	
 		kprintf("Task 0 #%d ,task id=%d\r\n" ,k ,tid);
-		//readCpsrMode();
-    	//syscall_print_hello();	
 		//syscall_yield() ;	
-		//readCpsrMode();
-		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
 	syscall_exit();
@@ -30,15 +27,12 @@ void usertask1(void){
 
 	int k = 0 ;
 	int tid = 0 ;
-	while(k<100)
+	while(k<LOOP_NUM)
 	{
 		syscall_get_tid(&tid) ;	
 		kprintf("Task 1 #%d ,task id=%d\r\n" ,k ,tid);
-		//readCpsrMode();
     	//syscall_print_hello(&k);
 		//syscall_yield() ;			
-		//readCpsrMode();
-		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
 	syscall_exit();
@@ -49,15 +43,11 @@ void usertask2(void){
 
 	int k = 0 ;
 	int tid = 0 ;
-	while(k<100)
+	while(k<LOOP_NUM)
 	{
 		syscall_get_tid(&tid) ;	
 		kprintf("Task 2 #%d ,task id=%d\r\n" ,k ,tid);
-		//readCpsrMode();
-    	//syscall_print_hello();	
 		//syscall_yield() ;			
-		//readCpsrMode();
-		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
 	syscall_exit();
@@ -69,15 +59,11 @@ void usertask3(void){
 	int k = 0 ;
 	int tid = 0 ;
 
-	while(k<100)
+	while(k<LOOP_NUM)
 	{
 		syscall_get_tid(&tid) ;	
 		kprintf("Task 3 #%d ,task id=%d\r\n" ,k ,tid);
-		//readCpsrMode();
-    	//syscall_print_hello();	
 		//syscall_yield() ;	
-		//readCpsrMode();
-		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
 	syscall_exit();
@@ -90,18 +76,14 @@ void usertask4(void){
 
 	int k = 0 ;
 	int tid = 0 ;
-	while(1)
+	while(k<LOOP_NUM)
 	{
 		syscall_get_tid(&tid) ;	
 		kprintf("Task 4 #%d ,task id=%d\r\n" ,k ,tid);
-		//readCpsrMode();
-    	//syscall_print_hello();	
 		//syscall_yield() ;		
-		//readCpsrMode();
-		//for(int i =0 ;i<100000;i++) ;
 		k++ ;
 	}
-	//syscall_exit();
+	syscall_exit();
 }
 
 

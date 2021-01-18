@@ -10,7 +10,7 @@ obj_destination_path = ../../obj
 ASFLAGS += -mapcs-32 -march=armv7-a
 CFLAGS  += -march=armv7-a -mtune=cortex-a8 -O2
 
-c_obj=multitasking_test.o origin.o
+c_obj=multitasking_test.o origin.o fork_test.o
 
 
 .PHONY : all
