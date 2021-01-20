@@ -139,6 +139,7 @@ typedef enum{
 void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLOW_CTRL_T flowControl);
 void uart_set_Baudrate(UART_REG_T *uartChannel, uint32_t baudrate);
 void uart_putC(UART_REG_T *uartChannel ,char byte) ;
+uint8_t uart_getC(UART_REG_T *uartChannel) ;
 void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32_t len) ;
 
 #endif

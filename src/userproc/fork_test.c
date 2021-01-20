@@ -25,7 +25,7 @@ void fork_test_main()
 	//複製task自己
 	//這邊跟 不一樣的是 ,返回的都是 child的 tid
 	//所以用child_tid跟fork後syscall_get_tid來判斷誰是parrent ,誰是child
-	kprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
+	kprintf("\r\n+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	kprintf("Now test syscall fork function.\r\n") ;
 	syscall_fork(&child_tid) ;
 

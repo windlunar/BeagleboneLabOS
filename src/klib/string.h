@@ -4,6 +4,7 @@
 
 #include "../common.h"
 
-
+int strlen(char *s) ;
+int strcmp(char *s ,char *b) ;
 
 #endif

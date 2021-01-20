@@ -4,7 +4,6 @@
 
 
 #include "uart.h"
-//#include "../klib/print.h"
 
 // The bootloader u-boot will initialize it, no need to call this function.                
 void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLOW_CTRL_T flowControl){
@@ -37,6 +36,20 @@ void uart_putC(UART_REG_T *uartChannel ,char byte){
     //Put a byte on THR register to send out the data
     uartChannel->THR = byte ;
 }
+
+// LSR_UART Register bit 0
+// RXFIFOE R 0h RXFIFOE.
+// 0h = No data in the receive FIFO.
+// 1h = At least one data character in the RX FIFO.
+uint8_t uart_getC(UART_REG_T *uartChannel)
+{
+    while( ((uartChannel->LSR_UART) & (0x01 << 0)) == 0 ) ;
+    uint8_t byte = (uint8_t)uartChannel->RHR  ;
+    
+    return byte ;
+}
+
+
 
 
 void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32_t len){
