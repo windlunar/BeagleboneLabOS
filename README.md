@@ -1,37 +1,41 @@
 # arm-os-from-scratch
 
 Hi ,<br>
-I'm trying to make a simple operating system from scratch on ARMv7-A architecture. 
+嘗試從頭開始寫一個在arm架構上運行的作業系統 ,這個作業系統只包含kernel的部份 ,系統啟動需要的bootloader是使用U-boot.
 <br>
-Beaglebone black is the testing hardware.
+之後會更新實做時的方法跟想法, 可以給也想要嘗試實現一個簡單的作業系統, 但不知道從哪下手的朋友, 一個參考或是交流 
+<br>
+用於測試的實體硬體是使用 Beaglebone black這塊開發板 ,使用TI的AM3358處理器(ARMv7-A architecture).
 <br><br>
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/logo.png)
 
 Feature:
 =
-
-1. Time slice based round-robin multitasking.<br>
-2. Simple memory management function.<br>
-3. Simple command line interface.<br>
+1. 有區分kernel模式與使用者模式(user mode) ,一般的task(process)運行在使用者模式 ,呼叫system call之後轉到kernel模式運行
+1. 基於 Time slice 的 round-robin multitasking.(之後會嘗試基於priority的排程)<br>
+2. 有簡易的 Memory分配機制(目前還沒有區分虛擬記憶體位址).<br>
+3. 有一個簡易的command line用於測試.<br>
 
 System call:
 =
-  
-1. yield :Give up the usage of CPU ,switch to another task.<br>
-2. get_tid :Get the current running task id.<br>
-3. exit :Terminate the current running task.<br>
-3. fork :Create a new task by duplicate the task itself.<br>
 
-Simple command line interface:
+目前實作了四個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br><br>
+
+1. yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br>
+2. get_tid :獲得現在正在執行的task的task id.<br>
+3. exit :結束正在運行的task.<br>
+3. fork :複製task自己 ,創造子task.<br>
+
+簡易的 command line:
 =
 
 Commands:
 <br>
 
-1. test :Press '1' for fork function test ,'2' for multitasking test<br>
-2. help :List available command.<br>
-3. info :Print some info.<br>
+1. test :執行之後鍵盤按1或2, 用於測試 fork 與 multitasking<br>
+2. help :列出可用的指令.<br>
+3. info :印出一些資訊.<br>
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/cmd.png)
 
@@ -42,96 +46,96 @@ Commands:
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/test.png)
 
 
-Setup:
+環境建立:
 =
 
 <br>
-Need to prepare:
+需要準備:
 <br>
-1. A PC with Ubuntu 18.04
+1. 一台PC或筆電作為寫程式的電腦,Beaglebone black ,安裝Linux Ubuntu 18.04
 <br>
-2. Beaglebone black
+2. Beaglebone black 開發板
 <br>
-3. TTL to USB converter
+3. UART 轉 USB的模組
 <br>
-4. SD card with U-boot
+4. SD卡, 裡面只要灌 U-boot(Bootloader for Beaglebone black)
 <br>
 
 <br>
-2.Install "gcc-arm-none-eabi-6-2017-q2-update" to compile source code
+2.安裝編譯環境 ,這是我使用的 arm gcc版本: "gcc-arm-none-eabi-6-2017-q2-update" 
 <br><br>
-3.Install "minicom"
+3.安裝 "minicom" ,類似putty的終端軟體
 
         sudo apt-get install minicom
 
 <br>
-4. Move to your working space or any directory you like.<br><br>
-5. clone this project:
+4. 選擇任意一個喜歡的資料夾.<br><br>
+5. clone 這個 project:
 
         git clone https://github.com/windlunar/arm-os-from-scratch
 
 <br>
-6. Move to the arm-os-from-scratch folder , and comile all.
+6. 移動到這個project的資料夾下 "arm-os-from-scratch folder " , 輸入 make 編譯所有source code.
 
         make
 <br>
-7.Connect Beaglebone's UART0 to TTL-USB converter ,and plug TTL-USB converter to PC's usb port.
+7.UART轉USB模組tx ,tx端接 Beaglebone black 的 UART0, 另一端 usb端接上 pc或筆電的 usb port.
 <br>
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/uart0.png)
 
 <br>
-8. Open another terminal ,execute minicom and set the baudrate to 115200:
+8. 在ubuntu打開另一個 terminal ,執行 minicom ,打開minicom後將 baudrate設定為 115200:
 
         sudo minicom
-<br>
-Then you should see:
 <br>
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/minicom.png)
 
 <br>        
-9.Hold the button "S2" ,and power on beaglebone(through usb or 5V).
-Then the board should boot up by U-boot which is inside SD card.<br>
+9.壓住 Beaglebone black的 "S2" 按鈕(在beaglebone black的usb port那一側) ,beaglebone black上電(透過micro usb或是5V插孔供電). 這時候 Beaglebone black應該會從 SD card的 U-boot開機("S2"按鈕要一直壓著)<br>
 
 <br>
-10.Press space while you see "Press SPACE to abort autoboot in 2 seconds".
-Then you will see the U-boot's command line.<br>
+10.當看到 "Press SPACE to abort autoboot in 2 seconds" 這行時按空白鍵 ,這時應該就會進去 Uboot自己的 command line.<br>
 
 <br>
-11.Type the following command at U-boot's command line to upload binary file form pc to beaglebone through UART0.
-And the elf will be uploaded to beaglebone's memory ,and place to 0x81000000.
+11.輸入下面的指令將 kernel從電腦上載到 beaglebone black的記憶體內 ,放置位址從 0x81000000開始.
 
         loadx 0x81000000
 
 <br>
-12.Type "CTRL+A" and then "S" ,you should see:
-<br>
-13.Choose "xmodem"
+12.輸入 "CTRL+A" ,然後輸入 "S" ,應該會看到如下畫面 ,選擇 "xmodem"
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/choose_xmodem.png)
 
 
 <br>
-13.Choose "[Goto]"
+13.選擇 "[Goto]"
 <br>
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/goto.png)
 
 <br>
-14.Go to : "your workspace/arm-os-from-scratch/bin"
+14.輸入: "你的路徑/arm-os-from-scratch/bin"
 
 <br><br>
-15.Choose the "beaglebonLabOS.elf" and wait for upload complete.
+15.選擇 "beaglebonLabOS.elf" 這個執行檔, 然後等待上載完成.
 
 <br>
-16.After upload successfully, type the command to execute the kernal:
+16.上載完成後, 輸入以下指令 ,代表執行放在0x81000000處的執行檔, 就是剛剛上載的 kernel執行檔:
 
         bootelf 0x81000000
 
 
 <br>
-About 50 seconds latter ,beaglebone black will reboot automatically because of watchdog.
+接下來就進入 kernel了 ,然後就能看到一開始那張圖的畫面！
+因為 watchdog的原因 ,大概50秒之後就會自動reboot.
 
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/bbb.jpg)
+
+
+教學:
+=
+
+待更新...
