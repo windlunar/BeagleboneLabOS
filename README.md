@@ -11,13 +11,9 @@ Beaglebone black is the testing hardware.
 Feature:
 =
 
-Time slice based round-robin multitasking.
-<br>
-Simple memory management function.
-<br>
-Simple command line interface.
-<br>
-
+1. Time slice based round-robin multitasking.<br>
+2. Simple memory management function.<br>
+3. Simple command line interface.<br>
 
 System call:
 =
