@@ -1,4 +1,4 @@
-# BeagleboneLabOS
+# BronzeAge-OS
 
 Hi ,<br>
 I'm trying to make a simple operating system from scratch on ARMv7-A architecture. 
@@ -6,7 +6,7 @@ I'm trying to make a simple operating system from scratch on ARMv7-A architectur
 Beaglebone black is the testing hardware.
 <br><br>
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/logo.png)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/logo.png)
 
 Feature:
 =
@@ -33,13 +33,13 @@ Commands:
 2. help :List available command.<br>
 3. info :Print some info.<br>
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/cmd.png)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/cmd.png)
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/info.png)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/info.png)
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/fork_test.png)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/fork_test.png)
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/test.png)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/test.png)
 
 
 Setup:
@@ -68,17 +68,17 @@ Need to prepare:
 4. Move to your working space or any directory you like.<br><br>
 5. clone this project:
 
-        git clone https://github.com/windlunar/BeagleboneLabOS
+        git clone https://github.com/windlunar/BronzeAge-OS
 
 <br>
-6. Move to the BeagleboneLabOS folder , and comile all.
+6. Move to the BronzeAge-OS folder , and comile all.
 
         make
 <br>
 7.Connect Beaglebone's UART0 to TTL-USB converter ,and plug TTL-USB converter to PC's usb port.
 <br>
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/uart0.png)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/uart0.png)
 
 <br>
 8. Open another terminal ,execute minicom and set the baudrate to 115200:
@@ -88,7 +88,7 @@ Need to prepare:
 Then you should see:
 <br>
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/minicom.png)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/minicom.png)
 
 <br>        
 9.Hold the button "S2" ,and power on beaglebone(through usb or 5V).
@@ -109,17 +109,17 @@ And the elf will be uploaded to beaglebone's memory ,and place to 0x81000000.
 <br>
 13.Choose "xmodem"
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/choose_xmodem.png)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/choose_xmodem.png)
 
 
 <br>
 13.Choose "[Goto]"
 <br>
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/goto.png)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/goto.png)
 
 <br>
-14.Go to : "your workspace/BeagleboneLabOS/bin"
+14.Go to : "your workspace/BronzeAge-OS/bin"
 
 <br><br>
 15.Choose the "beaglebonLabOS.elf" and wait for upload complete.
@@ -134,4 +134,4 @@ And the elf will be uploaded to beaglebone's memory ,and place to 0x81000000.
 About 50 seconds latter ,beaglebone black will reboot automatically because of watchdog.
 
 
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/bbb.jpg)
+![image](https://github.com/windlunar/BronzeAge-OS/blob/master/pictures/bbb.jpg)
