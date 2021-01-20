@@ -4,6 +4,8 @@ Hi ,<br>
 I'm trying to make a simple operating system on armv7a. Beaglebone black is the testing hardware.
 <br><br>
 
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/logo.png)
+
 Feature:
 =
 
@@ -31,6 +33,14 @@ test :Press '1' for fork function test ,'2' for multitasking test
 help :List available command.
 <br>          
 info :Print some info.
+
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/cmd.png)
+
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/info.png)
+
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/fork_test.png)
+
+![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/test.png)
 
 
 Setup:
