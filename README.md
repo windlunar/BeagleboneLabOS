@@ -49,10 +49,9 @@ Commands:
 環境建立:
 =
 
-<br>
 需要準備:
-<br>
-1. 一台PC或筆電作為寫程式的電腦,Beaglebone black ,安裝Linux Ubuntu 18.04
+<br><br>
+1. 一台PC或筆電作為寫程式的電腦 ,安裝Linux Ubuntu 18.04
 <br><br>
 2. Beaglebone black 開發板
 <br><br>
