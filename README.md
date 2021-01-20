@@ -1,4 +1,4 @@
-# BronzeAge-OS
+# arm-os-from-scratch
 
 Hi ,<br>
 I'm trying to make a simple operating system from scratch on ARMv7-A architecture. 
