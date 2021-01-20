@@ -1,9 +1,47 @@
 # BeagleboneLabOS
 
 Hi ,<br>
-I'm trying to make a toy operating system on Beaglebone black in order to learn some OS concept and pratice my C languege skill.
+I'm trying to make a simple operating system on armv7a. Beaglebone black is the testing hardware.
 <br><br>
-Currently ,this tiny kernal can switch between user tasks and kernel mode.
+
+Feature:
+=
+
+Time slice based round-robin multitasking.
+<br>
+Simple memory management function.
+<br>
+Simple command line interface.
+<br>
+
+
+System call:
+=
+  
+_yield
+<br>                    
+_get_tid
+<br>          
+_exit
+<br>             
+_fork
+<br>
+
+
+Simple command line interface:
+=
+  
+test:
+<br>
+Please key '1' for fork function test ,'2' for multitasking test
+<br><br>                    
+help:
+<br>
+List available command.
+<br><br>          
+info:
+<br>
+Print some info.
 
 
 Setup:
@@ -93,14 +131,6 @@ And the elf will be uploaded to beaglebone's memory ,and place to 0x81000000.
 
         bootelf 0x81000000
 
-<br>
-You can see task1 started and and back to kernal mode by software interrupt.
-And then run task2 ---SWI---->kernal
--------->run task3 ---SWI---->kernal
--------->run task1 ......
-<br>
-
-![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/result.png)
 
 <br>
 
