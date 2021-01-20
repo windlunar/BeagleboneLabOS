@@ -82,19 +82,19 @@ void draw_console(void)
 	draw_whole(&p[0][0] ,VERTICAL_LENTH ,HORIZENTAL_LENTH ,' ') ;
 	
 	// draw 'O'
-	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,13 ,5+SHIFT_V ,SHOWCHAR ,19) ;
-	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,13 ,15+SHIFT_V ,SHOWCHAR ,19) ;
+	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,13 ,5+SHIFT_V ,H_CHAR ,19) ;
+	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,13 ,15+SHIFT_V ,H_CHAR ,19) ;
 
-	draw_vertical_line(&p[0][0] ,HORIZENTAL_LENTH ,12 ,6+SHIFT_V ,SHOWCHAR ,9) ;
-	draw_vertical_line(&p[0][0] ,HORIZENTAL_LENTH ,32 ,6+SHIFT_V ,SHOWCHAR ,9) ;
+	draw_vertical_line(&p[0][0] ,HORIZENTAL_LENTH ,12 ,6+SHIFT_V ,V_CHAR ,9) ;
+	draw_vertical_line(&p[0][0] ,HORIZENTAL_LENTH ,32 ,6+SHIFT_V ,V_CHAR ,9) ;
 
 	//draw 'S'
-	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,42 ,5+SHIFT_V ,SHOWCHAR ,20) ;
-	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,42 ,10+SHIFT_V ,SHOWCHAR ,20) ;
-	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,42 ,15+SHIFT_V ,SHOWCHAR ,20) ;
+	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,42 ,5+SHIFT_V ,H_CHAR ,20) ;
+	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,42 ,10+SHIFT_V ,H_CHAR ,20) ;
+	draw_horizental_line(&p[0][0] ,HORIZENTAL_LENTH ,42 ,15+SHIFT_V ,H_CHAR ,20) ;
 
-	draw_vertical_line(&p[0][0] ,HORIZENTAL_LENTH ,42 ,5+SHIFT_V ,SHOWCHAR ,5) ;
-	draw_vertical_line(&p[0][0] ,HORIZENTAL_LENTH ,62 ,10+SHIFT_V ,SHOWCHAR ,5) ;
+	draw_vertical_line(&p[0][0] ,HORIZENTAL_LENTH ,41 ,6+SHIFT_V ,V_CHAR ,4) ;
+	draw_vertical_line(&p[0][0] ,HORIZENTAL_LENTH ,61 ,11+SHIFT_V ,V_CHAR ,4) ;
 
 	//畫每一行的最後兩個字元為 \r\n
 	draw_last_pix_every_line(&p[0][0] ,VERTICAL_LENTH ,HORIZENTAL_LENTH ,'\n') ;

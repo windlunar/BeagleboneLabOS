@@ -18,10 +18,10 @@ Simple command line interface.
 System call:
 =
   
-yield<br>                    
-get_tid<br>          
-exit<br>             
-fork<br>
+yield
+get_tid
+exit
+fork
 
 Simple command line interface:
 =

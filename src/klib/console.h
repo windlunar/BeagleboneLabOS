@@ -7,6 +7,8 @@
 #define HORIZENTAL_LENTH	    80
 #define VERTICAL_LENTH		24
 #define SHOWCHAR	        '1'
+#define V_CHAR  '|'
+#define H_CHAR  '='
 #define SHIFT_V     5
 
 
