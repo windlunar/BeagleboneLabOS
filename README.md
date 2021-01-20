@@ -125,7 +125,7 @@ And the elf will be uploaded to beaglebone's memory ,and place to 0x81000000.
 <br><br>
 15.Choose the "beaglebonLabOS.elf" and wait for upload complete.
 
-<br><br>
+<br>
 16.After upload successfully, type the command to execute the kernal:
 
         bootelf 0x81000000
