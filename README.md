@@ -3,7 +3,7 @@
 Hi ,<br>
 嘗試從頭開始寫一個在arm架構上運行的作業系統 ,這個作業系統只包含kernel的部份 ,系統啟動需要的bootloader是使用U-boot.
 <br><br>
-之後會更新實做時的方法跟想法, 可以給也想要嘗試實現一個簡單的作業系統, 但不知道從哪下手的朋友, 一個參考或是交流 
+之後會更新實做時的方法跟想法, 可以給也想要嘗試實現一個簡單的作業系統, 但不知道從哪下手的朋友, 一個小參考或是交流 
 <br><br>
 用於測試的實體硬體是使用 Beaglebone black這塊開發板 ,使用TI的AM3358處理器(ARMv7-A architecture).
 <br><br>
@@ -12,7 +12,7 @@ Hi ,<br>
 
 Feature:
 =
-1. 有區分kernel模式與使用者模式(user mode) ,一般的task(process)運行在使用者模式 ,呼叫system call之後轉到kernel模式運行<br>
+1. 有區分kernel模式與使用者模式(user mode) ,一般的task(process)運行在使用者模式 ,呼叫system call之後轉到kernel模式運行<br><br>
 1. 基於 Time slice 的 round-robin multitasking.(之後會嘗試基於priority的排程)<br><br>
 2. 有簡易的 Memory分配機制(目前還沒有區分虛擬記憶體位址).<br><br>
 3. 有一個簡易的command line用於測試.<br>
