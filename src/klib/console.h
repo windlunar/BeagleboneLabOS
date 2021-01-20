@@ -7,6 +7,7 @@
 #define HORIZENTAL_LENTH	    80
 #define VERTICAL_LENTH		24
 #define SHOWCHAR	        '1'
+#define SHIFT_V     5
 
 
 void draw_horizental_line(char *input ,int n_h,int h ,int v ,char character ,int len);

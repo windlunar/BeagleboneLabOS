@@ -29,7 +29,7 @@ int kernal_entry(void)
 /*************************************************************************************************
  * Initial 4 user Leds ,IRQ Interrupt ,Timer0 
  *************************************************************************************************/
-	kprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
+	kprintf("\r\nKernel Init start...\r\n") ;
 
 	kprintf("sp : %x ---CP15_c1 : %x\r\n" ,READ_SP() ,READ_CP15_c1());
 	kprintf("CPSR register %x\r\n", readCpsr());

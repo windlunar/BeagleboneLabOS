@@ -92,7 +92,6 @@ void usertask4(void){
 
 int multitasking_test(void)
 {
-	kprintf("Wait the fork test terminate.Otherwise it's hard to idetified what console print.\r\n") ;
 	for(int32_t i=0 ;i<200000;i++);
 	kprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	kprintf("Now test multitasking.\r\n") ;

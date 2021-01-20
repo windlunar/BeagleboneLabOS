@@ -33,6 +33,13 @@ void main_origin()
 /************************************************************************************************/
 
 	draw_console();
+	kprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
+	kprintf("\r\nThe command line is the first process\r\n") ;
+
+	int tid = -1;
+	syscall_get_tid(&tid);
+	kprintf("\r\nThe task id :%d\r\n",tid) ;
+
 	kprintf("\r\n|cmd>") ;
 
 	char byte = '\0' ;
@@ -68,7 +75,7 @@ void main_origin()
 			uart_putC(UART0_PTR ,0x08) ;
 			break;
 		
-		case 0x0d:	//Enter
+		case 0x0d:	//Enter ,按下Enter鍵後的處理
 			if (strcmp(cmd ,"test\0")==0){
 				kprintf("\r\n");
 				kprintf("Please key '1' for fork function test or '2' for multitasking test\r\n") ; 
