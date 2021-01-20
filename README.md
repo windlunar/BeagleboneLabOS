@@ -1,7 +1,9 @@
 # BeagleboneLabOS
 
 Hi ,<br>
-I'm trying to make a simple operating system on armv7a. Beaglebone black is the testing hardware.
+I'm trying to make a simple operating system from scratch on ARMv7-A architecture. 
+<br>
+Beaglebone black is the testing hardware.
 <br><br>
 
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/logo.png)
@@ -20,19 +22,20 @@ Simple command line interface.
 System call:
 =
   
-yield<br>
-get_tid<br>
-exit<br>
-fork<br>
+1. yield :Give up the usage of CPU ,switch to another task.<br>
+2. get_tid :Get the current running task id.<br>
+3. exit :Terminate the current running task.<br>
+3. fork :Create a new task by duplicate the task itself.<br>
 
 Simple command line interface:
 =
-  
-test :Press '1' for fork function test ,'2' for multitasking test
-<br>               
-help :List available command.
-<br>          
-info :Print some info.
+
+Commands:
+<br>
+
+1. test :Press '1' for fork function test ,'2' for multitasking test<br>
+2. help :List available command.<br>
+3. info :Print some info.<br>
 
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/cmd.png)
 
