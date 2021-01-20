@@ -93,11 +93,11 @@ Then you should see:
 
 <br>        
 9.Hold the button "S2" ,and power on beaglebone(through usb or 5V).
-Then the board should boot up by U-boot which is inside SD card.
+Then the board should boot up by U-boot which is inside SD card.<br>
 
 <br>
 10.Press space while you see "Press SPACE to abort autoboot in 2 seconds".
-Then you will see the U-boot's command line.
+Then you will see the U-boot's command line.<br>
 
 <br>
 11.Type the following command at U-boot's command line to upload binary file form pc to beaglebone through UART0.
@@ -132,5 +132,7 @@ And the elf will be uploaded to beaglebone's memory ,and place to 0x81000000.
 
 
 <br>
+About 50 seconds latter ,beaglebone black will reboot automatically because of watchdog.
+
 
 ![image](https://github.com/windlunar/BeagleboneLabOS/blob/master/pictures/bbb.jpg)
