@@ -78,7 +78,7 @@ Commands:
 
         make
 <br>
-10.UART轉USB模組tx ,tx端接 Beaglebone black 的 UART0, 另一端 usb端接上 pc或筆電的 usb port.
+10.UART轉USB模組tx ,rx接 Beaglebone black 的 UART0, 另一端 usb端接上 pc或筆電的 usb port.
 <br>
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/uart0.png)
