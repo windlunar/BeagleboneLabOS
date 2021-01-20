@@ -18,30 +18,19 @@ Simple command line interface.
 System call:
 =
   
-_yield
-<br>                    
-_get_tid
-<br>          
-_exit
-<br>             
-_fork
-<br>
-
+yield<br>                    
+get_tid<br>          
+exit<br>             
+fork<br>
 
 Simple command line interface:
 =
   
-test:
-<br>
-Please key '1' for fork function test ,'2' for multitasking test
-<br><br>                    
-help:
-<br>
-List available command.
-<br><br>          
-info:
-<br>
-Print some info.
+test :Press '1' for fork function test ,'2' for multitasking test
+<br>               
+help :List available command.
+<br>          
+info :Print some info.
 
 
 Setup:
