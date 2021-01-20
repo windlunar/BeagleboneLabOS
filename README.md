@@ -58,7 +58,7 @@ Need to prepare:
 4. SD card with U-boot
 <br>
 
-<br><br>
+<br>
 2.Install "gcc-arm-none-eabi-6-2017-q2-update" to compile source code
 <br><br>
 3.Install "minicom"
