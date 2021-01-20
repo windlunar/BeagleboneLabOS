@@ -20,7 +20,7 @@ Feature:
 System call:
 =
 
-目前實作了四個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br><br>
+目前實作了四個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br>
 
 1. yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br><br>
 2. get_tid :獲得現在正在執行的task的task id.<br><br>
