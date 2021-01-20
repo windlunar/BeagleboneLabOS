@@ -3,16 +3,15 @@
 #define __PRINT_H_
 
 #include "../common.h"
-#include "stdarg.h"
 
 
-void terminal_printC(int character) ;
-void print_char(int chartr);
+void terminal_printC(int32_t character) ;
+void print_char(int32_t chartr);
 
-int kprintf(const char *fmt, ...);
-int kprintfmt(const char *fmt ,va_list args);
+int32_t kprintf(const char *fmt, ...);
+int32_t kprint(const char *fmt ,__builtin_va_list args);
 
-static void print_va(uint32_t va_val, uint32_t base, int32_t width, int32_t padc);
+static void print_va(uint32_t va_val, uint32_t base);
 
 
 #endif

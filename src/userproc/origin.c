@@ -73,6 +73,8 @@ void main_origin()
 		case 0x08 : //Backspace
 			uart_putC(UART0_PTR ,' ') ;
 			uart_putC(UART0_PTR ,0x08) ;
+			_memset((void *)cmdbuf ,0 ,10) ;
+			s = cmd ;
 			break;
 		
 		case 0x0d:	//Enter ,按下Enter鍵後的處理
