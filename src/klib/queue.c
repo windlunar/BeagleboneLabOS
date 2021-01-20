@@ -17,7 +17,7 @@
  * 回傳值 : 無
  */
 //還沒實做malloc與memset 
-void queueInit(QUEUE_TASK_t *qPtr ,int qSize)
+void queueInit(QUEUE_TASK_INFO_t *qPtr ,int qSize)
 {
     qPtr->idxHead = 0 ;
     qPtr->idxBack = 0 ;
@@ -33,7 +33,7 @@ void queueInit(QUEUE_TASK_t *qPtr ,int qSize)
  * 作用 : 釋放 在queueInit()中透過 malloc分配的記憶體空間
  * 回傳值 : 無
 */
-void queueDelete(QUEUE_TASK_t *qPtr){
+void queueDelete(QUEUE_TASK_INFO_t *qPtr){
     //Not Implement Yet
     //free(qPtr->qDataTaskStructPtr);
 }
@@ -44,7 +44,7 @@ void queueDelete(QUEUE_TASK_t *qPtr){
  * 作用 : 判斷該queue是否為 empty
  * 回傳值 : 回傳1, 代表 queue為空沒有data, 反之回傳 0
 */
-int32_t queueIsEmpty(QUEUE_TASK_t *qPtr){
+int32_t queueIsEmpty(QUEUE_TASK_INFO_t *qPtr){
     if(qPtr->NumDataInQueue == 0){
         return 1;
     }else{
@@ -58,7 +58,7 @@ int32_t queueIsEmpty(QUEUE_TASK_t *qPtr){
  * 作用 : 判斷該queue是否 full
  * 回傳值 : 回傳1, 代表 queue為 full, 反之回傳 0
 */
-int32_t queueIsFull(QUEUE_TASK_t *qPtr){
+int32_t queueIsFull(QUEUE_TASK_INFO_t *qPtr){
     if(qPtr->NumDataInQueue == qPtr->size){
         return 1;
     }else{
@@ -73,7 +73,7 @@ int32_t queueIsFull(QUEUE_TASK_t *qPtr){
  * 作用 : 將data從尾部放入queue
  * 回傳值 : 0代表成功, -1代表失敗(因為queue已經滿了)
 */
-int32_t enQueue(QUEUE_TASK_t *qPtr, TASK_t *data)
+int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, TASK_INFO_t *data)
 {
     if(queueIsFull(qPtr) == 1){
         kprintf("Warning : Can't not put data to queue. Queue is Full. Return -1.\r\n");
@@ -92,14 +92,14 @@ int32_t enQueue(QUEUE_TASK_t *qPtr, TASK_t *data)
  * 作用 : 將data從頭部取出
  * 回傳值 : 0代表成功, -1代表失敗(因為queue為空)
 */
-TASK_t *deQueue(QUEUE_TASK_t *qPtr)
+TASK_INFO_t *deQueue(QUEUE_TASK_INFO_t *qPtr)
 {
     if(queueIsEmpty(qPtr) == 1){
         kprintf("Warning : Can't not get data from queue. Queue is Empty. Return -1.\r\n");
         return NULL ;
     }
 
-    TASK_t *data = qPtr->qDataTaskStructPtr[qPtr->idxHead] ;
+    TASK_INFO_t *data = qPtr->qDataTaskStructPtr[qPtr->idxHead] ;
     qPtr->qDataTaskStructPtr[qPtr->idxHead] = NULL ;
     qPtr->NumDataInQueue--;
 
@@ -114,7 +114,7 @@ TASK_t *deQueue(QUEUE_TASK_t *qPtr)
  * 作用 : 從頭到尾將queue存放的data印出來
  * 回傳值 : 無
 */
-void printDataInQueue(QUEUE_TASK_t *qPtr){
+void printDataInQueue(QUEUE_TASK_INFO_t *qPtr){
     int idx = qPtr->idxHead ;
 
     kprintf("\n++++++++++++++++++++++++++++++++++\r\n");

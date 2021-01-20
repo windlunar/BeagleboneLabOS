@@ -22,22 +22,22 @@ typedef struct{
     int32_t idxHead ;
     int32_t idxBack ;
     int32_t NumDataInQueue;
-    TASK_t *qDataTaskStructPtr[TASK_NUM_MAX];  //存放 TASK_t 結構指標
+    TASK_INFO_t *qDataTaskStructPtr[TASK_NUM_MAX];  //存放 TASK_INFO_t 結構指標
 
-}QUEUE_TASK_t;
+}QUEUE_TASK_INFO_t;
 
-extern QUEUE_TASK_t taskReadyQ ;
+extern QUEUE_TASK_INFO_t taskReadyQ ;
 
 
 /** 各個功能函式宣告, 各函式作用請見 queue.c的註解*/
 
-void queueInit(QUEUE_TASK_t *qPtr ,int qSize);
-void queueDelete(QUEUE_TASK_t *qPtr);
-int32_t queueIsEmpty(QUEUE_TASK_t *qPtr);
-int32_t queueIsFull(QUEUE_TASK_t *qPtr);
-int32_t enQueue(QUEUE_TASK_t *qPtr, TASK_t *data);
-TASK_t *deQueue(QUEUE_TASK_t *qPtr);
-void printDataInQueue(QUEUE_TASK_t *qPtr);
+void queueInit(QUEUE_TASK_INFO_t *qPtr ,int qSize);
+void queueDelete(QUEUE_TASK_INFO_t *qPtr);
+int32_t queueIsEmpty(QUEUE_TASK_INFO_t *qPtr);
+int32_t queueIsFull(QUEUE_TASK_INFO_t *qPtr);
+int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, TASK_INFO_t *data);
+TASK_INFO_t *deQueue(QUEUE_TASK_INFO_t *qPtr);
+void printDataInQueue(QUEUE_TASK_INFO_t *qPtr);
 
 
 

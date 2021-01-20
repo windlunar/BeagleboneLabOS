@@ -67,11 +67,11 @@ void reloadOsTick(uint32_t msecs)
     DMTIMER0_BASE_PTR_t->TCRR = ~0 - (32768 * msecs / 1000); 
 }
 
+
 void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr){
     // Start
     DMTIMER_struct_ptr->TCLR |= (1 << 0); 
 }
-
 
 
 void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr)
@@ -93,7 +93,6 @@ void enableOsTick(uint8_t irq_num)
     *(INTC_ILR_n_BASE_PTR + irq_num) = (0 << 2) | (0 << 0) ;
 	eableINT_NUM(irq_num);
 }
-
 
 
 void disnableTimerAndUnbindISR(int32_t IRQ_ID)

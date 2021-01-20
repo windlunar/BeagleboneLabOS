@@ -4,8 +4,8 @@
 #include "../klib/queue.h"
 #include "../kernel/memory.h"
 
-TASK_t Task ;
-TASK_t Task0 ;
+TASK_INFO_t Task ;
+TASK_INFO_t Task0 ;
 
 int fork_test()
 {
@@ -22,15 +22,17 @@ void fork_test_main()
 
 	int32_t child_tid =-1 ;
 
-	//複製task自己
-	//這邊跟 不一樣的是 ,返回的都是 child的 tid
-	//所以用child_tid跟fork後syscall_get_tid來判斷誰是parrent ,誰是child
 	kprintf("\r\n+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	kprintf("Now test syscall fork function.\r\n") ;
+
+	// 複製task自己
+	// 與一般fork不一樣的是 ,返回的都是 child的 tid
+	// 所以用child_tid跟fork後syscall_get_tid來判斷誰是parrent ,誰是child
 	syscall_fork(&child_tid) ;
 
 	int32_t tid_after_fork =-1 ;
 	syscall_get_tid(&tid_after_fork) ;
+	
 	kprintf("tid_after_fork=%d\r\n",tid_after_fork);
 
 	if(child_tid != tid_after_fork)

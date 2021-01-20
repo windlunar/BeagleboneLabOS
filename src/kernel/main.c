@@ -65,22 +65,6 @@ int kernal_entry(void)
 
 	mem_parts_list_init();
 
-/*************************************************************************************************
- * For test
-*************************************************************************************************/
-
-	//mem_part_alloc_free_test();
-	//mem_part_blk_init_test();
-	//print_task_id_from_head();
-	//_memset((void *)FIRST_PART_PTR ,0x05 ,9) ;
-	//_memcpy((void *)(FIRST_PART_PTR+1024) ,(void *)FIRST_PART_PTR ,9) ;
-
-	//_showMem((void *)FIRST_PART_PTR ,10) ;
-	//_showMem((void *)(FIRST_PART_PTR+1024) ,10) ;
-
-
-	//for(;;) ;
-
 /*************************************************************************************************/
 	kprintf("Sched Starting...\r\n");
 
@@ -88,7 +72,7 @@ int kernal_entry(void)
 	schedFuncContextPrepare();
 
 	//Jump to sched() in task.c
-	//跳到 sched後不再回來 ,原來在kernel_entry的環境全部丟棄
+	//跳到 sched後不再回來
 	_call_sched((uint32_t)schedFuncContextSPtr) ;
 
 /*************************************************************************************************/

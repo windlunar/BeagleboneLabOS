@@ -37,6 +37,7 @@ void uart_putC(UART_REG_T *uartChannel ,char byte){
     uartChannel->THR = byte ;
 }
 
+
 // LSR_UART Register bit 0
 // RXFIFOE R 0h RXFIFOE.
 // 0h = No data in the receive FIFO.
@@ -48,8 +49,6 @@ uint8_t uart_getC(UART_REG_T *uartChannel)
     
     return byte ;
 }
-
-
 
 
 void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32_t len){

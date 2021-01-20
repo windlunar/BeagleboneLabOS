@@ -19,7 +19,7 @@ extern uint32_t *kernal_end ;
 
 // 如果第一個part的adde = 0x82004000
 // 那128MB就是到 0x8a000000
-#define FIRST_PART_ADDR     (ROUNDUP_4K((uint32_t)kernal_end ,PART_SIZE))
+#define FIRST_PART_ADDR     (ROUNDUP((uint32_t)kernal_end ,PART_SIZE))
 #define FIRST_PART_PTR      (uint32_t *)FIRST_PART_ADDR     
 
 /***********************************************************************************************/
@@ -56,7 +56,7 @@ extern MEM_PART_INFO_t parts_list[TOTAL_PART_NUM] ;
 //主要
 void mem_parts_list_init();
 MEM_PART_INFO_t *alloc_one_mem_part(void);
-void free_part_mem(MEM_PART_INFO_t *part_node);
+void free_mem_part(MEM_PART_INFO_t *part_node);
 
 //次要
 void add_to_free_list_end(MEM_PART_INFO_t *part_node);

@@ -115,13 +115,13 @@ struct _TASK
     //int32_t priority ; //not implement yet ;
 
 };
-typedef struct _TASK TASK_t ;
-extern TASK_t *task_ready_queue_head;
+typedef struct _TASK TASK_INFO_t ;
+extern TASK_INFO_t *task_ready_queue_head;
 /***********************************************************************************************/
 
-extern TASK_t task_origin ;
+extern TASK_INFO_t task_origin ;
 extern uint32_t task_origin_stack[TASK_STACK_SIZE] ;
-extern TASK_t *curr_running_task ;
+extern TASK_INFO_t *curr_running_task ;
 /***********************************************************************************************/
 void sched(void);
 void schedFuncContextPrepare(void);
@@ -129,10 +129,10 @@ extern void _call_sched(uint32_t schedContext) ;    //定義在task_asm.s
 void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
 
 
-uint32_t taskCreate(TASK_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack);
-void task_enqueue(TASK_t *task_node) ;
-TASK_t *task_dequeue() ;
-void remove_from_readylist(TASK_t *task_node);
+uint32_t taskCreate(TASK_INFO_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack);
+void task_enqueue(TASK_INFO_t *task_node) ;
+TASK_INFO_t *task_dequeue() ;
+void remove_from_readylist(TASK_INFO_t *task_node);
 void print_task_id_from_head() ;
 
 /***********************************************************************************************/

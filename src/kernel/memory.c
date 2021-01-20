@@ -10,8 +10,19 @@ MEM_PART_INFO_t parts_list[TOTAL_PART_NUM] ;   //存放在 kernel binary的bss s
 /***********************************************************************************************/
 // Memory Part Functions
 /***********************************************************************************************/
-
-//將所有memory part (1 part 其實就是一個page的大小)用link list串起來
+//
+// 將所有memory part (1 part 其實就是一個page的大小)用link list串起來
+// A memoy Parts
+//    
+//  |-------|
+//  | part  | 
+//  |-------|
+//  | part  |
+//  |-------|
+//  | part  |  
+//  |-------|
+//  |       |
+//
 void mem_parts_list_init()
 {
     free_part_list_head = &parts_list[0] ;
@@ -20,10 +31,12 @@ void mem_parts_list_init()
     {
         parts_list[i].part_status = FREE ; 
         parts_list[i].part_id = i ;
-        parts_list[i].mempart_start_ptr = FIRST_PART_PTR + i*1024 ;
+        parts_list[i].mempart_start_ptr = FIRST_PART_PTR + i*(PART_SIZE/4) ;
         parts_list[i].blk_head_ptr = (uint32_t *)parts_list[i].mempart_start_ptr ;
-        parts_list[i].mempart_top_ptr = parts_list[i].mempart_start_ptr + 1024 -1 ;
-        parts_list[i].blksize = 0 ; //0 means blks not init
+        parts_list[i].mempart_top_ptr = parts_list[i].mempart_start_ptr + (PART_SIZE/4) -1 ;
+
+        //0 means blks not init
+        parts_list[i].blksize = 0 ; 
 
         if(i == TOTAL_PART_NUM-1){
             parts_list[i].next_ptr = NULL ;
@@ -60,7 +73,7 @@ MEM_PART_INFO_t *alloc_one_mem_part(void)
 }
 
 
-void free_part_mem(MEM_PART_INFO_t *part_node)
+void free_mem_part(MEM_PART_INFO_t *part_node)
 {
     if(part_node->part_status != FREE ){
         delete_from_inuse_list(part_node) ;
@@ -153,7 +166,7 @@ void clean_mem_part_content(void *start)
 {
     uint32_t *startPtr = (uint32_t *)start ;
 
-    for(uint32_t i=0 ;i<1024 ;i++)
+    for(uint32_t i=0 ;i<(PART_SIZE/4) ;i++)
     {
         *startPtr = 0 ;
         startPtr += 1 ;
@@ -195,7 +208,7 @@ MEM_PART_INFO_t *find_aval_inuse_mempart(void)
 
 /***********************************************************************************************/
 //Blocks
-//    A Part
+//    A memoy Part
 //  |-------|<-
 //  | blk   | ^
 //  |-------|<-->
@@ -289,7 +302,7 @@ void *blk_alloc(MEM_PART_INFO_t *mpinfo)
 
 MEM_PART_INFO_t *which_mem_part(uint32_t *address)
 {
-    uint32_t *mempart = (uint32_t *)ROUNDDOWN_4K((uint32_t)address ,PART_SIZE) ;
+    uint32_t *mempart = (uint32_t *)ROUNDDOWN((uint32_t)address ,PART_SIZE) ;
 
     //判斷 mempart這個 addr是那個part
     MEM_PART_INFO_t *part_head = inuse_part_list_head ;

@@ -8,30 +8,13 @@
 #include "../klib/mem.h"
 #include "../klib/string.h"
 
-TASK_t Task[6] ;
+TASK_INFO_t Task[6] ;
 
 #define TEST_CMD	"test\0"
 
 
 void main_origin()
 {
-	//draw_console();
-	
-/************************************************************************************************/
-// Test Fork function
-/************************************************************************************************/
-	//fork_test() ;
-
-/************************************************************************************************/
-// 測試 multitasking
-// Time slice base. Round Robin Multitasking
-/************************************************************************************************/
-	//multitasking_test() ;
-
-/************************************************************************************************/
-// A simple command line interface
-/************************************************************************************************/
-
 	draw_console();
 	kprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
 	kprintf("\r\nThe command line is the first process\r\n") ;
@@ -92,10 +75,13 @@ void main_origin()
 					kprintf("%c" ,get) ;
 					
 					if(get == '1'){
+						// Test Fork function
 						fork_test() ;
 						break ;
 
 					}else if(get == '2'){
+						// 測試 multitasking							
+						// Time slice base. Round Robin Multitasking    
 						multitasking_test() ;
 						break ;
 

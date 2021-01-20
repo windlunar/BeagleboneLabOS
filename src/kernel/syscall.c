@@ -11,7 +11,6 @@
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args)
 {
-    //kprintf("syscall_id=%d\r\n",syscall_id) ;
     switch (syscall_id)
     {
     case SYSCALL_ID_print_hello:
@@ -43,8 +42,6 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
 void  __print_hello(uint32_t input)
 {
     kprintf("Hello! This is my first system call,Input value =%d\r\n" ,input) ;
-    //readCpsrMode();
-
 }
 
 void __yield(uint32_t *usrTaskContextOld)
@@ -58,15 +55,11 @@ void __yield(uint32_t *usrTaskContextOld)
 
 	//prepare sched() context
 	schedFuncContextPrepare();
-
-	//dataSyncBarrier();
-
 	_call_sched((uint32_t)schedFuncContextSPtr) ;
 }
 
 void __get_tid(uint32_t *tid_return)
 {
-    //kprintf("In get tid\r\n");
     *tid_return = curr_running_task->task_id ;
 }
 
@@ -83,7 +76,7 @@ void __exit()
 
     //釋放空間
     MEM_PART_INFO_t *curr_mpinfo = which_mem_part(curr_running_task->task_stack_ptr) ;
-    free_part_mem(curr_mpinfo) ;
+    free_mem_part(curr_mpinfo) ;
   
     curr_running_task->task_stack_ptr = NULL ;
     curr_running_task = NULL ;
@@ -95,26 +88,29 @@ void __exit()
 
 
 
-//應該要複製一份相同的stack
-//共用 .text segment
+// 複製一份相同的stack ,跟 TASK_INFO_t 結構體
 void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
 {    
-    // Prepare new stack
-    // and TAST_t structure
+    // Alloc 一個 Memory Part,並回傳描述該part的結構體 MEM_PART_INFO_t
+    // 並將該 part使用狀況設為 INUSE_FULL ,只屬於這個task使用
     MEM_PART_INFO_t *n_mempart = alloc_one_mem_part();
     n_mempart->part_status = INUSE_FULL ;
 
-    TASK_t *ntask = (TASK_t *)n_mempart->mempart_start_ptr ;
+    // 分配 描述 task的TASK_INFO_t結構體, 其起始位置設定為 剛剛分配的記憶體空間的起始位址
+    TASK_INFO_t *ntask = (TASK_INFO_t *)n_mempart->mempart_start_ptr ;
 
-    //copy stack
+    // 找目前正在執行的task(父task)的stack空間屬於那一個 memory part
     MEM_PART_INFO_t *curr_mpinfo = which_mem_part(curr_running_task->task_stack_ptr) ;
 
+    // 複製父task使用的記憶體區段內的data給子task的記憶體區段, 包含stack空間內所有內容
     _memcpy((void *)(n_mempart->mempart_start_ptr)
             ,(void *)(curr_mpinfo->mempart_start_ptr)
             ,PART_SIZE) ;
 
-    _memcpy((void *)ntask ,(void *)curr_running_task ,sizeof(TASK_t));
+    // 複製描述 task的TASK_INFO_t結構體
+    _memcpy((void *)ntask ,(void *)curr_running_task ,sizeof(TASK_INFO_t));
 
+    // Stack pointer要指向stack中相同的相對位址上
     uint32_t old_sp = (uint32_t)usrTaskContextOld ;
     uint32_t new_sp = (uint32_t)(n_mempart->mempart_start_ptr) ;
 
@@ -123,15 +119,18 @@ void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
 
     ntask->task_context_sp = (USR_TASK_CONTEXT_t *)new_sp ;
 
+    // 設定子stack的 task id
 	taskid++ ;
 	ntask->task_id = taskid;
 
+    // 設定TASK_INFO_t結構體的其他內容
     ntask->next_ptr = NULL ;
     ntask->prev_ptr = NULL ;
     ntask->task_status = TASK_READY ;
     ntask->taskCallBack = curr_running_task->taskCallBack ;
-    ntask->task_stack_ptr = n_mempart->mempart_top_ptr-256 ;
+    ntask->task_stack_ptr = n_mempart->mempart_top_ptr-TASK_STACK_SIZE ;
     
+    // 將子task放入 rady list中
     task_enqueue(ntask) ;
 
     // return child tid

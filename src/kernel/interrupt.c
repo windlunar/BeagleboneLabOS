@@ -10,12 +10,18 @@
 #define IRQ_NUM 128
 #define IRQ_NUM_MASK 127
 
+//128個函數陣列
+static void (*irq_handler_array[IRQ_NUM])(void);
+
+
+
 void SYSTEM_INT_Enable(int32_t interruptID)
 {             
     int32_t interrupt_group = interruptID >> 5 ;
     *(INTC_BASE_PTR + INTC_MIR_CLEAR_BASE + 0x20 * interrupt_group) = 0x01 << (interruptID & 0x1F) ;
 
 }
+
 
 void SYSTEM_INT_disable(int32_t interruptID)
 {             
@@ -24,11 +30,11 @@ void SYSTEM_INT_disable(int32_t interruptID)
 
 }
 
+
 uint32_t getActivateIrqNum(void)
 {
     return ( *(INTC_BASE_PTR + INTC_SIR_IRQ) &  IRQ_NUM_MASK);
 }
-
 
 
 void 
@@ -43,7 +49,6 @@ setIntRoute(uint32_t interruptID ,uint32_t route)
 {
     *(INTC_ILR_n_BASE_PTR + interruptID * 0x04) |= route ;
 }
-
 
 
 void cpsrEnableIRQ(void)
@@ -85,14 +90,6 @@ void setNewIrqAgr(){
 }
 
 
-/********************************************************************************************/
-
-
-
-//128個函數陣列
-static void (*irq_handler_array[IRQ_NUM])(void); // Make no assumptions on its NULL initialization
-
-
 uint32_t getIntVectorAddr(void)
 {
 	uint32_t intvector_addr;
@@ -106,9 +103,6 @@ uint32_t getIntVectorAddr(void)
 }
 
 
-
-
-
 static void irq_handler_array_init(void)
 {
 	int i;
@@ -117,6 +111,7 @@ static void irq_handler_array_init(void)
 		irq_handler_array[i] = NULL;
 
 }
+
 
 void interrupt_init(void)
 {
@@ -175,6 +170,7 @@ void disableINT_NUM(uint8_t irq_num)
 	}
 }
 
+
 void irq_isr_bind(uint8_t irq_num, void (*handler)(void))
 {
 	irq_handler_array[irq_num] = handler;
@@ -191,8 +187,7 @@ void irq_isr_unbind(uint8_t irq_num)
 }
 
 /************************************************************************************************/
-// __attribute__((interrupt("IRQ"))) 能正常返回
-//void irqs_handler(uint32_t *usrTaskContextOld)
+
 void __attribute__((interrupt("IRQ"))) irqs_handler(void)	
 {
 	//獲得 irq number以判斷是觸發那種中斷
@@ -209,8 +204,8 @@ void __attribute__((interrupt("IRQ"))) irqs_handler(void)
 
 	dataSyncBarrier();
 	*(INTC_BASE_PTR + INTC_CONTROL) = (NEW_IRQ_AGREE << 0); 
-
 }
+
 /************************************************************************************************/
 
 void timer0_ISR(uint32_t *usrTaskContextOld)
@@ -228,15 +223,11 @@ void timer0_ISR(uint32_t *usrTaskContextOld)
 	//prepare sched() context
 	schedFuncContextPrepare();
 
-	//dataSyncBarrier();
-
 	// 讓下一個irq能觸發
 	*(INTC_BASE_PTR + INTC_CONTROL) = (NEW_IRQ_AGREE << 0); 
 
 	_call_sched((uint32_t)schedFuncContextSPtr) ;
-
 }
-
 
 
 // 2021/1/15--Not work 
@@ -248,7 +239,6 @@ void timer2_ISR(void)
 	usrLedToggle(1);
 	usrLedToggle(0);
 	(DMTIMER2_BASE_PTR_t->IRQSTATUS) = (1 << 1);
-
 }
 
 /************************************************************************************************/

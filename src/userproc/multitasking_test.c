@@ -6,7 +6,7 @@
 
 #define LOOP_NUM	50
 
-TASK_t Task[6] ;
+TASK_INFO_t Task[6] ;
 
 
 void usertask0(void){
@@ -114,11 +114,9 @@ int multitasking_test(void)
 	taskCreate(&Task[3] ,&usertask3 ,stack_3->mempart_top_ptr-TASK_STACK_SIZE);
 	taskCreate(&Task[4] ,&usertask4 ,stack_4->mempart_top_ptr-TASK_STACK_SIZE);
 
-	//Init Task queue
+	// 將tasks加入ready list中
 	for(int32_t i =0 ;i<5 ;i++) task_enqueue(&Task[i]) ; 
 
-	//這邊應該是要lock住等上面五個task都完成才能繼續執行
-	//還沒實做, 先用for迴圈代替
 	for(int32_t i=0 ;i<1000000;i++);
 
 	return 0 ;

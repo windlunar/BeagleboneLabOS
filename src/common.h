@@ -60,9 +60,9 @@ static inline void dataSyncBarrier(void)
 // Rounding operations (efficient when n is a power of 2)
 // Round down to the nearest multiple of n
 //捨去到最接近n的倍數
-//cprintf("%d\n",ROUNDDOWN_4K(4100,4096));
+//cprintf("%d\n",ROUNDDOWN(4100,4096));
 //印出4096
-#define ROUNDDOWN_4K(a, n)			\
+#define ROUNDDOWN(a, n)			\
 ({									\
 	uint32_t __a = (uint32_t) (a);	\
 	(typeof(a)) (__a - __a % (n));	\
@@ -71,14 +71,13 @@ static inline void dataSyncBarrier(void)
 
 // Round up to the nearest multiple of n
 //進位到最接近n的倍數
-//cprintf("%d\n",ROUNDUP_4K(4100,4096));
+//cprintf("%d\n",ROUNDUP(4100,4096));
 //印出8192
-#define ROUNDUP_4K(a, n)						\
+#define ROUNDUP(a, n)						\
 ({												\
 	uint32_t __n = (uint32_t) (n);				\
-	(typeof(a)) (ROUNDDOWN_4K((uint32_t) (a) + __n - 1, __n));	\
+	(typeof(a)) (ROUNDDOWN((uint32_t) (a) + __n - 1, __n));	\
 })
 /************************************************************************************************/
-extern int32_t task_origin_end ;
 
 #endif

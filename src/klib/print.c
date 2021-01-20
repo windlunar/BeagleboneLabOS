@@ -3,77 +3,76 @@
 #include "../driver/uart.h"
 
 //__builtin_va_list is built in to the compiler ,not a macro
-/**
- * __builtin_va_start(ap, last)
- * __builtin_va_arg(ap, type)
- * __builtin_va_end(ap)
- * 
- *  ap point to the first var of variable-arguments(可變參數)
- * last point to the previous argument
- * ex printf(const char * ,...)
- * ap point to const char * ,last point to ...
- * */
+//
+// __builtin_va_start(ap, last)
+// __builtin_va_arg(ap, type)
+// __builtin_va_end(ap)
+// 
+// ap point to the first var of variable-arguments(可變參數)
+// last point to the previous argument
+// ex printf(const char * ,...)
+// ap point to const char * ,last point to ...
+//
 
-void terminal_printC(int32_t character){
-    //Print by the UART ,UART0 can be the terminal
+void terminal_printC(int32_t character)
+{
+    //Print by the UART ,UART0 is terminal output
     uart_putC(UART0_PTR ,character) ;
-    //Here,you can place the function to print the information.
-    //Like LCD, HDMI ...
 }
 
 
-void print_char(int32_t character){
+void print_char(int32_t character)
+{
     terminal_printC(character) ;
 }
 
 
-int32_t kprintf(const char *fmt, ...){
+int32_t kprintf(const char *fmt, ...)
+{
     /** __builtin_va_start初始化args, fmt指向輸入字串*/
     __builtin_va_list args ;
     __builtin_va_start(args ,fmt) ;
+
     int32_t i = kprint(fmt ,args) ;
 
     /** 結束獲取可變參數*/
     __builtin_va_end(args) ;
+
     return i ;
 }
 
 
-/** function pointer形式 :
- * void (*function)(int, int) ,void is the return value, (int, int) is the input args.
- * print_char is the function pointer point to function print_char
- * 
- * fmt is the string that is the first argument of kprintf function.
- * args is the variable arguments.
- */ 
-
+// fmt is the string that is the first argument of kprintf function.
+// args is the variable arguments.
+// 
 int32_t kprint(const char *fmt ,__builtin_va_list args){
     register int32_t character ;
     uint32_t va_val ;
     uint32_t base ;
 
-    while(1){
-        //printf("字串",) : 當字串不為%時, 將字串依序印出
-        //先判斷是否不等於, 然後才+1跳入while執行, 或是不執行
-        //當遇到%時,不執行該迴圈,and then add the pointer fmt to move to the next char after % (like c,s,d,u,p...)
-        // and then 往下執行label FORMAT_PRINT
+    while(1)
+    {
+        // printf("字串",) : 當字串不為%時, 將字串依序印出
+        // 先判斷是否不等於, 然後才+1跳入while執行, 或是不執行
+        // 當遇到%時, 代表下一個是格式化參數,不執行該迴圈
         character = *(uint8_t *)fmt ;
         while(character != '%')
         {
-            //如果遇到結束字元則跳出
+            // 如果遇到結束字元則跳出
             if(character == '\0')
             {
                 return 0 ; 
             }
-            //印出字元
+            // 印出字元
             print_char(character) ;
 
+            // 移動到%的下一個字元
             (uint8_t *)fmt++ ;
             character = *(uint8_t *)fmt ;
         }
 
-        //判斷the next char after % (like c,s,d,u,p...), 以格式化輸出(like c,s,d,u,p...)
-        //然後pointer fmt才+1 , move to the next char after (c,s,d,u,p...), 以繼續印出後面的字元
+        // 將字串的pointer加1 ,移動到%的下一個字元(like c,s,d,u,p...)
+        // 判斷%的下一個字元 (like c,s,d,u,p...), 的格式化輸出(like c,s,d,u,p...)
         (uint8_t *)fmt++ ;
         character = *(uint8_t *)fmt ;
 
@@ -89,8 +88,10 @@ int32_t kprint(const char *fmt ,__builtin_va_list args){
             case 'p':
                 print_char('0');
                 print_char('x');
+
                 //__builtin_va_arg返回可變參數的值
                 va_val = (uint32) __builtin_va_arg(args, void *);
+                
                 //格式為16進位
                 base = 16;
                 print_va(va_val, base);
@@ -123,7 +124,8 @@ int32_t kprint(const char *fmt ,__builtin_va_list args){
                 print_va(va_val, base);
                 break;                       
         }
-        
+
+        // 然後pointer fmt+1 , move to the next char after (c,s,d,u,p...), 以繼續印出後面的字元
         (uint8_t *)fmt++ ;
         character = *(uint8_t *)fmt ;
     }

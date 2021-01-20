@@ -7,12 +7,9 @@
 include ../../toolchain.make
 
 obj_destination_path = ../../obj
-ASFLAGS += -mapcs-32 -march=armv7-a
-CFLAGS  += -march=armv7-a -mtune=cortex-a8
 
 # -O2是gcc會自動優化
-#CFLAGS  += -march=armv7-a -mtune=cortex-a8 -O2
-#CFLAGS = -mcpu=cortex-a8 -marm -Wall -O2 -nostdlib -nostartfiles -ffreestanding -fstack-usage -Wstack-usage=256
+CFLAGS  += -march=armv7-a -mtune=cortex-a8
 
 
 c_obj=main.o debug.o task.o interrupt.o syscall.o memory.o

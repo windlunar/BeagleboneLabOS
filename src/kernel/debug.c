@@ -134,8 +134,8 @@ void mem_part_alloc_free_test()
 
 	kprintf("Test free\r\n") ;
 
-	free_part_mem(mem_part0) ;
-	free_part_mem(mem_part1) ;
+	free_mem_part(mem_part0) ;
+	free_mem_part(mem_part1) ;
 
 	print_free_part_list_from_end();
 	print_inuse_part_list_from_head();   
