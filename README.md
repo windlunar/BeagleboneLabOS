@@ -3,8 +3,6 @@
 Hi ,<br><br>
 嘗試從頭開始寫一個在arm架構上運行的作業系統 ,這個作業系統只包含kernel的部份 ,系統啟動需要的bootloader是使用U-boot.
 <br><br>
-之後會更新實做時的方法跟想法, 可以給也想要嘗試實現一個簡單的作業系統, 但不知道從哪下手的朋友, 一個小參考或是交流 
-<br><br>
 用於測試的實體硬體是使用 Beaglebone black這塊開發板 ,使用TI的AM3358處理器(ARMv7-A architecture).
 <br><br>
 
