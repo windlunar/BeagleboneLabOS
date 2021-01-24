@@ -57,6 +57,30 @@ Commands:
 <br><br>
 4. SD卡, 裡面只要灌 U-boot(Bootloader for Beaglebone black)
 <br>
+安裝u-boot :
+<br>
+可以直接使用u-boot資料夾內的MLO與u-boot.img檔案
+<br>
+將sd卡插入電腦, 我是使用sd卡讀卡機
+<br>
+查看sd卡 ,我的分區是 sdb
+
+        lsblk
+
+
+進到 arm-os-from-scratch/u-boot 資料夾
+
+        ./format-sdcard.sh sdb
+
+format-sdcard.sh 這個腳本檔來自下面這本書:
+<br>
+https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition
+
+一樣在  arm-os-from-scratch/u-boot 資料夾下:
+
+        cp MLO u-boot.img /media/<你的使用者名稱>/boot
+
+
 
 <br>
 5.安裝編譯環境 ,這是我使用的 arm gcc版本: "gcc-arm-none-eabi-6-2017-q2-update" 
