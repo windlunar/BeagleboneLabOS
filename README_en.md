@@ -21,7 +21,7 @@ System call:
 1. yield :Give up the usage of CPU ,switch to another task.<br>
 2. get_tid :Get the current running task id.<br>
 3. exit :Terminate the current running task.<br>
-3. fork :Create a new task by duplicate the task itself.<br>
+4. fork :Create a new task by duplicate the task itself.<br>
 
 Simple command line interface:
 =
@@ -56,6 +56,33 @@ Need to prepare:
 <br>
 4. SD card with U-boot
 <br>
+Install u-boot on sd card :
+<br><br>
+Use "MLO" and "u-boot.img" in folder u-boot
+<br>
+Plug  your sd card reader into PC
+<br>
+And check the device which is your sd card reader ,for example "sdb"
+
+        lsblk
+
+<br>
+Goto "arm-os-from-scratch/u-boot"   ,execute the following script to format sd card
+<br>
+Make sure your sd card is allocate at "sdb" ,otherwise the wrong device would be formatted.
+
+        ./format-sdcard.sh <your sd card device>
+
+The script format-sdcard.sh comes from this book:
+<br>
+https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition
+
+<br>
+一樣在  arm-os-from-scratch/u-boot 資料夾下:
+
+        cp MLO u-boot.img /media/<你的使用者名稱>/boot
+
+
 
 <br>
 2.Install "gcc-arm-none-eabi-6-2017-q2-update" to compile source code
