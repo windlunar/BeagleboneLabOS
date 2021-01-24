@@ -62,12 +62,12 @@ Use "MLO" and "u-boot.img" in folder u-boot
 <br>
 Plug  your sd card reader into PC
 <br>
-And check the device which is your sd card reader ,for example "sdb"
+And check which is your sd card reader ,for example "sdb"
 
         lsblk
 
 <br>
-Goto "arm-os-from-scratch/u-boot"   ,execute the following script to format sd card
+Go to "arm-os-from-scratch/u-boot"   ,execute the following script to format sd card
 <br>
 Make sure your sd card is allocate at "sdb" ,otherwise the wrong device would be formatted.
 
