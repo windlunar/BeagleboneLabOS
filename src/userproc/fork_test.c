@@ -31,16 +31,14 @@ void fork_test_main()
 	if(r != 0)
 	{
 		for(int32_t i=0 ;i<100000;i++);
-		int32_t ptid =-1 ;
-		syscall_get_tid(&ptid) ;
+		int ptid = syscall_get_tid() ;
 		kprintf("I'm parrent task ,tid=%d\r\n",ptid);
 		syscall_exit() ;
 
 	}
 	else
 	{
-		int32_t ctid =-1 ;
-		syscall_get_tid(&ctid) ;
+		int ctid = syscall_get_tid() ;
 		kprintf("I'm child task., tid=%d\r\n" ,ctid) ;
 		syscall_exit() ;
 	}

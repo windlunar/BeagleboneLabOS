@@ -17,14 +17,14 @@ extern void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,vo
 //svc syscall call by syscall_handler
 void __print_hello(uint32_t input) ;
 void __yield(uint32_t *usrTaskContextOld);
-void __get_tid(uint32_t *tid_return);
+void __get_tid(uint32_t *usrTaskContextOld);
 void __exit();
 void __fork(uint32_t *usrTaskContextOld ,uint32_t *args);
 
 //syscall call by user task ,define in syscall_asm.s
 extern void syscall_print_hello(uint32_t *input) ;
 extern void syscall_yield();
-extern void syscall_get_tid(uint32_t *tid_return);
+extern int syscall_get_tid();
 extern void syscall_exit();
 extern int syscall_fork(uint32_t *args);
 

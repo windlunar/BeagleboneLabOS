@@ -65,11 +65,11 @@ syscall_yield:
 .align	4
 syscall_get_tid:
 	//保存傳入參數
-	push {r0 ,r2 ,lr}
+	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_get_tid
 	svc 0x00
-	pop	{r0 ,r2 ,lr}
+	pop	{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
 	bx lr	//返回 user proc
 	

@@ -22,7 +22,7 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         break;   
 
     case SYSCALL_ID_get_tid:
-        __get_tid((uint32_t *)args) ;
+        __get_tid(usrTaskContextOld) ;
         break;  
 
     case SYSCALL_ID_exit:
@@ -44,6 +44,7 @@ void  __print_hello(uint32_t input)
     kprintf("Hello! This is my first system call,Input value =%d\r\n" ,input) ;
 }
 
+
 void __yield(uint32_t *usrTaskContextOld)
 {
 	// Save old context
@@ -58,9 +59,11 @@ void __yield(uint32_t *usrTaskContextOld)
 	_call_sched((uint32_t)schedFuncContextSPtr) ;
 }
 
-void __get_tid(uint32_t *tid_return)
+
+void __get_tid(uint32_t *usrTaskContextOld)
 {
-    *tid_return = curr_running_task->task_id ;
+    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    old_context->r0 = curr_running_task->task_id ;
 }
 
 
