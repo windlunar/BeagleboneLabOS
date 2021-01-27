@@ -96,46 +96,52 @@ void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
     MEM_PART_INFO_t *n_mempart = alloc_one_mem_part();
     n_mempart->part_status = INUSE_FULL ;
 
+
     // 分配 描述 task的TASK_INFO_t結構體, 其起始位置設定為 剛剛分配的記憶體空間的起始位址
     TASK_INFO_t *ntask = (TASK_INFO_t *)n_mempart->m_start ;
 
+
     // 找目前正在執行的task(父task)的stack空間屬於那一個 memory part
     MEM_PART_INFO_t *curr_mpinfo = which_mem_part(curr_running_task->stk_bottom) ;
+
 
     // 複製父task使用的記憶體區段內的data給子task的記憶體區段, 包含stack空間內所有內容
     _memcpy((void *)(n_mempart->m_start)
             ,(void *)(curr_mpinfo->m_start)
             ,PART_SIZE) ;
 
+
     // 複製描述 task的TASK_INFO_t結構體
     _memcpy((void *)ntask ,(void *)curr_running_task ,sizeof(TASK_INFO_t));
 
+
     // Stack pointer要指向stack中相同的相對位址上
-    uint32_t old_sp = (uint32_t)usrTaskContextOld ;
-    uint32_t new_sp = (uint32_t)(n_mempart->m_start) ;
-
-    old_sp &= 0xFFF ;
-    new_sp |= old_sp ;
-
-    ntask->task_context = (USR_TASK_CONTEXT_t *)new_sp ;
-
-    // 設定子stack的 task id
-	taskid++ ;
-	ntask->task_id = taskid;
+    // (curr_running_task->stk_top - usrTaskContextOld)
+    //  = old context相對於stack top 的offset
+    ntask->stk_bottom = stktop2bottom(n_mempart->m_top) ;
+    ntask->stk_top = n_mempart->m_top ;
+    ntask->task_context = (USR_TASK_CONTEXT_t *)(ntask->stk_top - (curr_running_task->stk_top - usrTaskContextOld) ) ;
+    
 
     // 設定TASK_INFO_t結構體的其他內容
     ntask->next_ptr = NULL ;
     ntask->prev_ptr = NULL ;
     ntask->task_status = TASK_READY ;
     ntask->taskCallBack = curr_running_task->taskCallBack ;
-    ntask->stk_bottom = n_mempart->m_top - (TASK_STACK_SIZE/4) +1  ;
 
+
+    // 設定子stack的 task id
+	taskid++ ;
+	ntask->task_id = taskid;
     
+
     // 將子task放入 rady list中
     task_enqueue(ntask) ;
 
+
     // return child tid
     *args = ntask->task_id ;
+
 
     //設定回傳值
     ntask->task_context->r0 = 0 ;
