@@ -25,7 +25,7 @@ void fork_test_main()
 	kprintf("Now test syscall fork function.\r\n") ;
 
 	// 複製task自己
-	int r = syscall_fork(&child_tid) ;
+	int r = syscall_fork() ;
 	kprintf("After fork ,r_=%d\r\n",r);
 
 	if(r != 0)

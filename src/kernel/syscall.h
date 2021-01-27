@@ -19,14 +19,14 @@ void __print_hello(uint32_t input) ;
 void __yield(uint32_t *usrTaskContextOld);
 void __get_tid(uint32_t *usrTaskContextOld);
 void __exit();
-void __fork(uint32_t *usrTaskContextOld ,uint32_t *args);
+void __fork(uint32_t *usrTaskContextOld);
 
 //syscall call by user task ,define in syscall_asm.s
 extern void syscall_print_hello(uint32_t *input) ;
 extern void syscall_yield();
 extern int syscall_get_tid();
 extern void syscall_exit();
-extern int syscall_fork(uint32_t *args);
+extern int syscall_fork();
 
 
 

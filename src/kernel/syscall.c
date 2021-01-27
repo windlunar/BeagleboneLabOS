@@ -30,7 +30,7 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         break;  
 
     case SYSCALL_ID_fork:
-        __fork(usrTaskContextOld ,(uint32_t *)args) ;
+        __fork(usrTaskContextOld) ;
         break;  
 
     default:
@@ -92,7 +92,7 @@ void __exit()
 
 
 // 複製一份相同的stack ,跟 TASK_INFO_t 結構體
-void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
+void __fork(uint32_t *usrTaskContextOld)
 {    
     // Alloc 一個 Memory Part,並回傳描述該part的結構體 MEM_PART_INFO_t
     // 並將該 part使用狀況設為 INUSE_FULL ,只屬於這個task使用
@@ -141,10 +141,6 @@ void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
 
     // 將子task放入 rady list中
     task_enqueue(ntask) ;
-
-
-    // return child tid
-    *args = ntask->task_id ;
 
 
     //設定回傳值
