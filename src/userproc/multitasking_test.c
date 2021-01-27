@@ -4,6 +4,7 @@
 #include "../driver/uart.h"
 #include "../kernel/debug.h"
 
+
 #define LOOP_NUM	50
 
 TASK_INFO_t Task[5] ;
@@ -108,11 +109,11 @@ int multitasking_test(void)
 	stack_3->part_status = INUSE_FULL ;
 	stack_4->part_status = INUSE_FULL ;
 
-	taskCreate(&Task[0] ,&usertask0 ,stack_0->m_top-(TASK_STACK_SIZE/4)+1);
-	taskCreate(&Task[1] ,&usertask1 ,stack_1->m_top-(TASK_STACK_SIZE/4)+1);
-	taskCreate(&Task[2] ,&usertask2 ,stack_2->m_top-(TASK_STACK_SIZE/4)+1);
-	taskCreate(&Task[3] ,&usertask3 ,stack_3->m_top-(TASK_STACK_SIZE/4)+1);
-	taskCreate(&Task[4] ,&usertask4 ,stack_4->m_top-(TASK_STACK_SIZE/4)+1);
+	taskCreate(&Task[0] ,&usertask0 ,stktop2bottom(stack_0->m_top));
+	taskCreate(&Task[1] ,&usertask1 ,stktop2bottom(stack_1->m_top));
+	taskCreate(&Task[2] ,&usertask2 ,stktop2bottom(stack_2->m_top));
+	taskCreate(&Task[3] ,&usertask3 ,stktop2bottom(stack_3->m_top));
+	taskCreate(&Task[4] ,&usertask4 ,stktop2bottom(stack_4->m_top));
 
 	// 將tasks加入ready list中
 	for(int32_t i =0 ;i<5 ;i++) task_enqueue(&Task[i]) ; 

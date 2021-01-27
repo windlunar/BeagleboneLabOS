@@ -22,6 +22,8 @@ extern uint32_t *kernal_end ;
 #define FIRST_PART_ADDR     (ROUNDUP((uint32_t)kernal_end ,PART_SIZE))
 #define FIRST_PART_PTR      (uint32_t *)FIRST_PART_ADDR     
 
+
+
 /***********************************************************************************************/
 // Structs
 /***********************************************************************************************/
