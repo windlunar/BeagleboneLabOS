@@ -47,7 +47,7 @@ void  __print_hello(uint32_t input)
 void __yield(uint32_t *usrTaskContextOld)
 {
 	// Save old context
-	curr_running_task->task_context_sp = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+	curr_running_task->task_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
 
 	// Change the task status to ready
 	curr_running_task->task_status = TASK_READY ;
@@ -75,10 +75,10 @@ void __exit()
     remove_from_readylist(curr_running_task) ;
 
     //釋放空間
-    MEM_PART_INFO_t *curr_mpinfo = which_mem_part(curr_running_task->task_stack_ptr) ;
+    MEM_PART_INFO_t *curr_mpinfo = which_mem_part(curr_running_task->task_stack_bottom) ;
     free_mem_part(curr_mpinfo) ;
   
-    curr_running_task->task_stack_ptr = NULL ;
+    curr_running_task->task_stack_bottom = NULL ;
     curr_running_task = NULL ;
 
 	//prepare sched() context
@@ -100,7 +100,7 @@ void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
     TASK_INFO_t *ntask = (TASK_INFO_t *)n_mempart->mempart_start_ptr ;
 
     // 找目前正在執行的task(父task)的stack空間屬於那一個 memory part
-    MEM_PART_INFO_t *curr_mpinfo = which_mem_part(curr_running_task->task_stack_ptr) ;
+    MEM_PART_INFO_t *curr_mpinfo = which_mem_part(curr_running_task->task_stack_bottom) ;
 
     // 複製父task使用的記憶體區段內的data給子task的記憶體區段, 包含stack空間內所有內容
     _memcpy((void *)(n_mempart->mempart_start_ptr)
@@ -117,7 +117,7 @@ void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
     old_sp &= 0xFFF ;
     new_sp |= old_sp ;
 
-    ntask->task_context_sp = (USR_TASK_CONTEXT_t *)new_sp ;
+    ntask->task_context = (USR_TASK_CONTEXT_t *)new_sp ;
 
     // 設定子stack的 task id
 	taskid++ ;
@@ -128,13 +128,18 @@ void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
     ntask->prev_ptr = NULL ;
     ntask->task_status = TASK_READY ;
     ntask->taskCallBack = curr_running_task->taskCallBack ;
-    ntask->task_stack_ptr = n_mempart->mempart_top_ptr-TASK_STACK_SIZE ;
+    ntask->task_stack_bottom = n_mempart->mempart_top_ptr-TASK_STACK_SIZE ;
     
     // 將子task放入 rady list中
     task_enqueue(ntask) ;
 
     // return child tid
     *args = ntask->task_id ;
+
+    //設定回傳值
+    ntask->task_context->r0 = 0 ;
+    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    old_context->r0 = ntask->task_id ;
     
 }
 /************************************************************************************************/

@@ -26,7 +26,7 @@ extern void syscall_print_hello(uint32_t *input) ;
 extern void syscall_yield();
 extern void syscall_get_tid(uint32_t *tid_return);
 extern void syscall_exit();
-extern void syscall_fork(uint32_t *args);
+extern int syscall_fork(uint32_t *args);
 
 
 

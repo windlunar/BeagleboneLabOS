@@ -376,14 +376,21 @@ uint32_t is_blk_init(MEM_PART_INFO_t *mpinfo)
 // memblks_init();
 // blk_alloc() ;
 /***********************************************************************************************/
-void *demand_a_blk()
+void *demand_a_blk(int for_task_stack)
 {
+    int aval_blk_size = 0;
+    if(for_task_stack == 1){
+        aval_blk_size = 512-4 ;
+    }else{
+        aval_blk_size = DEFAULT_AVAL_BLK_SIZE ;
+    }
+
     MEM_PART_INFO_t *mpinfo ;
     // 尚未 alloc 一個 mem part
     if(aleast_a_mempart_alloc() == FALSE)
     {
         mpinfo = alloc_one_mem_part() ;
-        mpinfo = memblks_init(mpinfo ,60);
+        mpinfo = memblks_init(mpinfo ,aval_blk_size);
         void *p = blk_alloc(mpinfo);
         return p ;
     }
@@ -395,7 +402,7 @@ void *demand_a_blk()
     //預設1個block 64bytes(前4個用作blks linklist指標)
     if(mpinfo == NULL){
         mpinfo = alloc_one_mem_part() ;
-        mpinfo = memblks_init(mpinfo ,DEFAULT_AVAL_BLK_SIZE);  
+        mpinfo = memblks_init(mpinfo ,aval_blk_size);  
         void *p = blk_alloc(mpinfo);
         return p ;
     }
@@ -404,7 +411,7 @@ void *demand_a_blk()
     //判斷有無 init blocks
     if(is_blk_init(mpinfo) == FALSE)
     {
-        mpinfo = memblks_init(mpinfo ,DEFAULT_AVAL_BLK_SIZE);
+        mpinfo = memblks_init(mpinfo ,aval_blk_size);
         void *p = blk_alloc(mpinfo);
         return p ;       
     }
@@ -417,7 +424,7 @@ void *demand_a_blk()
 
 void *kmalloc(void)
 {
-    return demand_a_blk() ;
+    return demand_a_blk(0) ;
 }
 
 

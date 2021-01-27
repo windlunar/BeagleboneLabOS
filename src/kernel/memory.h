@@ -76,7 +76,7 @@ MEM_PART_INFO_t *find_aval_inuse_mempart(void);
 //主要
 MEM_PART_INFO_t * memblks_init(MEM_PART_INFO_t *mpinfo ,uint32_t blk_size);
 void *blk_alloc(MEM_PART_INFO_t *mpinfo);
-void *demand_a_blk();
+void *demand_a_blk(int for_task_stack);
 void free_blk(void *blk_aval_start);
 
 //次要

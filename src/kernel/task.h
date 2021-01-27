@@ -13,7 +13,7 @@ extern int32_t taskid;
 #define TASK_TERMINATE  2
 #define TASK_SUSPEND    3
 /***********************************************************************************************/
-#define TASK_STACK_SIZE 256
+#define TASK_STACK_SIZE 512
 #define TASK_NUM_MAX 32
 
 /***********************************************************************************************/
@@ -101,7 +101,8 @@ struct _TASK
     struct _TASK *prev_ptr ;   
 
     // task 的 stack空間 的pointer
-    uint32_t *task_stack_ptr ;  
+    uint32_t *task_stack_bottom ;
+    uint32_t *task_stack_top ;
 
     // task function pointer
     void (*taskCallBack)() ;
@@ -109,8 +110,8 @@ struct _TASK
     int32_t task_id;
     int32_t task_status ;
 
-    // task context
-    USR_TASK_CONTEXT_t *task_context_sp ; 
+    // task context ,存放在stack中
+    USR_TASK_CONTEXT_t *task_context ; 
 
     //int32_t priority ; //not implement yet ;
 
@@ -129,7 +130,7 @@ extern void _call_sched(uint32_t schedContext) ;    //定義在task_asm.s
 void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
 
 
-uint32_t taskCreate(TASK_INFO_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack);
+int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,uint32_t *task_stack);
 void task_enqueue(TASK_INFO_t *task_node) ;
 TASK_INFO_t *task_dequeue() ;
 void remove_from_readylist(TASK_INFO_t *task_node);

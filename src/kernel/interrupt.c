@@ -214,7 +214,7 @@ void timer0_ISR(uint32_t *usrTaskContextOld)
 	usrLedToggle(3);
 
 	// Save old context
-	curr_running_task->task_context_sp = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+	curr_running_task->task_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
 
 	// Change the task status to ready
 	curr_running_task->task_status = TASK_READY ;

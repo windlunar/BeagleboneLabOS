@@ -33,7 +33,7 @@ void sched(void)
 			curr_running_task = _head ;
 
 			//Switch to user mode and run the task
-			TaskRun((uint32_t *)_head->task_context_sp) ;
+			TaskRun((uint32_t *)_head->task_context) ;
 		}
 	}
 }
@@ -59,29 +59,29 @@ void schedFuncContextPrepare(void)
 // lr 存放該 user自己本身的 lr值(如返回其他函數用)
 // 所以要把 task 的 entry位址放在 USR_TASK_CONTEXT_t 的 r9_return_lr上
 //
-uint32_t taskCreate(TASK_INFO_t *task_ptr ,void (*taskFunc)() ,uint32_t *task_stack)
+int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,uint32_t *task_stack)
 {
 	taskid++ ;
-	task_ptr->task_id = taskid;
+	task->task_id = taskid;
 
 	//設定task stack的起始位址(low address開始)
-	task_ptr->task_stack_ptr = task_stack ;
+	task->task_stack_bottom = task_stack ;
 
 	//因為 task是從高位址往下增長 ,所以找 stack top(stack的最高位址)
-	uint32_t *task_stack_top = task_ptr->task_stack_ptr + TASK_STACK_SIZE;
+	task->task_stack_top = task->task_stack_bottom + (TASK_STACK_SIZE-1) ;
 
 	//設定sp
-    task_ptr->task_context_sp = (USR_TASK_CONTEXT_t *)(task_stack_top - 16);
+	task->task_context = (USR_TASK_CONTEXT_t *)(task->task_stack_top - 15);
 
 	//設定task的跳轉address
-	task_ptr->task_context_sp->r9_return_lr = (uint32_t) taskFunc;
-	task_ptr->taskCallBack = taskFunc ;
+	task->task_context->r9_return_lr = (uint32_t) taskFunc;
+	task->taskCallBack = taskFunc ;
 
 	//設定task的狀態為ready
-    task_ptr->task_status = TASK_READY ;
+    task->task_status = TASK_READY ;
 
 	//回傳task id
-	return task_ptr->task_id ;
+	return task->task_id ;
 
 }
 
