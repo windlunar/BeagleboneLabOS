@@ -97,8 +97,9 @@ void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
     n_mempart->part_status = INUSE_FULL ;
 
 
-    // 分配 描述 task的TASK_INFO_t結構體, 其起始位置設定為 剛剛分配的記憶體空間的起始位址
-    TASK_INFO_t *ntask = (TASK_INFO_t *)n_mempart->m_start ;
+    // 分配 描述 task的TASK_INFO_t結構體, 其起始位置設定為 stack bottom
+    // 這樣就能空出前面 4096 -512 bytes的連續空間
+    TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_mempart->m_top) ;
 
 
     // 找目前正在執行的task(父task)的stack空間屬於那一個 memory part
