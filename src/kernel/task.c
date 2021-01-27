@@ -4,7 +4,7 @@
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
 TASK_INFO_t task_origin ;
-uint32_t task_origin_stack[TASK_STACK_SIZE] ;
+uint32_t task_origin_stack[TASK_STACK_SIZE/4] ;
 TASK_INFO_t *task_ready_queue_head = NULL;
 TASK_INFO_t *curr_running_task = NULL ;
 
@@ -68,7 +68,7 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,uint32_t *task_stack)
 	task->stk_bottom = task_stack ;
 
 	//因為 task是從高位址往下增長 ,所以找 stack top(stack的最高位址)
-	task->stk_top = task->stk_bottom + (TASK_STACK_SIZE-1) ;
+	task->stk_top = task->stk_bottom + (TASK_STACK_SIZE/4) - 1 ;
 
 	//設定sp
 	task->task_context = (USR_TASK_CONTEXT_t *)(task->stk_top - 15);

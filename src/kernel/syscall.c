@@ -128,7 +128,8 @@ void __fork(uint32_t *usrTaskContextOld ,uint32_t *args)
     ntask->prev_ptr = NULL ;
     ntask->task_status = TASK_READY ;
     ntask->taskCallBack = curr_running_task->taskCallBack ;
-    ntask->stk_bottom = n_mempart->m_top-TASK_STACK_SIZE ;
+    ntask->stk_bottom = n_mempart->m_top - (TASK_STACK_SIZE/4) +1  ;
+
     
     // 將子task放入 rady list中
     task_enqueue(ntask) ;

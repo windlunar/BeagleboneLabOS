@@ -121,7 +121,7 @@ extern TASK_INFO_t *task_ready_queue_head;
 /***********************************************************************************************/
 
 extern TASK_INFO_t task_origin ;
-extern uint32_t task_origin_stack[TASK_STACK_SIZE] ;
+extern uint32_t task_origin_stack[TASK_STACK_SIZE/4] ;
 extern TASK_INFO_t *curr_running_task ;
 /***********************************************************************************************/
 void sched(void);
