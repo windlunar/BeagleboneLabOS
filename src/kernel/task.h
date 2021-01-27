@@ -130,7 +130,7 @@ extern void _call_sched(uint32_t schedContext) ;    //定義在task_asm.s
 void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
 
 
-int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,uint32_t *task_stack);
+int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack);
 void task_enqueue(TASK_INFO_t *task_node) ;
 TASK_INFO_t *task_dequeue() ;
 void remove_from_readylist(TASK_INFO_t *task_node);

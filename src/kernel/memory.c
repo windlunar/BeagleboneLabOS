@@ -300,7 +300,7 @@ void *blk_alloc(MEM_PART_INFO_t *mpinfo)
 }
 
 
-MEM_PART_INFO_t *which_mem_part(uint32_t *address)
+MEM_PART_INFO_t *which_mem_part(void *address)
 {
     uint32_t *mempart = (uint32_t *)ROUNDDOWN((uint32_t)address ,PART_SIZE) ;
 

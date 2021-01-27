@@ -59,8 +59,10 @@ void schedFuncContextPrepare(void)
 // lr 存放該 user自己本身的 lr值(如返回其他函數用)
 // 所以要把 task 的 entry位址放在 USR_TASK_CONTEXT_t 的 r9_return_lr上
 //
-int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,uint32_t *task_stack)
+int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack)
 {
+	uint32_t *task_stack = (uint32_t *)stack ;
+
 	taskid++ ;
 	task->task_id = taskid;
 

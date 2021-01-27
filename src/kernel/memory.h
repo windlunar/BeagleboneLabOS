@@ -80,7 +80,7 @@ void *demand_a_blk(int for_task_stack);
 void free_blk(void *blk_aval_start);
 
 //次要
-MEM_PART_INFO_t *which_mem_part(uint32_t *address);
+MEM_PART_INFO_t *which_mem_part(void *address);
 uint32_t *find_prev_blk(MEM_PART_INFO_t *mempart ,uint32_t *blk_start);
 void put_to_blklist_end(uint32_t *blkstart);
 uint32_t is_blk_init(MEM_PART_INFO_t *mpinfo) ;
