@@ -10,7 +10,7 @@ int fork_test()
 {
 	MEM_PART_INFO_t *mempart = alloc_one_mem_part();
 	mempart->part_status = INUSE_FULL ;
-	taskCreate(&Task0 ,&fork_test_main ,mempart->mempart_top_ptr-TASK_STACK_SIZE);
+	taskCreate(&Task0 ,&fork_test_main ,mempart->m_top-TASK_STACK_SIZE);
 	task_enqueue(&Task0) ; 
 	
 	return 0 ;

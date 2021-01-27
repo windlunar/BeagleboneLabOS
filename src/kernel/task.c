@@ -65,13 +65,13 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,uint32_t *task_stack)
 	task->task_id = taskid;
 
 	//設定task stack的起始位址(low address開始)
-	task->task_stack_bottom = task_stack ;
+	task->stk_bottom = task_stack ;
 
 	//因為 task是從高位址往下增長 ,所以找 stack top(stack的最高位址)
-	task->task_stack_top = task->task_stack_bottom + (TASK_STACK_SIZE-1) ;
+	task->stk_top = task->stk_bottom + (TASK_STACK_SIZE-1) ;
 
 	//設定sp
-	task->task_context = (USR_TASK_CONTEXT_t *)(task->task_stack_top - 15);
+	task->task_context = (USR_TASK_CONTEXT_t *)(task->stk_top - 15);
 
 	//設定task的跳轉address
 	task->task_context->r9_return_lr = (uint32_t) taskFunc;

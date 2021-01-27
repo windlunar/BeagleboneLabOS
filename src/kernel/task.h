@@ -101,8 +101,8 @@ struct _TASK
     struct _TASK *prev_ptr ;   
 
     // task 的 stack空間 的pointer
-    uint32_t *task_stack_bottom ;
-    uint32_t *task_stack_top ;
+    uint32_t *stk_bottom ;
+    uint32_t *stk_top ;
 
     // task function pointer
     void (*taskCallBack)() ;
