@@ -70,7 +70,7 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack)
 	task->stk_bottom = task_stack ;
 
 	//因為 task是從高位址往下增長 ,所以找 stack top(stack的最高位址)
-	task->stk_top = task->stk_bottom + (TASK_STACK_SIZE/4) - 1 ;
+	task->stk_top = stkbottom2top(task->stk_bottom) ;
 
 	//設定sp
 	task->task_context = (USR_TASK_CONTEXT_t *)(task->stk_top - 15);
