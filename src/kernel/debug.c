@@ -68,129 +68,129 @@ void print_R0_R1_R2_R3(uint32_t r0 ,uint32_t r1 ,uint32_t r2 ,uint32_t r3){
 }
 
 
-void print_free_part_list_from_head()
+void print_free_area_list_from_head()
 {
-    MEM_PART_INFO_t *head = free_part_list_head ;
+    MEM_AREA_INFO_t *head = free_area_list_head ;
 
     //Just print first 10 nodes for test
     kprintf("Print free list from head\r\n");
     for(int i =0 ;i<10;i++){
         kprintf("%p  ",head->m_start) ;
-        kprintf("mem part id:%d  ",head->part_id) ;
-        kprintf("mem part status:%d\r\n",head->part_status) ;
+        kprintf("mem area id:%d  ",head->area_id) ;
+        kprintf("mem area status:%d\r\n",head->area_status) ;
         head = head->next_ptr ;
     }
 }
 
 
-void print_free_part_list_from_end()
+void print_free_area_list_from_end()
 {
-    MEM_PART_INFO_t *head = free_part_list_head ;
+    MEM_AREA_INFO_t *head = free_area_list_head ;
 
     while(head->next_ptr != NULL){
         head = head->next_ptr ;
     }
-    MEM_PART_INFO_t *end = head ;
+    MEM_AREA_INFO_t *end = head ;
 
     //Just print first 10 nodes for test
     kprintf("Print free list from end\r\n");
     for(int i =0 ;i<10;i++){
         kprintf("%p  ",end->m_start) ;
-        kprintf("mem part id:%d  ",end->part_id) ;
-        kprintf("mem part status:%d\r\n",end->part_status) ;
+        kprintf("mem area id:%d  ",end->area_id) ;
+        kprintf("mem area status:%d\r\n",end->area_status) ;
         end = end->prev_ptr ;
     }
 }
 
 
-void print_inuse_part_list_from_head()
+void print_inuse_area_list_from_head()
 {
-    MEM_PART_INFO_t *head = inuse_part_list_head ;
+    MEM_AREA_INFO_t *head = inuse_area_list_head ;
 
     //Just print first 10 nodes for test
     kprintf("Print inuse list\r\n");
     for(int i =0 ;i<10;i++){
         kprintf("%p  ",head->m_start) ;
-        kprintf("mem part id:%d  ",head->part_id) ;
-        kprintf("mem part status:%d\r\n",head->part_status) ;
+        kprintf("mem area id:%d  ",head->area_id) ;
+        kprintf("mem area status:%d\r\n",head->area_status) ;
 
         if(head->next_ptr == NULL) break ;
         head = head->next_ptr ;
     }
 }
 
-void mem_part_alloc_free_test()
+void mem_area_alloc_free_test()
 {
-	print_free_part_list_from_head();
+	print_free_area_list_from_head();
 
 	kprintf("Test alloc\r\n") ;
 
-	MEM_PART_INFO_t *mem_part0 = memPartAlloc() ;
-	MEM_PART_INFO_t *mem_part1 = memPartAlloc() ;
-	MEM_PART_INFO_t *mem_part2 = memPartAlloc() ;
+	MEM_AREA_INFO_t *mem_area0 = memAreaAlloc() ;
+	MEM_AREA_INFO_t *mem_area1 = memAreaAlloc() ;
+	MEM_AREA_INFO_t *mem_area2 = memAreaAlloc() ;
 
-	print_free_part_list_from_head();
-	print_inuse_part_list_from_head();
+	print_free_area_list_from_head();
+	print_inuse_area_list_from_head();
 
 	kprintf("Test free\r\n") ;
 
-	free_mem_part(mem_part0) ;
-	free_mem_part(mem_part1) ;
+	free_mem_area(mem_area0) ;
+	free_mem_area(mem_area1) ;
 
-	print_free_part_list_from_end();
-	print_inuse_part_list_from_head();   
+	print_free_area_list_from_end();
+	print_inuse_area_list_from_head();   
 
-    kprintf("Part's blk_head_ptr addr =%p\r\n",mem_part2->blk_head_ptr) ;
+    kprintf("Area's blk_head_ptr addr =%p\r\n",mem_area2->blk_head_ptr) ;
 
     uint32_t *p= kmalloc() ;
     kprintf("p =%p\r\n" ,p) ;
-    kprintf("Part's start addr =%p\r\n" ,mem_part2->m_start) ;
-    kprintf("Part's blk_head_ptr addr =%p\r\n",mem_part2->blk_head_ptr) ;
+    kprintf("Area's start addr =%p\r\n" ,mem_area2->m_start) ;
+    kprintf("Area's blk_head_ptr addr =%p\r\n",mem_area2->blk_head_ptr) ;
 
 }
 
 
-void mem_part_blk_init_test()
+void mem_area_blk_init_test()
 {
-	print_free_part_list_from_head();
+	print_free_area_list_from_head();
 
 	kprintf("Test alloc\r\n") ;
 
-	MEM_PART_INFO_t *mem_part = memPartAlloc() ;
+	MEM_AREA_INFO_t *mem_area = memAreaAlloc() ;
 
-	print_free_part_list_from_head();
-	print_inuse_part_list_from_head();
+	print_free_area_list_from_head();
+	print_inuse_area_list_from_head();
 
-    memblks_init(mem_part ,28) ;
-    kprintf("Part's blk_head_ptr addr =%p\r\n",mem_part->blk_head_ptr) ;
+    memblks_init(mem_area ,28) ;
+    kprintf("Area's blk_head_ptr addr =%p\r\n",mem_area->blk_head_ptr) ;
 
-    uint32_t *head = mem_part->blk_head_ptr ;
+    uint32_t *head = mem_area->blk_head_ptr ;
     while(head != NULL)
     {
-        kprintf("Part's blks link addr =%p ,%x\r\n",head ,*head) ;
+        kprintf("Area's blks link addr =%p ,%x\r\n",head ,*head) ;
         head = (uint32_t *)*head ;
     }
-    kprintf("Part's blks link addr =%p\r\n",head) ;
+    kprintf("Area's blks link addr =%p\r\n",head) ;
 
-    uint32_t *p1 = blk_alloc(mem_part) ;
+    uint32_t *p1 = blk_alloc(mem_area) ;
     kprintf("return ptr =%p\r\n" ,p1) ;
-    kprintf("blk head =%p\r\n",mem_part->blk_head_ptr) ;
+    kprintf("blk head =%p\r\n",mem_area->blk_head_ptr) ;
 
-    uint32_t *p2 = blk_alloc(mem_part) ;
+    uint32_t *p2 = blk_alloc(mem_area) ;
     kprintf("return ptr =%p\r\n" ,p2) ;
-    kprintf("blk head =%p\r\n",mem_part->blk_head_ptr) ;
+    kprintf("blk head =%p\r\n",mem_area->blk_head_ptr) ;
 
 
     kprintf("Test free_blk\r\n") ;
     free_blk(p2) ;
-    print_from_blk_head(mem_part) ;
+    print_from_blk_head(mem_area) ;
 
 }
 
 
-void print_from_blk_head(MEM_PART_INFO_t *mem_part)
+void print_from_blk_head(MEM_AREA_INFO_t *mem_area)
 {
-    uint32_t *blkstart = mem_part->blk_head_ptr ;
+    uint32_t *blkstart = mem_area->blk_head_ptr ;
 
     while(*blkstart != 0)
     {

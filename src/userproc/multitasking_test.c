@@ -8,7 +8,6 @@
 
 #define LOOP_NUM	50
 
-TASK_INFO_t Task[5] ;
 
 
 void usertask0(void){

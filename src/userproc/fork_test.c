@@ -1,11 +1,10 @@
 #include "usrtasks.h"
 #include "../klib/print.h"
-#include "../kernel/task.h"
+//#include "../kernel/task.h"
 #include "../klib/queue.h"
 #include "../kernel/memory.h"
 #include "../klib/usyscall.h"
 
-TASK_INFO_t Task0 ;
 
 int fork_test()
 {

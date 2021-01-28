@@ -1,4 +1,4 @@
-#include "../kernel/task.h"
+//#include "../kernel/task.h"
 #include "../kernel/memory.h"
 #include "../driver/uart.h"
 #include "../klib/print.h"
@@ -9,7 +9,6 @@
 #include "../klib/usyscall.h"
 #include "usrtasks.h"
 
-TASK_INFO_t Task[6] ;
 
 #define TEST_CMD	"test\0"
 

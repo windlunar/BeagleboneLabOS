@@ -35,7 +35,7 @@ int kernal_entry(void)
 	kprintf("CPSR register %x\r\n", readCpsr());
 	kprintf("Exception Vector Base = %x\r\n",getIntVectorAddr());
 	kprintf("kernel_end address :%p\r\n" ,kernal_end) ;
-	kprintf("First part of memeory address start at :%p\r\n" ,FIRST_PART_PTR) ;
+	kprintf("First area of memeory address start at :%p\r\n" ,FIRST_AREA_PTR) ;
 
 	usrLedInit();
 	kprintf("\nInitialize user leds...\r\n") ;
@@ -60,10 +60,10 @@ int kernal_entry(void)
 	kprintf("Init Tasks Origin.\r\n");
 
 /*************************************************************************************************
- * Init memory-part lists
+ * Init memory-area lists
 *************************************************************************************************/
 
-	mem_parts_list_init();
+	mem_areas_list_init();
 
 /*************************************************************************************************/
 	kprintf("Sched Starting...\r\n");
