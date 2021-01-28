@@ -161,7 +161,10 @@ void mem_area_blk_init_test()
 	print_free_area_list_from_head();
 	print_inuse_area_list_from_head();
 
-    memblks_init(mem_area ,28) ;
+    memblks_init(mem_area
+                ,DEFAULT_AVAL_BLK_SIZE 
+                ,DEFAULT_TASK_MA_BLKNUM) ;
+
     kprintf("Area's blk_head_ptr addr =%p\r\n",mem_area->blk_head_ptr) ;
 
     uint32_t *head = mem_area->blk_head_ptr ;

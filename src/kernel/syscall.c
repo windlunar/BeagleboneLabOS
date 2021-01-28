@@ -4,8 +4,9 @@
 #include "../klib/print.h"
 #include "debug.h"
 #include "task.h"
-#include "../klib/queue.h"
-#include "../klib/mem.h"
+//#include "../klib/queue.h"
+//#include "../klib/mem.h"
+#include "memory.h"
 
 
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
@@ -82,8 +83,8 @@ void __exit_handler()
     remove_from_readylist(curr_running_task) ;
 
     //釋放空間
-    MEM_AREA_INFO_t *curr_mpinfo = which_mem_area(curr_running_task->stk_bottom) ;
-    free_mem_area(curr_mpinfo) ;
+    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
+    free_mem_area(curr_ma) ;
   
     curr_running_task->stk_bottom = NULL ;
     curr_running_task = NULL ;
@@ -101,7 +102,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     // Alloc 一個 Memory Area,並回傳描述該area的結構體 MEM_AREA_INFO_t
     // 並將該 area使用狀況設為 INUSE_FULL ,只屬於這個task使用
     MEM_AREA_INFO_t *n_memarea = memAreaAlloc();
-    n_memarea->area_status = INUSE_FULL ;
+    n_memarea->area_status = TASK_AREA ;
 
 
     // 分配 描述 task的TASK_INFO_t結構體, 其起始位置設定為 stack bottom
@@ -110,12 +111,12 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 
 
     // 找目前正在執行的task(父task)的stack空間屬於那一個 memory area
-    MEM_AREA_INFO_t *curr_mpinfo = which_mem_area(curr_running_task->stk_bottom) ;
+    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
 
 
     // 複製父task使用的記憶體區段內的data給子task的記憶體區段, 包含stack空間內所有內容
     _memcpy((void *)(n_memarea->m_start)
-            ,(void *)(curr_mpinfo->m_start)
+            ,(void *)(curr_ma->m_start)
             ,AREA_SIZE) ;
 
 
@@ -143,6 +144,18 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 	ntask->task_id = taskid;
     
 
+    // init blocks
+    // 總共應該會有56個blks = (4096-512)/64
+    memblks_init(n_memarea 
+                ,DEFAULT_AVAL_BLK_SIZE 
+                ,DEFAULT_TASK_MA_BLKNUM) ;
+
+    //print_from_blk_head(curr_ma) ;
+    //print_from_blk_head(n_memarea) ;
+    //kprintf("ntask->stk_bottom =%p\r\n",ntask->stk_bottom) ;
+    //kprintf("n_memarea->blksize =%d\r\n",n_memarea->blksize) ;
+    //kprintf("n_memarea->n_blk =%d\r\n",n_memarea->n_blk) ;
+
     // 將子task放入 rady list中
     task_enqueue(ntask) ;
 
@@ -157,7 +170,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void (*taskFunc)())
 {
     MEM_AREA_INFO_t *n_memarea = memAreaAlloc();
-    n_memarea->area_status = INUSE_FULL ; 
+    n_memarea->area_status = TASK_AREA ; 
 
     TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_memarea->m_top) ;  
 
@@ -165,6 +178,18 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void (*taskFunc)())
 
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
     old_context->r0 = ntask->task_id ;
+
+    // init blocks
+    // 總共應該會有56個blks = (4096-512)/64
+    memblks_init(n_memarea 
+                ,DEFAULT_AVAL_BLK_SIZE 
+                ,DEFAULT_TASK_MA_BLKNUM) ;
+
+
+    //print_from_blk_head(n_memarea) ;
+    //kprintf("ntask->stk_bottom =%p\r\n",ntask->stk_bottom) ;
+    //kprintf("n_memarea->blksize =%d\r\n",n_memarea->blksize) ;
+    //kprintf("n_memarea->n_blk =%d\r\n",n_memarea->n_blk) ;
 
     task_enqueue(ntask) ; 
 }

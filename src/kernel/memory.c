@@ -1,5 +1,6 @@
 
 #include "memory.h"
+#include "task.h"
 
 uint32_t *kernal_end = &_end ;
 
@@ -37,6 +38,7 @@ void mem_areas_list_init()
 
         //0 means blks not init
         areas_list[i].blksize = 0 ; 
+        areas_list[i].n_blk = 0 ; 
 
         if(i == TOTAL_AREA_NUM-1){
             areas_list[i].next_ptr = NULL ;
@@ -183,7 +185,7 @@ uint32_t atleast_a_memarea_alloc(void)
     }
 }
 
-MEM_AREA_INFO_t *find_mpinfo_end(MEM_AREA_INFO_t *headnode)
+MEM_AREA_INFO_t *find_ma_end(MEM_AREA_INFO_t *headnode)
 {
     MEM_AREA_INFO_t *head =headnode ;
     while(head != NULL){
@@ -222,21 +224,21 @@ MEM_AREA_INFO_t *find_aval_inuse_memarea(void)
 // (call memAreaAlloc() first)
 // arg1 : 已經allocate的memory area (memAreaAlloc()的回傳值)
 // arg2 : number of bytes
-MEM_AREA_INFO_t * memblks_init(MEM_AREA_INFO_t *mpinfo ,uint32_t blk_aval_size)
+MEM_AREA_INFO_t 
+*memblks_init(MEM_AREA_INFO_t *ma ,uint32_t blk_aval_size ,uint32_t num_blks)
 {
     //已經初始化過
-    if(mpinfo->blksize >4) return mpinfo ;
+    if(ma->blksize >4) return ma ;
     if(blk_aval_size <= 0) NULL ;
 
     uint32_t blk_size = blk_aval_size + 4 ;
 
     //一個blk最少要四個bytes ,前四個byte放指標 ,指向下一個可用的blk
-    mpinfo->blksize = blk_size ;
+    ma->blksize = blk_size ;
+    ma->n_blk = num_blks ;
 
-    uint32_t *head = mpinfo->blk_head_ptr ;
+    uint32_t *head = ma->blk_head_ptr ;
     uint32_t node_addr = (uint32_t)head ;
-
-    uint32_t num_blks = AREA_SIZE / blk_size ;
     
     for(int32_t i = 1 ; i<=num_blks; i++)
     {
@@ -256,45 +258,65 @@ MEM_AREA_INFO_t * memblks_init(MEM_AREA_INFO_t *mpinfo ,uint32_t blk_aval_size)
         head = (uint32_t *)((uint8_t *)head + blk_size) ;
     }
 
-    return mpinfo ;
+    return ma ;
 }
 
 // alloc a blk
 // mem_areas_list_init() -> memAreaAlloc() -> memblks_init() 
 // -> blk_alloc()
-void *blk_alloc(MEM_AREA_INFO_t *mpinfo)
+void *blk_alloc(MEM_AREA_INFO_t *ma)
 {
-    if(mpinfo==NULL)
+    // 如果 ma是 task ,且task還有空間為分配, 那就先從task area分配一個blk
+    if( (ma->area_status == TASK_AREA) && (no_blks(ma) == FALSE) )
     {
-        mpinfo = memAreaAlloc();
-        mpinfo = memblks_init(mpinfo ,32) ;
-        void *ptr_return = (void *)(mpinfo->blk_head_ptr + 1) ;
-        mpinfo->blk_head_ptr = (uint32_t *)*mpinfo->blk_head_ptr ;
+        void *ret = (void *)(ma->blk_head_ptr + 1) ;
+        ma->blk_head_ptr = (uint32_t *)*ma->blk_head_ptr ;
 
-        return mpinfo->blk_head_ptr+1 ;
+        return ret ;          
     }
 
-    if(mpinfo->blksize <= 4)
+    if(ma==NULL)
     {
-        mpinfo = memblks_init(mpinfo ,32) ;
-        void *ptr_return = (void *)(mpinfo->blk_head_ptr + 1) ;
-        mpinfo->blk_head_ptr = (uint32_t *)*mpinfo->blk_head_ptr ;
+        ma = memAreaAlloc();
+        ma = memblks_init(ma
+                        ,DEFAULT_AVAL_BLK_SIZE 
+                        ,DEFAULT_TASK_MA_BLKNUM) ;
 
-        return mpinfo->blk_head_ptr+1 ;        
+        void *ptr_return = (void *)(ma->blk_head_ptr + 1) ;
+        ma->blk_head_ptr = (uint32_t *)*ma->blk_head_ptr ;
+
+        return ma->blk_head_ptr+1 ;
     }
 
-    if(mpinfo->blk_head_ptr == NULL){
-        mpinfo->area_status = INUSE_FULL ;
+    if(ma->blksize <= 4)
+    {
+        ma = memblks_init(ma
+                        ,DEFAULT_AVAL_BLK_SIZE 
+                        ,DEFAULT_TASK_MA_BLKNUM) ;
 
-        mpinfo = memAreaAlloc();
-        mpinfo = memblks_init(mpinfo ,32) ;
-        void *ptr_return = (void *)(mpinfo->blk_head_ptr + 1) ;
-        mpinfo->blk_head_ptr = (uint32_t *)*mpinfo->blk_head_ptr ;
+        void *ptr_return = (void *)(ma->blk_head_ptr + 1) ;
+        ma->blk_head_ptr = (uint32_t *)*ma->blk_head_ptr ;
 
-        return mpinfo->blk_head_ptr+1 ;
+        return ma->blk_head_ptr+1 ;        
     }
-    void *ptr_return = (void *)(mpinfo->blk_head_ptr + 1) ;
-    mpinfo->blk_head_ptr = (uint32_t *)*mpinfo->blk_head_ptr ;
+
+    if(ma->blk_head_ptr == NULL){
+        ma->area_status = INUSE_FULL ;
+
+        ma = memAreaAlloc();
+        ma = memblks_init(ma
+                        ,DEFAULT_AVAL_BLK_SIZE 
+                        ,DEFAULT_TASK_MA_BLKNUM) ;
+
+        void *ptr_return = (void *)(ma->blk_head_ptr + 1) ;
+        ma->blk_head_ptr = (uint32_t *)*ma->blk_head_ptr ;
+
+        return ma->blk_head_ptr+1 ;
+    }
+
+
+    void *ptr_return = (void *)(ma->blk_head_ptr + 1) ;
+    ma->blk_head_ptr = (uint32_t *)*ma->blk_head_ptr ;
 
     return ptr_return ;    
 }
@@ -306,6 +328,7 @@ MEM_AREA_INFO_t *which_mem_area(void *address)
 
     //判斷 memarea這個 addr是那個area
     MEM_AREA_INFO_t *area_head = inuse_area_list_head ;
+
     while(area_head->next_ptr != NULL)
     {
         if(area_head->m_start == memarea) break ;
@@ -357,15 +380,24 @@ void free_blk(void *blk_aval_start)
     put_to_blklist_end(blk_start) ;
 }
 
-uint32_t is_blk_init(MEM_AREA_INFO_t *mpinfo)
+uint32_t is_blk_init(MEM_AREA_INFO_t *ma)
 {
-    if(mpinfo->blksize <= 4){
+    if(ma->blksize <= 4){
         return FALSE ;
     }else{
         return TRUE ;
     }
 }
 
+
+uint32_t no_blks(MEM_AREA_INFO_t *ma)
+{
+    if(ma->blk_head_ptr == NULL){
+        return TRUE ;
+    }else{
+        return FALSE ;
+    }
+}
 
 
 /***********************************************************************************************/
@@ -376,47 +408,49 @@ uint32_t is_blk_init(MEM_AREA_INFO_t *mpinfo)
 // memblks_init();
 // blk_alloc() ;
 /***********************************************************************************************/
-void *demand_a_blk(int for_task_stack)
+void *demand_a_blk()
 {
-    int aval_blk_size = 0;
-    if(for_task_stack == 1){
-        aval_blk_size = 512-4 ;
-    }else{
-        aval_blk_size = DEFAULT_AVAL_BLK_SIZE ;
-    }
-
-    MEM_AREA_INFO_t *mpinfo ;
+    MEM_AREA_INFO_t *ma ;
     // 尚未 alloc 一個 mem area
     if(atleast_a_memarea_alloc() == FALSE)
     {
-        mpinfo = memAreaAlloc() ;
-        mpinfo = memblks_init(mpinfo ,aval_blk_size);
-        void *p = blk_alloc(mpinfo);
+        ma = memAreaAlloc() ;
+        ma = memblks_init(ma
+                        ,DEFAULT_AVAL_BLK_SIZE 
+                        ,DEFAULT_TASK_MA_BLKNUM) ;
+
+        void *p = blk_alloc(ma);
         return p ;
     }
 
     //已經至少alloc過一個area
-    mpinfo = find_aval_inuse_memarea();
+    ma = find_aval_inuse_memarea();
 
     //沒有可用的 mem area
     //預設1個block 64bytes(前4個用作blks linklist指標)
-    if(mpinfo == NULL){
-        mpinfo = memAreaAlloc() ;
-        mpinfo = memblks_init(mpinfo ,aval_blk_size);  
-        void *p = blk_alloc(mpinfo);
+    if(ma == NULL){
+        ma = memAreaAlloc() ;
+        ma = memblks_init(ma
+                            ,DEFAULT_AVAL_BLK_SIZE 
+                            ,DEFAULT_TASK_MA_BLKNUM) ;
+
+        void *p = blk_alloc(ma);
         return p ;
     }
 
     //有可用的 mem area
     //判斷有無 init blocks
-    if(is_blk_init(mpinfo) == FALSE)
+    if(is_blk_init(ma) == FALSE)
     {
-        mpinfo = memblks_init(mpinfo ,aval_blk_size);
-        void *p = blk_alloc(mpinfo);
+        ma = memblks_init(ma
+                            ,DEFAULT_AVAL_BLK_SIZE 
+                            ,DEFAULT_TASK_MA_BLKNUM) ;
+
+        void *p = blk_alloc(ma);
         return p ;       
     }
 
-    void *p = blk_alloc(mpinfo);
+    void *p = blk_alloc(ma);
     return p ;  
 
 }
@@ -424,7 +458,7 @@ void *demand_a_blk(int for_task_stack)
 
 void *kmalloc(void)
 {
-    return demand_a_blk(0) ;
+    return demand_a_blk() ;
 }
 
 
