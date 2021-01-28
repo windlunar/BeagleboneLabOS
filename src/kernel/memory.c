@@ -54,7 +54,7 @@ void mem_parts_list_init()
 }
 
 
-MEM_PART_INFO_t *alloc_one_mem_part(void)
+MEM_PART_INFO_t *memPartAlloc(void)
 {
     //保存原有的 head node
     MEM_PART_INFO_t *prev_head = free_part_list_head ;
@@ -219,8 +219,8 @@ MEM_PART_INFO_t *find_aval_inuse_mempart(void)
 //  |       |
 /***********************************************************************************************/
 // Need to alloc a mem part fitst
-// (call alloc_one_mem_part() first)
-// arg1 : 已經allocate的memory part (alloc_one_mem_part()的回傳值)
+// (call memPartAlloc() first)
+// arg1 : 已經allocate的memory part (memPartAlloc()的回傳值)
 // arg2 : number of bytes
 MEM_PART_INFO_t * memblks_init(MEM_PART_INFO_t *mpinfo ,uint32_t blk_aval_size)
 {
@@ -260,13 +260,13 @@ MEM_PART_INFO_t * memblks_init(MEM_PART_INFO_t *mpinfo ,uint32_t blk_aval_size)
 }
 
 // alloc a blk
-// mem_parts_list_init() -> alloc_one_mem_part() -> memblks_init() 
+// mem_parts_list_init() -> memPartAlloc() -> memblks_init() 
 // -> blk_alloc()
 void *blk_alloc(MEM_PART_INFO_t *mpinfo)
 {
     if(mpinfo==NULL)
     {
-        mpinfo = alloc_one_mem_part();
+        mpinfo = memPartAlloc();
         mpinfo = memblks_init(mpinfo ,32) ;
         void *ptr_return = (void *)(mpinfo->blk_head_ptr + 1) ;
         mpinfo->blk_head_ptr = (uint32_t *)*mpinfo->blk_head_ptr ;
@@ -286,7 +286,7 @@ void *blk_alloc(MEM_PART_INFO_t *mpinfo)
     if(mpinfo->blk_head_ptr == NULL){
         mpinfo->part_status = INUSE_FULL ;
 
-        mpinfo = alloc_one_mem_part();
+        mpinfo = memPartAlloc();
         mpinfo = memblks_init(mpinfo ,32) ;
         void *ptr_return = (void *)(mpinfo->blk_head_ptr + 1) ;
         mpinfo->blk_head_ptr = (uint32_t *)*mpinfo->blk_head_ptr ;
@@ -372,7 +372,7 @@ uint32_t is_blk_init(MEM_PART_INFO_t *mpinfo)
 // alloc 小塊記憶體相關function
 // 都沒空間的話,要先呼叫 
 // mem_parts_list_init()
-// alloc_one_mem_part()
+// memPartAlloc()
 // memblks_init();
 // blk_alloc() ;
 /***********************************************************************************************/
@@ -389,7 +389,7 @@ void *demand_a_blk(int for_task_stack)
     // 尚未 alloc 一個 mem part
     if(aleast_a_mempart_alloc() == FALSE)
     {
-        mpinfo = alloc_one_mem_part() ;
+        mpinfo = memPartAlloc() ;
         mpinfo = memblks_init(mpinfo ,aval_blk_size);
         void *p = blk_alloc(mpinfo);
         return p ;
@@ -401,7 +401,7 @@ void *demand_a_blk(int for_task_stack)
     //沒有可用的 mem part
     //預設1個block 64bytes(前4個用作blks linklist指標)
     if(mpinfo == NULL){
-        mpinfo = alloc_one_mem_part() ;
+        mpinfo = memPartAlloc() ;
         mpinfo = memblks_init(mpinfo ,aval_blk_size);  
         void *p = blk_alloc(mpinfo);
         return p ;

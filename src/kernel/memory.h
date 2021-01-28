@@ -57,7 +57,7 @@ extern MEM_PART_INFO_t parts_list[TOTAL_PART_NUM] ;
 /***********************************************************************************************/
 //主要
 void mem_parts_list_init();
-MEM_PART_INFO_t *alloc_one_mem_part(void);
+MEM_PART_INFO_t *memPartAlloc(void);
 void free_mem_part(MEM_PART_INFO_t *part_node);
 
 //次要

@@ -1,12 +1,13 @@
-#include "usrtasks.h"
-#include "../klib/print.h"
 #include "../kernel/task.h"
-#include "../klib/queue.h"
 #include "../kernel/memory.h"
-#include "../klib/console.h"
 #include "../driver/uart.h"
+#include "../klib/print.h"
+#include "../klib/queue.h"
+#include "../klib/console.h"
 #include "../klib/mem.h"
 #include "../klib/string.h"
+#include "../klib/usyscall.h"
+#include "usrtasks.h"
 
 TASK_INFO_t Task[6] ;
 
@@ -19,9 +20,7 @@ void main_origin()
 	kprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
 	kprintf("\r\nThe command line is the first process\r\n") ;
 
-	int tid = -1;
-	syscall_get_tid(&tid);
-	kprintf("\r\nThe task id :%d\r\n",tid) ;
+	kprintf("\r\nThe task id :%d\r\n",__gettid()) ;
 
 	kprintf("\r\n|cmd>") ;
 

@@ -3,6 +3,7 @@
 #include "../klib/print.h"
 #include "../driver/uart.h"
 #include "../kernel/debug.h"
+#include "../klib/usyscall.h"
 
 
 #define LOOP_NUM	50
@@ -17,12 +18,12 @@ void usertask0(void){
 	int tid = -1 ;
 	while(k<LOOP_NUM)
 	{	
-		tid = syscall_get_tid() ;	
+		tid = __gettid() ;	
 		kprintf("Task 0 #%d ,task id=%d\r\n" ,k ,tid);
-		//syscall_yield() ;	
+		//_yield() ;	
 		k++ ;
 	}
-	syscall_exit();
+	__exit();
 }
 
 
@@ -33,13 +34,13 @@ void usertask1(void){
 	int tid = -1 ;
 	while(k<LOOP_NUM)
 	{
-		tid = syscall_get_tid() ;
+		tid = __gettid() ;
 		kprintf("Task 1 #%d ,task id=%d\r\n" ,k ,tid);
-    	//syscall_print_hello(&k);
-		//syscall_yield() ;			
+    	//__print_hello(&k);
+		//__yield() ;			
 		k++ ;
 	}
-	syscall_exit();
+	__exit();
 }
 
 void usertask2(void){
@@ -49,12 +50,12 @@ void usertask2(void){
 	int tid = -1 ;
 	while(k<LOOP_NUM)
 	{
-		tid = syscall_get_tid() ;
+		tid = __gettid() ;
 		kprintf("Task 2 #%d ,task id=%d\r\n" ,k ,tid);
-		//syscall_yield() ;			
+		//__yield() ;			
 		k++ ;
 	}
-	syscall_exit();
+	__exit();
 }
 
 void usertask3(void){
@@ -65,12 +66,12 @@ void usertask3(void){
 
 	while(k<LOOP_NUM)
 	{
-		tid = syscall_get_tid() ;	
+		tid = __gettid() ;	
 		kprintf("Task 3 #%d ,task id=%d\r\n" ,k ,tid);
-		//syscall_yield() ;	
+		//__yield() ;	
 		k++ ;
 	}
-	syscall_exit();
+	__exit();
 }
 
 
@@ -82,12 +83,12 @@ void usertask4(void){
 	int tid = -1 ;
 	while(k<LOOP_NUM)
 	{
-		tid = syscall_get_tid() ;
+		tid = __gettid() ;
 		kprintf("Task 4 #%d ,task id=%d\r\n" ,k ,tid);
-		//syscall_yield() ;		
+		//__yield() ;		
 		k++ ;
 	}
-	syscall_exit();
+	__exit();
 }
 
 
@@ -97,11 +98,11 @@ int multitasking_test(void)
 	kprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	kprintf("Now test multitasking.\r\n") ;
 
-	MEM_PART_INFO_t *stack_0 = alloc_one_mem_part();
-	MEM_PART_INFO_t *stack_1 = alloc_one_mem_part();
-	MEM_PART_INFO_t *stack_2 = alloc_one_mem_part();
-	MEM_PART_INFO_t *stack_3 = alloc_one_mem_part();
-	MEM_PART_INFO_t *stack_4 = alloc_one_mem_part();
+	MEM_PART_INFO_t *stack_0 = memPartAlloc();
+	MEM_PART_INFO_t *stack_1 = memPartAlloc();
+	MEM_PART_INFO_t *stack_2 = memPartAlloc();
+	MEM_PART_INFO_t *stack_3 = memPartAlloc();
+	MEM_PART_INFO_t *stack_4 = memPartAlloc();
 
 	stack_0->part_status = INUSE_FULL ;
 	stack_1->part_status = INUSE_FULL ;

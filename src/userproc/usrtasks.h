@@ -4,7 +4,6 @@
 
 
 #include "../kernel/task.h"
-#include "../kernel/syscall.h"
 
 void main_origin(void) ;
 

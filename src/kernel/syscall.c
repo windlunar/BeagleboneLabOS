@@ -14,23 +14,23 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
     switch (syscall_id)
     {
     case SYSCALL_ID_print_hello:
-        __print_hello(*(uint32_t *)args) ;
+        __print_hello_handler(*(uint32_t *)args) ;
         break;
 
     case SYSCALL_ID_yield:
-        __yield(usrTaskContextOld) ;
+        __yield_handler(usrTaskContextOld) ;
         break;   
 
     case SYSCALL_ID_get_tid:
-        __get_tid(usrTaskContextOld) ;
+        __get_tid_handler(usrTaskContextOld) ;
         break;  
 
     case SYSCALL_ID_exit:
-        __exit() ;
+        __exit_handler() ;
         break;  
 
     case SYSCALL_ID_fork:
-        __fork(usrTaskContextOld) ;
+        __fork_handler(usrTaskContextOld) ;
         break;  
 
     default:
@@ -39,13 +39,13 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
 }
 
 
-void  __print_hello(uint32_t input)
+void  __print_hello_handler(uint32_t input)
 {
     kprintf("Hello! This is my first system call,Input value =%d\r\n" ,input) ;
 }
 
 
-void __yield(uint32_t *usrTaskContextOld)
+void __yield_handler(uint32_t *usrTaskContextOld)
 {
 	// Save old context
 	curr_running_task->task_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
@@ -60,7 +60,7 @@ void __yield(uint32_t *usrTaskContextOld)
 }
 
 
-void __get_tid(uint32_t *usrTaskContextOld)
+void __get_tid_handler(uint32_t *usrTaskContextOld)
 {
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
     old_context->r0 = curr_running_task->task_id ;
@@ -69,7 +69,7 @@ void __get_tid(uint32_t *usrTaskContextOld)
 
 // 回收資源
 // 將task設定為 terminate
-void __exit()
+void __exit_handler()
 {
     kprintf("task id=%d exit\r\n" ,curr_running_task->task_id) ;
     curr_running_task->task_status = TASK_TERMINATE ;
@@ -92,11 +92,11 @@ void __exit()
 
 
 // 複製一份相同的stack ,跟 TASK_INFO_t 結構體
-void __fork(uint32_t *usrTaskContextOld)
+void __fork_handler(uint32_t *usrTaskContextOld)
 {    
     // Alloc 一個 Memory Part,並回傳描述該part的結構體 MEM_PART_INFO_t
     // 並將該 part使用狀況設為 INUSE_FULL ,只屬於這個task使用
-    MEM_PART_INFO_t *n_mempart = alloc_one_mem_part();
+    MEM_PART_INFO_t *n_mempart = memPartAlloc();
     n_mempart->part_status = INUSE_FULL ;
 
 

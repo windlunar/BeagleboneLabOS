@@ -125,9 +125,9 @@ void mem_part_alloc_free_test()
 
 	kprintf("Test alloc\r\n") ;
 
-	MEM_PART_INFO_t *mem_part0 = alloc_one_mem_part() ;
-	MEM_PART_INFO_t *mem_part1 = alloc_one_mem_part() ;
-	MEM_PART_INFO_t *mem_part2 = alloc_one_mem_part() ;
+	MEM_PART_INFO_t *mem_part0 = memPartAlloc() ;
+	MEM_PART_INFO_t *mem_part1 = memPartAlloc() ;
+	MEM_PART_INFO_t *mem_part2 = memPartAlloc() ;
 
 	print_free_part_list_from_head();
 	print_inuse_part_list_from_head();
@@ -156,7 +156,7 @@ void mem_part_blk_init_test()
 
 	kprintf("Test alloc\r\n") ;
 
-	MEM_PART_INFO_t *mem_part = alloc_one_mem_part() ;
+	MEM_PART_INFO_t *mem_part = memPartAlloc() ;
 
 	print_free_part_list_from_head();
 	print_inuse_part_list_from_head();

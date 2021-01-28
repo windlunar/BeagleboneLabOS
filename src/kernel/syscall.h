@@ -15,11 +15,11 @@ void svc_handler(void) ;
 extern void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args);
 
 //svc syscall call by syscall_handler
-void __print_hello(uint32_t input) ;
-void __yield(uint32_t *usrTaskContextOld);
-void __get_tid(uint32_t *usrTaskContextOld);
-void __exit();
-void __fork(uint32_t *usrTaskContextOld);
+void __print_hello_handler(uint32_t input) ;
+void __yield_handler(uint32_t *usrTaskContextOld);
+void __get_tid_handler(uint32_t *usrTaskContextOld);
+void __exit_handler();
+void __fork_handler(uint32_t *usrTaskContextOld);
 
 //syscall call by user task ,define in syscall_asm.s
 extern void syscall_print_hello(uint32_t *input) ;
