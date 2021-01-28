@@ -3,8 +3,6 @@
 #define __USRTASKS_H_
 
 
-//#include "../kernel/task.h"
-
 void main_origin(void) ;
 
 int fork_test();

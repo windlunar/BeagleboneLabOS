@@ -3,9 +3,6 @@
 #include "../klib/queue.h"
 #include "../klib/usyscall.h"
 
-//#include "../kernel/memory.h"
-#include "../kernel/debug.h"
-#include "../kernel/task.h"
 
 
 int fork_test()

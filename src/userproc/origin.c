@@ -1,5 +1,3 @@
-//#include "../kernel/task.h"
-#include "../kernel/memory.h"
 #include "../driver/uart.h"
 #include "../klib/print.h"
 #include "../klib/queue.h"

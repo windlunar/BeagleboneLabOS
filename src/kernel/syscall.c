@@ -162,12 +162,6 @@ void __fork_handler(uint32_t *usrTaskContextOld)
                 ,DEFAULT_AVAL_BLK_SIZE 
                 ,DEFAULT_TASK_MA_BLKNUM) ;
 
-    //print_from_blk_head(curr_ma) ;
-    //print_from_blk_head(n_memarea) ;
-    //kprintf("ntask->stk_bottom =%p\r\n",ntask->stk_bottom) ;
-    //kprintf("n_memarea->blksize =%d\r\n",n_memarea->blksize) ;
-    //kprintf("n_memarea->n_blk =%d\r\n",n_memarea->n_blk) ;
-
     // 將子task放入 rady list中
     task_enqueue(ntask) ;
 
@@ -197,11 +191,6 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void (*taskFunc)())
                 ,DEFAULT_AVAL_BLK_SIZE 
                 ,DEFAULT_TASK_MA_BLKNUM) ;
 
-
-    //print_from_blk_head(n_memarea) ;
-    //kprintf("ntask->stk_bottom =%p\r\n",ntask->stk_bottom) ;
-    //kprintf("n_memarea->blksize =%d\r\n",n_memarea->blksize) ;
-    //kprintf("n_memarea->n_blk =%d\r\n",n_memarea->n_blk) ;
 
     task_enqueue(ntask) ; 
 }

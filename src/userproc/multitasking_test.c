@@ -1,8 +1,6 @@
 
 #include "usrtasks.h"
 #include "../klib/print.h"
-#include "../driver/uart.h"
-#include "../kernel/debug.h"
 #include "../klib/usyscall.h"
 
 
