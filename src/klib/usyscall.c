@@ -36,3 +36,9 @@ int __do_taskCreate(void (*taskFunc)())
 {
     return syscall_do_taskCreate(taskFunc) ;
 }
+
+// Allocate one block(60 bytes aval)
+void *__malloc_blk()
+{
+    return syscall_malloc_blk() ;
+}

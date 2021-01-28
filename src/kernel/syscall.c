@@ -38,6 +38,10 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __do_taskCreate_handler(usrTaskContextOld ,args) ;
         break;  
 
+    case SYSCALL_ID_malloc_blk:
+        __malloc_blk_handler(usrTaskContextOld) ;
+        break;  
+
     default:
         break;
     }
@@ -192,4 +196,14 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void (*taskFunc)())
     //kprintf("n_memarea->n_blk =%d\r\n",n_memarea->n_blk) ;
 
     task_enqueue(ntask) ; 
+}
+
+
+
+void __malloc_blk_handler(uint32_t *usrTaskContextOld)
+{
+    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+
+    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
+    old_context->r0 = blk_alloc(curr_ma) ;
 }

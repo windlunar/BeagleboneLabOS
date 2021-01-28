@@ -1,9 +1,11 @@
 #include "usrtasks.h"
 #include "../klib/print.h"
-//#include "../kernel/task.h"
 #include "../klib/queue.h"
-#include "../kernel/memory.h"
 #include "../klib/usyscall.h"
+
+//#include "../kernel/memory.h"
+#include "../kernel/debug.h"
+#include "../kernel/task.h"
 
 
 int fork_test()
@@ -15,8 +17,20 @@ int fork_test()
 
 void fork_test_main()
 {
+	kprintf("\r\n+++++++++++++++++++++++++++++++++++++++++\r\n") ;
+	kprintf("Test syscall malloc_blk function.\r\n") ;
 
-	int32_t child_tid =-1 ;
+	//目前的情況, child的blks會被init
+	void *p1 = __malloc_blk() ;
+	kprintf("1st blk start addr =%p\r\n" ,p1) ;
+	void *p2 = __malloc_blk() ;
+	kprintf("2nd blk start addr =%p\r\n" ,p2) ;
+	void *p3 = __malloc_blk() ;
+	kprintf("3rd blk start addr =%p\r\n" ,p3) ;
+
+	// For debug
+	MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
+	print_from_blk_head(curr_ma) ;
 
 	kprintf("\r\n+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	kprintf("Now test syscall fork function.\r\n") ;
