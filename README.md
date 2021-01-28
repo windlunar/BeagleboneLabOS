@@ -162,7 +162,7 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/bbb.jpg)
 
 
-教學:
+紀錄:
 =
 
 待更新...

@@ -18,10 +18,13 @@ Feature:
 System call:
 =
   
-1. yield :Give up the usage of CPU ,switch to another task.<br>
-2. get_tid :Get the current running task id.<br>
-3. exit :Terminate the current running task.<br>
-4. fork :Create a new task by duplicate the task itself.<br>
+1. __yield :Give up the usage of CPU ,switch to another task.<br>
+2. __gettid :Get the current running task id.<br>
+3. __exit :Terminate the current running task.<br>
+4. __fork :Create a new task by duplicate the task itself.<br>
+5. __do_taskCreate :Create another task.<br><br>
+6. __malloc_blk :Allocate a block of memory space.<br><br>
+7. __mfree_blk :Free the memory space which was allocated by __malloc_blk.<br><br>
 
 Simple command line interface:
 =
