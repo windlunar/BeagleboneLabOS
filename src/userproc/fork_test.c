@@ -18,7 +18,7 @@ int fork_test()
 void fork_test_main()
 {
 	kprintf("\r\n+++++++++++++++++++++++++++++++++++++++++\r\n") ;
-	kprintf("Test syscall malloc_blk function.\r\n") ;
+	kprintf("Test syscall malloc_blk and mfree_blk function.\r\n") ;
 
 	//目前的情況, child的blks會被init
 	void *p1 = __malloc_blk() ;
@@ -28,9 +28,12 @@ void fork_test_main()
 	void *p3 = __malloc_blk() ;
 	kprintf("3rd blk start addr =%p\r\n" ,p3) ;
 
-	// For debug
-	MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
-	print_from_blk_head(curr_ma) ;
+	__mfree_blk(p2) ;
+	__mfree_blk(p1) ;
+	__mfree_blk(p3) ;
+
+	kprintf("\r\nPrint current memory area block list:\r\n\r\n") ;
+	__get_mblk_list() ;	//for test and debug
 
 	kprintf("\r\n+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	kprintf("Now test syscall fork function.\r\n") ;

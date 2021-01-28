@@ -340,7 +340,8 @@ MEM_AREA_INFO_t *which_mem_area(void *address)
 }
 
 
-
+// 找前一個 blk空間 (不是link list的 prev node)
+// 目前沒有用到的函式
 uint32_t *find_prev_blk(MEM_AREA_INFO_t *memarea ,uint32_t *blk_start)
 {
     uint32_t * prevblk = (uint32_t *)((uint8_t *)blk_start - memarea->blksize) ;
@@ -350,14 +351,14 @@ uint32_t *find_prev_blk(MEM_AREA_INFO_t *memarea ,uint32_t *blk_start)
 
 
 
-void put_to_blklist_end(uint32_t *blkstart){
-
-    uint32_t *start = blkstart ;
-    while(*start != 0){
-        start = (uint32_t *)*start ;
+void put_to_blklist_end(MEM_AREA_INFO_t *ma ,uint32_t *blkstart)
+{
+    uint32_t *head = ma->blk_head_ptr ;
+    while(*head != 0){
+        head = (uint32_t *)*head ;
     }
 
-    uint32_t *end = start ;
+    uint32_t *end = head ;
     *end = (uint32_t)blkstart ;
 
     *blkstart = 0 ;
@@ -367,17 +368,10 @@ void put_to_blklist_end(uint32_t *blkstart){
 void free_blk(void *blk_aval_start)
 {
     uint32_t *blk_start= (uint32_t *)blk_aval_start -1 ;
-    MEM_AREA_INFO_t *target = which_mem_area(blk_start) ;
-
-    //如果 blk_start 是 head
-    
-    uint32_t *prev_blk = find_prev_blk(target ,blk_start) ;
-
-    //更新前一個節點的指標
-    *prev_blk = *blk_start ;
+    MEM_AREA_INFO_t *ma = which_mem_area(blk_start) ;
 
     //將原本的blk放到list最後
-    put_to_blklist_end(blk_start) ;
+    put_to_blklist_end(ma ,blk_start) ;
 }
 
 uint32_t is_blk_init(MEM_AREA_INFO_t *ma)

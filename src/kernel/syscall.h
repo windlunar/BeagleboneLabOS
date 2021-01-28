@@ -12,6 +12,9 @@
 #define SYSCALL_ID_fork             5
 #define SYSCALL_ID_do_taskCreate    6
 #define SYSCALL_ID_malloc_blk       7
+#define SYSCALL_ID_mfree_blk        8
+#define SYSCALL_ID_get_mblk_list  9
+
 
 void svc_handler(void) ;
 extern void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args);
@@ -25,6 +28,8 @@ void __exit_handler();
 void __fork_handler(uint32_t *usrTaskContextOld);
 void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void (*taskFunc)()) ;
 void __malloc_blk_handler(uint32_t *usrTaskContextOld) ;
+void __malloc_mfree_blk(uint32_t *usrTaskContextOld ,void *blk_aval_start) ;
+void __get_mblk_list_handler(uint32_t *usrTaskContextOld) ;
 
 
 //syscall call by user task ,define in syscall_asm.s
@@ -35,7 +40,7 @@ extern void syscall_exit();
 extern int syscall_fork();
 extern int syscall_do_taskCreate(void (*taskFunc)());
 extern void *syscall_malloc_blk();
-
-
+extern void syscall_mfree_blk(void *blk_aval_start);
+extern void syscall_get_mblk_list();
 
 #endif

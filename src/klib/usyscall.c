@@ -42,3 +42,16 @@ void *__malloc_blk()
 {
     return syscall_malloc_blk() ;
 }
+
+
+// 如果輸入參數不是blk起始位址的話 ,目前還沒有偵錯機制
+void __mfree_blk(void *blk_aval_start)
+{
+    syscall_mfree_blk(blk_aval_start) ;
+}
+
+
+void __get_mblk_list()
+{
+    syscall_get_mblk_list() ;
+}

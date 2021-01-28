@@ -85,7 +85,7 @@ void free_blk(void *blk_aval_start);
 //次要
 MEM_AREA_INFO_t *which_mem_area(void *address);
 uint32_t *find_prev_blk(MEM_AREA_INFO_t *memarea ,uint32_t *blk_start);
-void put_to_blklist_end(uint32_t *blkstart);
+void put_to_blklist_end(MEM_AREA_INFO_t *ma ,uint32_t *blkstart);
 uint32_t is_blk_init(MEM_AREA_INFO_t *ma) ;
 uint32_t no_blks(MEM_AREA_INFO_t *ma);
 /***********************************************************************************************/

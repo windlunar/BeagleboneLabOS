@@ -13,5 +13,7 @@ void __exit(void);
 int __fork(void);
 int __do_taskCreate(void (*taskFunc)());
 void *__malloc_blk() ;
+void __mfree_blk(void *blk_aval_start) ;
+void __get_mblk_list();
 
 #endif

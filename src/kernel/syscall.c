@@ -42,6 +42,14 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __malloc_blk_handler(usrTaskContextOld) ;
         break;  
 
+    case SYSCALL_ID_mfree_blk:
+        __malloc_mfree_blk(usrTaskContextOld ,args) ;
+        break;
+
+    case SYSCALL_ID_get_mblk_list:
+        __get_mblk_list_handler(usrTaskContextOld) ;
+        break;
+
     default:
         break;
     }
@@ -206,4 +214,25 @@ void __malloc_blk_handler(uint32_t *usrTaskContextOld)
 
     MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
     old_context->r0 = blk_alloc(curr_ma) ;
+}
+
+
+void __malloc_mfree_blk(uint32_t *usrTaskContextOld ,void *blk_aval_start)
+{
+    free_blk(blk_aval_start) ;
+}
+
+
+
+void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
+{
+    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
+    uint32_t *head = curr_ma->blk_head_ptr ;
+
+    while(*head != 0)
+    {
+        kprintf("blk addr =%p ,content =%x\r\n",head ,*head) ;
+        head = (uint32_t *)*head ;
+    }
+    kprintf("blk addr =%p ,content =%x\r\n",head ,*head) ;    
 }

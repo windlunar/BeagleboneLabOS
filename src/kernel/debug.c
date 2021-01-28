@@ -200,4 +200,5 @@ void print_from_blk_head(MEM_AREA_INFO_t *mem_area)
         kprintf("addr=%p ,content=%x\r\n",blkstart ,*blkstart) ;
         blkstart = (uint32_t *)*blkstart ;
     }
+    kprintf("addr=%p ,content=%x\r\n",blkstart ,*blkstart) ;
 }
