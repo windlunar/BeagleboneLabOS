@@ -18,11 +18,12 @@
 
 /************************************************************************************************/
 //Define syscall id
-.equ	 SYSCALL_ID_print_hello ,   1
-.equ	 SYSCALL_ID_yield ,   		2
-.equ	 SYSCALL_ID_get_tid	,		3
-.equ	 SYSCALL_ID_exit	,		4
-.equ	 SYSCALL_ID_fork	,		5
+.equ	 SYSCALL_ID_print_hello 	,   	1
+.equ	 SYSCALL_ID_yield 			,   	2
+.equ	 SYSCALL_ID_get_tid			,		3
+.equ	 SYSCALL_ID_exit			,		4
+.equ	 SYSCALL_ID_fork			,		5
+.equ	 SYSCALL_ID_do_taskCreate	,		6
 
 /************************************************************************************************/
 .global syscall_print_hello; 
@@ -116,3 +117,26 @@ syscall_fork:
 	msr     CPSR_c, #CPSR_M_USR
 	bx lr	//返回 user proc
 
+
+
+
+
+.global syscall_do_taskCreate; 
+.align	4
+syscall_do_taskCreate:
+	//保存傳入參數 到r2
+	push {r2 ,lr}
+	mov	r2 ,r0
+	mov r0, #SYSCALL_ID_do_taskCreate
+/************************************************************************************************/
+	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+	
+	mov		r0 ,#(ostick_msec)
+	bl 		reloadOsTick
+
+	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
+/************************************************************************************************/
+	svc 0x00
+	pop	{r2 ,lr}
+	msr     CPSR_c, #CPSR_M_USR
+	bx lr	//返回 user proc

@@ -98,26 +98,12 @@ int multitasking_test(void)
 	kprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	kprintf("Now test multitasking.\r\n") ;
 
-	MEM_PART_INFO_t *stack_0 = memPartAlloc();
-	MEM_PART_INFO_t *stack_1 = memPartAlloc();
-	MEM_PART_INFO_t *stack_2 = memPartAlloc();
-	MEM_PART_INFO_t *stack_3 = memPartAlloc();
-	MEM_PART_INFO_t *stack_4 = memPartAlloc();
+	__do_taskCreate(&usertask0) ;
+	__do_taskCreate(&usertask1) ;
+	__do_taskCreate(&usertask2) ;
+	__do_taskCreate(&usertask3) ;
+	__do_taskCreate(&usertask4) ;
 
-	stack_0->part_status = INUSE_FULL ;
-	stack_1->part_status = INUSE_FULL ;
-	stack_2->part_status = INUSE_FULL ;
-	stack_3->part_status = INUSE_FULL ;
-	stack_4->part_status = INUSE_FULL ;
-
-	taskCreate(&Task[0] ,&usertask0 ,stktop2bottom(stack_0->m_top));
-	taskCreate(&Task[1] ,&usertask1 ,stktop2bottom(stack_1->m_top));
-	taskCreate(&Task[2] ,&usertask2 ,stktop2bottom(stack_2->m_top));
-	taskCreate(&Task[3] ,&usertask3 ,stktop2bottom(stack_3->m_top));
-	taskCreate(&Task[4] ,&usertask4 ,stktop2bottom(stack_4->m_top));
-
-	// 將tasks加入ready list中
-	for(int32_t i =0 ;i<5 ;i++) task_enqueue(&Task[i]) ; 
 
 	for(int32_t i=0 ;i<1000000;i++);
 

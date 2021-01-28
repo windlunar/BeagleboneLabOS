@@ -127,6 +127,7 @@ svc_handler:
 
 	// push ,準備原來user task的context 結構
 	// 然後存到 r1 作為傳入irq_handler的user task的context 結構 
+	// r2為傳入參數
 	stmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	mov		r1,	sp	
 

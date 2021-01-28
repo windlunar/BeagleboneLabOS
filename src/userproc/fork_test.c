@@ -9,10 +9,7 @@ TASK_INFO_t Task0 ;
 
 int fork_test()
 {
-	MEM_PART_INFO_t *mempart = memPartAlloc();
-	mempart->part_status = INUSE_FULL ;
-	taskCreate(&Task0 ,&fork_test_main ,stktop2bottom(mempart->m_top));
-	task_enqueue(&Task0) ; 
+	__do_taskCreate(&fork_test_main) ;
 	
 	return 0 ;
 }

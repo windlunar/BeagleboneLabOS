@@ -33,6 +33,10 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __fork_handler(usrTaskContextOld) ;
         break;  
 
+    case SYSCALL_ID_do_taskCreate:
+        __do_taskCreate_handler(usrTaskContextOld ,args) ;
+        break;  
+
     default:
         break;
     }
@@ -150,3 +154,17 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     
 }
 /************************************************************************************************/
+void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void (*taskFunc)())
+{
+    MEM_PART_INFO_t *n_mempart = memPartAlloc();
+    n_mempart->part_status = INUSE_FULL ; 
+
+    TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_mempart->m_top) ;  
+
+    taskCreate(ntask ,taskFunc ,stktop2bottom(n_mempart->m_top));
+
+    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    old_context->r0 = ntask->task_id ;
+
+    task_enqueue(ntask) ; 
+}

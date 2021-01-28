@@ -31,3 +31,8 @@ int __fork(void)
     return syscall_fork();
 }
 
+
+int __do_taskCreate(void (*taskFunc)())
+{
+    return syscall_do_taskCreate(taskFunc) ;
+}
