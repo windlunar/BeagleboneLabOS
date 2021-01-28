@@ -18,12 +18,15 @@ Feature:
 System call:
 =
 
-目前實作了四個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br>
+目前實作了7個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br>
 
-1. yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br><br>
-2. get_tid :獲得現在正在執行的task的task id.<br><br>
-3. exit :結束正在運行的task.<br><br>
-3. fork :複製task自己 ,創造子task.<br><br>
+1. __yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br><br>
+2. __gettid :獲得現在正在執行的task的task id.<br><br>
+3. __exit :結束正在運行的task.<br><br>
+4. __fork :複製task自己 ,創造子task.<br><br>
+5. __do_taskCreate :建立task.<br><br>
+6. __malloc_blk :分配一個block的記憶體空間.<br><br>
+7. __mfree_blk :歸還使用__malloc_blk獲得的空間.<br><br>
 
 簡易的 command line:
 =
