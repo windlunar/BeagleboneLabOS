@@ -32,9 +32,12 @@ int __fork(void)
 }
 
 
-int __do_taskCreate(void (*taskFunc)())
+int __do_taskCreate(void (*taskFunc)() ,int32_t prio)
 {
-    return syscall_do_taskCreate(taskFunc) ;
+    TASK_CONFIG config ;
+    config.taskCallBack = taskFunc ;
+    config.prio = prio ;
+    return syscall_do_taskCreate(&config) ;
 }
 
 // Allocate one block(60 bytes aval)

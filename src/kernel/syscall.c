@@ -149,6 +149,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     ntask->prev_ptr = NULL ;
     ntask->task_status = TASK_READY ;
     ntask->taskCallBack = curr_running_task->taskCallBack ;
+    ntask->priority = curr_running_task->priority ;
 
 
     // 設定子stack的 task id
@@ -173,14 +174,16 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     
 }
 /************************************************************************************************/
-void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void (*taskFunc)())
+void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
 {
+    TASK_CONFIG *config = (TASK_CONFIG *)arg ;
+
     MEM_AREA_INFO_t *n_memarea = memAreaAlloc();
     n_memarea->area_status = TASK_AREA ; 
 
     TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_memarea->m_top) ;  
 
-    taskCreate(ntask ,taskFunc ,stktop2bottom(n_memarea->m_top));
+    taskCreate(ntask ,config->taskCallBack ,stktop2bottom(n_memarea->m_top) ,config->prio);
 
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
     old_context->r0 = ntask->task_id ;
@@ -202,7 +205,7 @@ void __malloc_blk_handler(uint32_t *usrTaskContextOld)
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
 
     MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
-    old_context->r0 = blk_alloc(curr_ma) ;
+    old_context->r0 = (uint32_t)blk_alloc(curr_ma) ;
 }
 
 

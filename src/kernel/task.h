@@ -12,7 +12,11 @@ extern int32_t taskid;
 #define TASK_RUNNING    0
 #define TASK_READY      1
 #define TASK_TERMINATE  2
-#define TASK_SUSPEND    3
+#define TASK_WAIT    3
+/***********************************************************************************************/
+#define MAXNUM_PRIORITY    5
+#define LOWEST_PRIORITY    MAXNUM_PRIORITY-1 
+#define HIGHEST_PRIORITY   0 
 /***********************************************************************************************/
 #define TASK_STACK_SIZE 512
 #define TASK_NUM_MAX 32
@@ -99,6 +103,8 @@ typedef struct
 
 }USR_TASK_CONTEXT_t;
 
+
+
 struct _TASK
 {
     struct _TASK *next_ptr ;
@@ -117,11 +123,25 @@ struct _TASK
     // task context ,存放在stack中
     USR_TASK_CONTEXT_t *task_context ; 
 
-    //int32_t priority ; //not implement yet ;
+    int32_t priority ; //
 
 };
 typedef struct _TASK TASK_INFO_t ;
-extern TASK_INFO_t *task_ready_queue_head;
+
+
+
+struct _CONFIG
+{
+    // task function pointer
+    void (*taskCallBack)() ;
+
+    int32_t prio ; //
+
+};
+typedef struct _CONFIG TASK_CONFIG ;
+
+
+
 /***********************************************************************************************/
 
 extern TASK_INFO_t task_origin ;
@@ -133,13 +153,14 @@ void schedFuncContextPrepare(void);
 extern void _call_sched(uint32_t schedContext) ;    //定義在task_asm.s
 void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
 
-
-int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack);
-void task_enqueue(TASK_INFO_t *task_node) ;
-TASK_INFO_t *task_dequeue() ;
-void remove_from_readylist(TASK_INFO_t *task_node);
-void print_task_id_from_head() ;
-
+void task_init() ;
+int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t prio);
+void task_enqueue(TASK_INFO_t *task) ;
+TASK_INFO_t *task_dequeue(int32_t prio) ;
+void remove_from_readylist(TASK_INFO_t *task);
 /***********************************************************************************************/
+void print_task_id_from_head(int32_t prio) ;
+void print_task_addr_from_head(int32_t prio) ;
+
 #endif
 

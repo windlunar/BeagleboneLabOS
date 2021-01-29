@@ -7,7 +7,7 @@
 
 int fork_test()
 {
-	__do_taskCreate(&fork_test_main) ;
+	__do_taskCreate(&fork_test_main ,HIGHEST_PRIORITY) ;
 	
 	return 0 ;
 }

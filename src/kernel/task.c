@@ -5,37 +5,67 @@
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
 TASK_INFO_t task_origin ;
 uint32_t task_origin_stack[TASK_STACK_SIZE/4] ;
-TASK_INFO_t *task_ready_queue_head = NULL;
+
+// 沒有static會出錯
+static TASK_INFO_t *task_ready_queue_head[MAXNUM_PRIORITY] ;
 TASK_INFO_t *curr_running_task = NULL ;
 
 int32_t taskid = -1 ;
-
+int32_t prio = -1 ;
 
 // 原來在執行的 user proccess在返回之前設定成 TASK_READY ,然後放入ready queue 最後面
 void sched(void)
 {
 	// 從IRQ handler跟SVC handler返回到user mode會直接進到這個sched
 	//choose a task to run
+
+
 	for(;;)
 	{
-		//將task 從ready list 的 head 拿出 ,然後執行 TaskRun,切換到user mode跑task
-		if(task_ready_queue_head->task_status == TASK_READY){
-			TASK_INFO_t *_head = task_ready_queue_head ;
+		// 從priority 0開始
+		for(int i=0 ; i<MAXNUM_PRIORITY; i++)
+		{
+			// 如果該prio的ready list不為空時
+			if(task_ready_queue_head[i] != NULL)
+			{
+				prio = i ;
 
-			//dequeue task ,回傳值目前不需要用到
-			TASK_INFO_t *r = task_dequeue() ;
+				//將task 從ready list 的 head 拿出 ,然後執行 TaskRun,切換到user mode跑task
+				if(task_ready_queue_head[prio]->task_status == TASK_READY)
+				{					
+					TASK_INFO_t *_head = task_ready_queue_head[prio] ;
 
-			//And the put it to back ,and set it to running
-			task_enqueue(_head) ;
-			_head->task_status = TASK_RUNNING ;
+					//dequeue task ,回傳值目前不需要用到
+					TASK_INFO_t *r = task_dequeue(prio) ;
 
-			//設定 現在正在 running 的 task結構
-			curr_running_task = _head ;
+					//And the put it to back ,and set it to running
+					_head->task_status = TASK_RUNNING ;
+					task_enqueue(_head) ;
 
-			//Switch to user mode and run the task
-			TaskRun((uint32_t *)_head->task_context) ;
-		}
+
+					//設定 現在正在 running 的 task結構
+					curr_running_task = _head ;
+
+
+					//Switch to user mode and run the task
+					TaskRun((uint32_t *)_head->task_context) ;
+				}
+				else
+				{
+					kprintf("Error :The head in ready queue is not READY.\r\n") ;
+				}
+			}
+		}	
 	}
+}
+
+
+void task_init()
+{
+	for(int i=0 ; i<MAXNUM_PRIORITY; i++)
+	{
+		task_ready_queue_head[i] = NULL ;
+	}	
 }
 
 
@@ -59,12 +89,13 @@ void schedFuncContextPrepare(void)
 // lr 存放該 user自己本身的 lr值(如返回其他函數用)
 // 所以要把 task 的 entry位址放在 USR_TASK_CONTEXT_t 的 r9_return_lr上
 //
-int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack)
+int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t prio)
 {
 	uint32_t *task_stack = (uint32_t *)stack ;
 
 	taskid++ ;
 	task->task_id = taskid;
+	task->priority = prio ;
 
 	//設定task stack的起始位址(low address開始)
 	task->stk_bottom = task_stack ;
@@ -87,50 +118,50 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack)
 
 }
 
-void task_enqueue(TASK_INFO_t *task_node)
+void task_enqueue(TASK_INFO_t *task)
 {
-	if(task_ready_queue_head == NULL){
+	if(task_ready_queue_head[task->priority] == NULL){
 		//create the first node
-		task_node->next_ptr = NULL ;
-		task_node->prev_ptr = NULL ;
-		task_ready_queue_head = task_node ;
+		task->next_ptr = NULL ;
+		task->prev_ptr = NULL ;
+		task_ready_queue_head[task->priority] = task ;
 		return ;
 	}
 	// 不是第一個node
 	// 從head找最後一個node
-	TASK_INFO_t *head = task_ready_queue_head ;
+	TASK_INFO_t *head = task_ready_queue_head[task->priority] ;
 	while(head->next_ptr != NULL){
 		head = head->next_ptr ;
 	}
 	TASK_INFO_t *end = head ;
 
-	end->next_ptr = task_node ;
-	task_node->prev_ptr = end ;
-	task_node->next_ptr = NULL ;
+	end->next_ptr = task ;
+	task->prev_ptr = end ;
+	task->next_ptr = NULL ;
 	
 	
 }
 
 //從頭部取出返回原來的 TASK_INFO_t
-TASK_INFO_t *task_dequeue()
+TASK_INFO_t *task_dequeue(int32_t prio)
 {
-	if(task_ready_queue_head == NULL){
+	if(task_ready_queue_head[prio] == NULL){
 		kprintf("Task queue is empty\r\n") ;
 		return NULL;
 	}
 
-	if(task_ready_queue_head->next_ptr == NULL){
-		TASK_INFO_t *head = task_ready_queue_head ;
-		task_ready_queue_head = NULL ;
+	if(task_ready_queue_head[prio]->next_ptr == NULL){
+		TASK_INFO_t *head = task_ready_queue_head[prio] ;
+		task_ready_queue_head[prio] = NULL ;
 		return head;
 	}
-	TASK_INFO_t *origin_head = task_ready_queue_head ;
+	TASK_INFO_t *origin_head = task_ready_queue_head[prio] ;
 
 	//next node becoome the new node
 	TASK_INFO_t *next = origin_head->next_ptr ;
 	
 	next->prev_ptr = NULL ;
-	task_ready_queue_head = next ;
+	task_ready_queue_head[prio] = next ;
 
 	origin_head->next_ptr = NULL ;
 
@@ -138,45 +169,64 @@ TASK_INFO_t *task_dequeue()
 }
 
 
-void remove_from_readylist(TASK_INFO_t *task_node)
+void remove_from_readylist(TASK_INFO_t *task)
 {
-	if(task_node ==NULL){
+	if(task ==NULL){
 		return ;
 	}
 
 	//list沒有node
-	if(task_ready_queue_head == NULL){
+	if(task_ready_queue_head[task->priority] == NULL){
 		kprintf("Task queue is empty\r\n") ;
 		return;		
 	}
 
 	//list中只有自己
-	if(task_ready_queue_head->next_ptr == NULL){
-		task_ready_queue_head = NULL ;
+	if(task_ready_queue_head[task->priority]->next_ptr == NULL){
+		task_ready_queue_head[task->priority] = NULL ;
 	}
 
-	TASK_INFO_t *prev = task_node->prev_ptr ;
-	TASK_INFO_t *next = task_node->next_ptr ;
+	TASK_INFO_t *prev = task->prev_ptr ;
+	TASK_INFO_t *next = task->next_ptr ;
 
 	prev->next_ptr = next ;
 	next->prev_ptr = prev ;
 
-	task_node->next_ptr = NULL ;
-	task_node->prev_ptr = NULL ;
+	task->next_ptr = NULL ;
+	task->prev_ptr = NULL ;
 }
 
 
-void print_task_id_from_head()
+void print_task_id_from_head(int32_t prio)
 {
-	if(task_ready_queue_head == NULL){
+	if(task_ready_queue_head[prio] == NULL){
 		kprintf("Task queue is empty\r\n") ;
 		return;		
 	}
-	TASK_INFO_t *head = task_ready_queue_head ;
+	TASK_INFO_t *head = task_ready_queue_head[prio] ;
 	while(head->next_ptr != NULL)
 	{
 		kprintf("task id = %d\r\n" ,head->task_id) ;
 		head = head->next_ptr ;
 	}
 	kprintf("task id = %d\r\n\r\n" ,head->task_id) ;
+}
+
+
+void print_task_addr_from_head(int32_t prio)
+{
+	if(task_ready_queue_head[prio] == NULL){
+		kprintf("Task queue is empty\r\n") ;
+		return;		
+	}
+	kprintf("task_origin addr =%p\r\n" ,&task_origin) ;
+
+	TASK_INFO_t *head = task_ready_queue_head[prio] ;
+	kprintf("task_ready_queue_head[prio] addr =%p\r\n" ,&task_ready_queue_head[prio]) ;
+	while(head->next_ptr != NULL)
+	{
+		kprintf("task addr = %p\r\n" ,head) ;
+		head = head->next_ptr ;
+	}
+	kprintf("task addr = %p\r\n\r\n" ,head) ;
 }

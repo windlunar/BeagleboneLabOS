@@ -51,8 +51,10 @@ int kernal_entry(void)
 /*************************************************************************************************
  * Init Task First thread :Origin
  *************************************************************************************************/
+	task_init() ;
+	
 	//Init the first thread
-	taskCreate(&task_origin ,&main_origin ,task_origin_stack) ;
+	taskCreate(&task_origin ,&main_origin ,task_origin_stack ,LOWEST_PRIORITY) ;
 
 	//enqueue the first thread's info structure
 	task_enqueue(&task_origin) ;

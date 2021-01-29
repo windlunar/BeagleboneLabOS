@@ -16,8 +16,8 @@ void usertask0(void){
 	while(k<LOOP_NUM)
 	{	
 		tid = __gettid() ;	
-		kprintf("Task 0 #%d ,task id=%d\r\n" ,k ,tid);
-		//_yield() ;	
+		kprintf("tid=%d,#%d\r\n" ,tid ,k);
+		//__yield() ;	
 		k++ ;
 	}
 	__exit();
@@ -32,7 +32,7 @@ void usertask1(void){
 	while(k<LOOP_NUM)
 	{
 		tid = __gettid() ;
-		kprintf("Task 1 #%d ,task id=%d\r\n" ,k ,tid);
+		kprintf("tid=%d,#%d\r\n" ,tid ,k);
     	//__print_hello(&k);
 		//__yield() ;			
 		k++ ;
@@ -48,7 +48,7 @@ void usertask2(void){
 	while(k<LOOP_NUM)
 	{
 		tid = __gettid() ;
-		kprintf("Task 2 #%d ,task id=%d\r\n" ,k ,tid);
+		kprintf("tid=%d,#%d\r\n" ,tid ,k);
 		//__yield() ;			
 		k++ ;
 	}
@@ -64,7 +64,7 @@ void usertask3(void){
 	while(k<LOOP_NUM)
 	{
 		tid = __gettid() ;	
-		kprintf("Task 3 #%d ,task id=%d\r\n" ,k ,tid);
+		kprintf("tid=%d,#%d\r\n" ,tid ,k);
 		//__yield() ;	
 		k++ ;
 	}
@@ -81,7 +81,7 @@ void usertask4(void){
 	while(k<LOOP_NUM)
 	{
 		tid = __gettid() ;
-		kprintf("Task 4 #%d ,task id=%d\r\n" ,k ,tid);
+		kprintf("tid=%d,#%d\r\n" ,tid ,k);
 		//__yield() ;		
 		k++ ;
 	}
@@ -95,11 +95,11 @@ int multitasking_test(void)
 	kprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	kprintf("Now test multitasking.\r\n") ;
 
-	__do_taskCreate(&usertask0) ;
-	__do_taskCreate(&usertask1) ;
-	__do_taskCreate(&usertask2) ;
-	__do_taskCreate(&usertask3) ;
-	__do_taskCreate(&usertask4) ;
+	__do_taskCreate(&usertask0 ,HIGHEST_PRIORITY) ;
+	__do_taskCreate(&usertask1 ,HIGHEST_PRIORITY) ;
+	__do_taskCreate(&usertask2 ,HIGHEST_PRIORITY) ;
+	__do_taskCreate(&usertask3 ,HIGHEST_PRIORITY) ;
+	__do_taskCreate(&usertask4 ,HIGHEST_PRIORITY) ;
 
 
 	for(int32_t i=0 ;i<1000000;i++);
