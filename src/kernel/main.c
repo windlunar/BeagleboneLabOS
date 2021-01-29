@@ -63,18 +63,16 @@ int kernal_entry(void)
 	kprintf("Init Tasks Shell.\r\n");
 
 /***************************************************************************************/
-// Init memory-area lists
+// Init memory-area lists and files
 /***************************************************************************************/
 
 	mem_areas_list_init();
 
+	file_in_ram_init() ;
+	open_console_in_out(&task_shell) ;
 /***************************************************************************************/
 // Test	
 /***************************************************************************************/
-	file_in_ram_init() ;
-	//print_under_node(root) ;
-	print_under_node(root->firstchild) ;
-	//print_under_node(root->firstchild->next_sibling) ;
 	//for(;;) ;
 /***************************************************************************************/
 // 

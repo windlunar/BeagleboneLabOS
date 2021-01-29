@@ -44,6 +44,7 @@ void fork_test_main()
 		for(int32_t i=0 ;i<100000;i++);
 		int ptid = __gettid() ;
 		kprintf("I'm parrent task ,tid=%d\r\n",ptid);
+		__write(FD_CONSOLE_OUT ,"syscall __write() test\r\n\0" ,25) ;
 		__exit() ;
 
 	}
@@ -51,6 +52,7 @@ void fork_test_main()
 	{
 		int ctid = __gettid() ;
 		kprintf("I'm child task., tid=%d\r\n" ,ctid) ;
+		__write(FD_CONSOLE_OUT ,"syscall __write() test\r\n\0" ,25) ;
 		__exit() ;
 	}
 

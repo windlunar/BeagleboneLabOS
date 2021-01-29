@@ -65,3 +65,15 @@ int __get_task_priority()
 {
     return syscall_get_task_priority() ;
 }
+
+
+
+int __write(int fd ,char *buf ,uint32_t n_bytes)
+{
+    FILE_WRITE_SETUP_t args ;
+    args.fd = fd ;
+    args.wrbuf =buf ;
+    args.n_bytes = n_bytes ;
+
+    return syscall_write(&args) ;    
+}

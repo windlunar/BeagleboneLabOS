@@ -28,6 +28,7 @@
 .equ	 SYSCALL_ID_mfree_blk			,		8
 .equ	 SYSCALL_ID_get_mblk_list		,		9
 .equ	 SYSCALL_ID_get_task_priority	,		10
+.equ	 SYSCALL_ID_write				,		11
 
 /************************************************************************************************/
 
@@ -276,6 +277,24 @@ syscall_get_task_priority:
 	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_get_task_priority
+
+	svc 0x00
+	pop	{r2 ,lr}
+	msr     CPSR_c, #CPSR_M_USR
+	bx lr	//返回 user proc
+
+
+
+/*****************************************************************************************/
+// 
+/*****************************************************************************************/
+.global syscall_write; 
+.align	4
+syscall_write:
+	//保存傳入參數 到r2
+	push {r2 ,lr}
+	mov	r2 ,r0
+	mov r0, #SYSCALL_ID_write
 
 	svc 0x00
 	pop	{r2 ,lr}

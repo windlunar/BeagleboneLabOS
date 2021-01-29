@@ -7,6 +7,7 @@
 //#include "../klib/queue.h"
 #include "../klib/mem.h"
 #include "memory.h"
+#include "file.h"
 
 
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
@@ -52,6 +53,10 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
 
     case SYSCALL_ID_get_task_priority:
         __get_task_priority_handler(usrTaskContextOld) ;
+        break;
+
+    case SYSCALL_ID_write:
+        __write_handler(usrTaskContextOld ,args) ;
         break;
 
     default:
@@ -155,6 +160,9 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     ntask->taskCallBack = curr_running_task->taskCallBack ;
     ntask->priority = curr_running_task->priority ;
 
+    //
+    //open_console_in_out(ntask) ;
+
 
     // 設定子stack的 task id
 	taskid++ ;
@@ -198,6 +206,8 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
                 ,DEFAULT_AVAL_BLK_SIZE 
                 ,DEFAULT_TASK_MA_BLKNUM) ;
 
+    //
+    open_console_in_out(ntask) ;
 
     task_enqueue(ntask) ; 
 }
@@ -239,4 +249,19 @@ void __get_task_priority_handler(uint32_t *usrTaskContextOld)
 {
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
     old_context->r0 = curr_running_task->priority ;    
+}
+
+
+// 之後再implement讓該task staus轉為block ,等寫完在ready
+void __write_handler(uint32_t *usrTaskContextOld ,void *args)
+{
+    FILE_WRITE_SETUP_t *write_args = (FILE_WRITE_SETUP_t *)args ;
+    int fd = write_args->fd ;
+    uint8_t *wrbuf = write_args->wrbuf ;
+    uint32_t n_bytes = write_args->n_bytes ;
+
+    int ret = curr_running_task->openfiles[fd]->file_write(wrbuf ,n_bytes) ;
+
+    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    old_context->r0 = ret ;  
 }

@@ -8,11 +8,16 @@
 #include "usrtasks.h"
 
 
-#define TEST_CMD	"test\0"
-
+#include "../kernel/file.h"
+#include "../kernel/task.h"
 
 void main_shell()
 {
+/***********************************************************************************/
+// Test
+/***********************************************************************************/
+
+/***********************************************************************************/
 	draw_console();
 	kprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
 	kprintf("\r\nThe command line is the first process\r\n") ;

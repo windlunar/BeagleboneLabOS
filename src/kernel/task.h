@@ -6,6 +6,7 @@
 #include "../klib/print.h"
 #include "debug.h"
 #include "memory.h"
+#include "file.h"
 
 extern int32_t taskid;
 /***********************************************************************************************/
@@ -23,6 +24,9 @@ extern int32_t taskid;
 #define stktop2bottom(x)   (x)-(TASK_STACK_SIZE/4)+1
 #define stkbottom2top(x)   (x)+(TASK_STACK_SIZE/4)-1
 #define DEFAULT_TASK_MA_BLKNUM    (AREA_SIZE - TASK_STACK_SIZE)/(DEFAULT_AVAL_BLK_SIZE+4)
+
+/***********************************************************************************************/
+#define MAX_FD   8
 
 /***********************************************************************************************/
 
@@ -109,22 +113,14 @@ struct _TASK
 {
     struct _TASK *next_ptr ;
     struct _TASK *prev_ptr ;   
-
-    // task 的 stack空間 的pointer
-    uint32_t *stk_bottom ;
+    uint32_t *stk_bottom ;              // task 的 stack空間 的pointer
     uint32_t *stk_top ;
-
-    // task function pointer
-    void (*taskCallBack)() ;
-
+    void (*taskCallBack)() ;            // task function pointer
     int32_t task_id;
     int32_t task_status ;
-
-    // task context ,存放在stack中
-    USR_TASK_CONTEXT_t *task_context ; 
-
-    int32_t priority ; //
-
+    USR_TASK_CONTEXT_t *task_context ; // task context ,存放在stack中
+    int32_t priority ; 
+    FILE *openfiles[MAX_FD] ;
 };
 typedef struct _TASK TASK_INFO_t ;
 
@@ -155,6 +151,7 @@ void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會�
 
 void task_init() ;
 int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t prio);
+void open_console_in_out(TASK_INFO_t *task) ;
 void task_enqueue(TASK_INFO_t *task) ;
 TASK_INFO_t *task_dequeue(int32_t prio) ;
 void remove_from_readylist(TASK_INFO_t *task);

@@ -118,10 +118,28 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t p
 	//設定task的狀態為ready
     task->task_status = TASK_READY ;
 
+	//Init open file
+	for(int i=0 ; i<MAX_FD; i++)
+	{
+		task->openfiles[i] = NULL ;
+	}
+
+	
+	
 	//回傳task id
 	return task->task_id ;
 
 }
+
+
+void open_console_in_out(TASK_INFO_t *task)
+{
+// open console_in and console_out
+	if(file_open(FILE_CONSOLE_IN ,(void *)task) < 0) kprintf("Failed to open 'console_in'\r\n") ;
+	if(file_open(FILE_CONSOLE_OUT ,(void *)task) < 0) kprintf("Failed to open 'console_out'\r\n") ;
+}
+
+
 
 void task_enqueue(TASK_INFO_t *task)
 {

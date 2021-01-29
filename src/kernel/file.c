@@ -1,9 +1,10 @@
 
 #include "file.h"
-
+#include "task.h"
 /***************************************************************************************/
 PATH_TREE_INFO path_tree ;
 PATH_NODE *root = NULL ;
+FILE *file_list_head = NULL;
 /***************************************************************************************/
 
 int file_in_ram_init()
@@ -17,10 +18,9 @@ int file_in_ram_init()
     PATH_NODE *fifo = create_path_node(root ,"/fifo\0") ;
     if(fifo == NULL) return -1 ;
 
-
-    create_file_under_node(dev ,"/console_in\0" ,CONSOLE_IN_TYPE) ;
-    create_file_under_node(dev ,"/console_out\0" ,CONSOLE_OUT_TYPE) ;
-    create_file_under_node(dev ,"/tty0\0" ,TTY0_TYPE) ;
+    create_file_under_node(dev ,FILE_CONSOLE_IN ,CONSOLE_IN_TYPE) ;
+    create_file_under_node(dev ,FILE_CONSOLE_OUT ,CONSOLE_OUT_TYPE) ;
+    create_file_under_node(dev ,FILE_TTY0 ,TTY0_TYPE) ;
 }
 
 
@@ -215,10 +215,58 @@ FILE *create_file_under_node(PATH_NODE *node ,char * filename ,int type)
         end->next_sibling = file ;
 
     }
+    // Add file to list
+    file_list_push(file) ;
 
     return file ;
 }
 
+
+void file_list_push(FILE *file)
+{
+    // list內還沒有資料
+    if(file_list_head == NULL)
+    {
+        file_list_head = file ;
+        file->list_next = NULL ;
+        file->list_prev = NULL ;
+        return ;
+    }
+
+    //代表list中只有一項
+    if(file_list_head->list_next == NULL)
+    {
+        file_list_head->list_next = file ;
+        file->list_prev = file_list_head ;
+        file->list_next = NULL ;
+        return ;
+    }
+    //移動到end
+    FILE *head = file_list_head ;
+    while(head->list_next != NULL)
+    {
+        head = head->list_next ;
+    }
+    FILE *end = head ;
+
+    end->list_next = file ;
+    file->list_prev = end ;
+    file->list_next = NULL ;
+}
+
+
+void print_file_list()
+{
+    FILE *head = file_list_head ;
+    while(head != NULL)
+    {
+        uart_tx_str(CONSOLE ,head->name ,strlen(head->name)) ;
+        uart_putC(CONSOLE ,'\r') ;
+        uart_putC(CONSOLE ,'\n') ;
+
+        head = head->list_next ;
+    }
+}
 
 
 int console_read_func(uint8_t *rdbuf ,uint32_t n_bytes)
@@ -249,4 +297,45 @@ int console_write_func(uint8_t *wrbuf ,uint32_t n_bytes)
     }
 
     return n_wr ;
+}
+
+
+FILE *find_file(char *filename)
+{
+    FILE *head = file_list_head ;
+    while(head->list_next != NULL)
+    {
+        //uart_tx_str(CONSOLE ,head->name ,strlen(head->name)) ;
+        //uart_putC(CONSOLE ,'\r') ;
+        //uart_putC(CONSOLE ,'\n') ;
+        
+        if(strcmp(filename ,head->name) == 0) return head ;
+
+        head = head->list_next ;
+    }
+
+    kprintf("File not exit\r\n") ;
+    return NULL ;    
+}
+
+
+FILE_DESCRIPTOR_t file_open(char *filename ,void *_task)
+{
+    TASK_INFO_t *task = (TASK_INFO_t *)_task ;
+
+    int fd = -1;
+    FILE *file = find_file(filename) ;
+
+    if(file == NULL) return -1 ;
+
+    for(int i =0 ; i<MAX_FD; i++)
+    {
+        if(task->openfiles[i] == NULL)
+        {
+            task->openfiles[i] = file ;
+            fd = i ;
+            break ;
+        }
+    }
+    return fd ;
 }

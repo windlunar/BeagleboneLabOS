@@ -15,6 +15,7 @@
 #define SYSCALL_ID_mfree_blk            8
 #define SYSCALL_ID_get_mblk_list        9
 #define SYSCALL_ID_get_task_priority    10
+#define SYSCALL_ID_write                11
 
 void svc_handler(void) ;
 extern void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args);
@@ -31,6 +32,7 @@ void __malloc_blk_handler(uint32_t *usrTaskContextOld) ;
 void __malloc_mfree_blk_handler(uint32_t *usrTaskContextOld ,void *blk_aval_start) ;
 void __get_mblk_list_handler(uint32_t *usrTaskContextOld) ;
 void __get_task_priority_handler(uint32_t *usrTaskContextOld) ;
+void __write_handler(uint32_t *usrTaskContextOld ,void *args) ;
 
 
 //syscall call by user task ,define in syscall_asm.s
@@ -44,5 +46,6 @@ extern void *syscall_malloc_blk();
 extern void syscall_mfree_blk(void *blk_aval_start);
 extern void syscall_get_mblk_list();
 extern int syscall_get_task_priority() ;
+extern int syscall_write() ;
 
 #endif

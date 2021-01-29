@@ -21,6 +21,9 @@ void prio_test(void){
 		kprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
 		k++ ;
 	}
+	// test syscall __write
+	__write(FD_CONSOLE_OUT ,"Test syscall __write()\r\n\0" ,25) ;
+
 	__exit();
 }
 
