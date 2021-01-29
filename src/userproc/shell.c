@@ -1,5 +1,5 @@
 #include "../driver/uart.h"
-#include "../klib/print.h"
+#include "../kernel/kprint.h"
 #include "../klib/queue.h"
 #include "../klib/console.h"
 #include "../klib/mem.h"

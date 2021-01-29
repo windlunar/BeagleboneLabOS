@@ -1,6 +1,6 @@
 
 #include "usrtasks.h"
-#include "../klib/print.h"
+#include "../kernel/kprint.h"
 #include "../klib/usyscall.h"
 
 

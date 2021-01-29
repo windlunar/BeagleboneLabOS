@@ -8,7 +8,7 @@
 #ifndef _QUEUE_H_
 #define _QUEUE_H_
 
-#include "print.h"
+#include "../kernel/kprint.h"
 #include "../kernel/task.h"
 
 

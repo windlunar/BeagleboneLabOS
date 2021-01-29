@@ -5,7 +5,7 @@
 
 #include "../common.h"
 #include "../driver/uart.h"
-#include "../klib/print.h"
+#include "kprint.h"
 #include "memory.h"
 #include "task.h"
 

@@ -3,7 +3,7 @@
 
 #include "../common.h"
 #include "console.h"
-#include "print.h"
+#include "../kernel/kprint.h"
 #include "../driver/uart.h"
 
 

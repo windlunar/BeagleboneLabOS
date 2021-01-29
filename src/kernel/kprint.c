@@ -1,5 +1,5 @@
 
-#include "../kernel/kprint.h"
+#include "kprint.h"
 #include "../driver/uart.h"
 
 //__builtin_va_list is built in to the compiler ,not a macro

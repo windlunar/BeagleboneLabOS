@@ -1,7 +1,7 @@
 
 #include "../common.h"
 #include "timer.h"
-#include "../klib/print.h"
+#include "../kernel/kprint.h"
 #include "uart.h"
 #include "cm_per.h"
 #include "../kernel/interrupt.h"

@@ -14,7 +14,7 @@ CFLAGS  += -march=armv7-a -mtune=cortex-a8
 #CFLAGS  += -march=armv7-a -mtune=cortex-a8 -O2
 #CFLAGS = -mcpu=cortex-a8 -marm -Wall -O2 -nostdlib -nostartfiles -ffreestanding -fstack-usage -Wstack-usage=256
 
-c_obj=print.o queue.o mem.o console.o string.o usyscall.o
+c_obj=queue.o mem.o console.o string.o usyscall.o
 
 .PHONY : all
 all: $(c_obj) move

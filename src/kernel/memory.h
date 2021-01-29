@@ -5,7 +5,7 @@
 
 #include "../common.h"
 #include "../driver/uart.h"
-#include "../klib/print.h"
+#include "kprint.h"
 //#include "../klib/mem.h"
 
 extern uint32_t _end ;	//_end is define in linker.ld

@@ -2,7 +2,7 @@
 #include "../common.h"
 #include "interrupt_regs.h"
 #include "interrupt.h"
-#include "../klib/print.h"
+#include "kprint.h"
 #include "task.h"
 #include "../driver/timer.h"
 #include "../driver/usr_led.h"

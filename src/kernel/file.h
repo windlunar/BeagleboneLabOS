@@ -4,7 +4,7 @@
 
 #include "../common.h"
 #include "memory.h"
-#include "../klib/print.h"
+#include "kprint.h"
 #include "../driver/uart.h"
 #include "../klib/string.h"
 #include "../klib/mem.h"

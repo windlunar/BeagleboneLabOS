@@ -9,7 +9,7 @@
 #include "../driver/usr_led.h"
 #include "../common.h"
 #include "../driver/uart.h"
-#include "../klib/print.h"
+#include "kprint.h"
 #include "../userproc/usrtasks.h"
 #include "syscall.h"
 #include "debug.h"

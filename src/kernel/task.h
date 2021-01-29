@@ -3,7 +3,7 @@
 #define __TASK_H_
 
 #include "../common.h"
-#include "../klib/print.h"
+#include "kprint.h"
 #include "debug.h"
 #include "memory.h"
 #include "file.h"

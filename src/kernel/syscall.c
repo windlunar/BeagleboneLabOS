@@ -1,7 +1,7 @@
 
 
 #include "syscall.h"
-#include "../klib/print.h"
+#include "../kernel/kprint.h"
 #include "debug.h"
 #include "task.h"
 //#include "../klib/queue.h"
