@@ -29,7 +29,6 @@ void prio_test(void){
 
 int priority_test_main(void)
 {
-	for(int32_t i=0 ;i<200000;i++);
 	kprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	kprintf("Now test priority base multitasking.\r\n") ;
 
@@ -43,9 +42,6 @@ int priority_test_main(void)
 	__do_taskCreate(&prio_test ,3) ;
 	__do_taskCreate(&prio_test ,3) ;
 	__do_taskCreate(&prio_test ,4) ;
-
-
-	for(int32_t i=0 ;i<1000000;i++);
 
 	return 0 ;
 }

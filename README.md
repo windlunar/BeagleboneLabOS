@@ -11,7 +11,7 @@ Hi ,<br><br>
 Feature:
 =
 1. 有區分kernel模式與使用者模式(user mode) ,一般的task(process)運行在使用者模式 ,呼叫system call之後轉到kernel模式運行<br><br>
-1. 基於 Time slice 的 round-robin multitasking.(之後會嘗試基於priority的排程)<br><br>
+1. 基於 Time slice 的 priority-based multitasking.<br><br>
 2. 有簡易的 Memory分配機制(目前還沒有區分虛擬記憶體位址).<br><br>
 3. 有一個簡易的command line用於測試.<br>
 
@@ -27,6 +27,7 @@ System call:
 5. __do_taskCreate :建立task.<br><br>
 6. __malloc_blk :分配一個block的記憶體空間.<br><br>
 7. __mfree_blk :歸還使用__malloc_blk獲得的空間.<br><br>
+8. __get_task_priority :獲得現在正在執行的task的priority.<br><br>
 
 簡易的 command line:
 =
@@ -34,7 +35,7 @@ System call:
 Commands:
 <br>
 
-1. test :執行之後鍵盤按1或2, 用於測試 fork 與 multitasking<br>
+1. test :執行之後鍵盤按1或2或3, 用於測試 fork 與 multitasking ,priority multitasking<br>
 2. help :列出可用的指令.<br>
 3. info :印出一些資訊.<br>
 

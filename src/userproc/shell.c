@@ -61,7 +61,7 @@ void main_shell()
 			if (strcmp(cmd ,"test\0")==0){
 				kprintf("\r\n");
 				kprintf("Please key '1' for fork function test or '2' for multitasking test\r\n") ; 
-				kprintf(",or '3' break.\r\n") ;
+				kprintf(",or '3' for priority-based multitasking test ,or '0' break.\r\n") ;
 
 				while(1)
 				{
@@ -74,18 +74,21 @@ void main_shell()
 					if(get == '1'){
 						// Test Fork function
 						fork_test() ;
+						for(int i = 0 ; i<20000;i++) ;
 						break ;
 
 					}else if(get == '2'){
 						// 測試 multitasking							
 						// Time slice base. Round Robin Multitasking    
 						multitasking_test_main() ;
+						for(int i = 0 ; i<20000;i++) ;
 						break ;
 
 					}else if(get == '3'){
 						// 測試 priority							
 						// Time slice base. priority base Multitasking    
 						priority_test_main() ;
+						for(int i = 0 ; i<500000;i++) ;
 						break ;
 
 					}else if(get == '0'){
