@@ -79,10 +79,16 @@ void main_shell()
 					}else if(get == '2'){
 						// 測試 multitasking							
 						// Time slice base. Round Robin Multitasking    
-						multitasking_test() ;
+						multitasking_test_main() ;
 						break ;
 
 					}else if(get == '3'){
+						// 測試 priority							
+						// Time slice base. priority base Multitasking    
+						priority_test_main() ;
+						break ;
+
+					}else if(get == '0'){
 						break ;
 					}
 				}

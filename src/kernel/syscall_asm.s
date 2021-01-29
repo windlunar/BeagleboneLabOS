@@ -263,8 +263,11 @@ syscall_get_mblk_list:
 
 
 /*****************************************************************************************/
-//
-//
+// 
+// 這邊如果加上 reloadOsTick 的話, priority_test會不正常
+// 推測原因應該是, task中的kprintf不到5ms就執行完了 ,然後在下個迴圈馬上跳進syscall ,
+// 這時如果執行 reloadOsTick的話 time slice會一直重計時,而不會達到切換任務的時間 ,
+// 直到所有的迴圈執行完畢才會換到下一個task
 /*****************************************************************************************/
 .global syscall_get_task_priority; 
 .align	4
@@ -273,15 +276,6 @@ syscall_get_task_priority:
 	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_get_task_priority
-
-	/**************************************************************************/
-	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	
-	mov		r0 ,#(ostick_msec)
-	bl 		reloadOsTick
-
-	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	/**************************************************************************/
 
 	svc 0x00
 	pop	{r2 ,lr}

@@ -89,7 +89,7 @@ void usertask4(void){
 }
 
 
-int multitasking_test(void)
+int multitasking_test_main(void)
 {
 	for(int32_t i=0 ;i<200000;i++);
 	kprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
