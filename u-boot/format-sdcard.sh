@@ -26,22 +26,22 @@ if [ $NUM_SECTORS -eq 0 -o $NUM_SECTORS -gt 64000000 ]; then
 	exit 1
 fi
 
-# Unmount any partitions that have been automounted
+# Unmount any areaitions that have been automounted
 if [ $DRIVE == "mmcblk0" ]; then
     sudo umount /dev/${DRIVE}*
-    BOOT_PART=/dev/${DRIVE}p1
-    ROOT_PART=/dev/${DRIVE}p2
+    BOOT_AREA=/dev/${DRIVE}p1
+    ROOT_AREA=/dev/${DRIVE}p2
 else
     sudo umount /dev/${DRIVE}[1-9]
-    BOOT_PART=/dev/${DRIVE}1
-    ROOT_PART=/dev/${DRIVE}2
+    BOOT_AREA=/dev/${DRIVE}1
+    ROOT_AREA=/dev/${DRIVE}2
 fi
 
-# Overwite any existing partiton table with zeros
+# Overwite any existing areaiton table with zeros
 sudo dd if=/dev/zero of=/dev/${DRIVE} bs=1M count=10
 if [ $? -ne 0 ]; then echo "Error: dd"; exit 1; fi
 
-# Create 2 primary partitons on the sd card
+# Create 2 primary areaitons on the sd card
 #  1: FAT32, 64 MiB, boot flag
 #  2: Linux, 1024 MiB
 # Note that the parameters to sfdisk changed slightly v2.26
@@ -60,9 +60,9 @@ fi
 if [ $? -ne 0 ]; then echo "Error: sdfisk"; exit 1; fi
 
 # Format p1 with FAT32 and p2 with ext4
-sudo mkfs.vfat -F 16 -n boot ${BOOT_PART}
+sudo mkfs.vfat -F 16 -n boot ${BOOT_AREA}
 if [ $? -ne 0 ]; then echo "Error: mkfs.vfat"; exit 1; fi
-sudo mkfs.ext4 -L rootfs ${ROOT_PART}
+sudo mkfs.ext4 -L rootfs ${ROOT_AREA}
 if [ $? -ne 0 ]; then echo "Error: mkfs.ext4"; exit 1; fi
 
 echo "SUCCESS! Your microSD card has been formatted"
