@@ -3,8 +3,8 @@
 #include "../klib/queue.h"
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
-TASK_INFO_t task_origin ;
-uint32_t task_origin_stack[TASK_STACK_SIZE/4] ;
+TASK_INFO_t task_shell ;
+uint32_t task_shell_stack[TASK_STACK_SIZE/4] ;
 
 // 沒有static會出錯
 static TASK_INFO_t *task_ready_queue_head[MAXNUM_PRIORITY] ;
@@ -219,7 +219,7 @@ void print_task_addr_from_head(int32_t prio)
 		kprintf("Task queue is empty\r\n") ;
 		return;		
 	}
-	kprintf("task_origin addr =%p\r\n" ,&task_origin) ;
+	kprintf("task_shell addr =%p\r\n" ,&task_shell) ;
 
 	TASK_INFO_t *head = task_ready_queue_head[prio] ;
 	kprintf("task_ready_queue_head[prio] addr =%p\r\n" ,&task_ready_queue_head[prio]) ;

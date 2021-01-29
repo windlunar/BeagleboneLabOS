@@ -43,11 +43,15 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         break;  
 
     case SYSCALL_ID_mfree_blk:
-        __malloc_mfree_blk(usrTaskContextOld ,args) ;
+        __malloc_mfree_blk_handler(usrTaskContextOld ,args) ;
         break;
 
     case SYSCALL_ID_get_mblk_list:
         __get_mblk_list_handler(usrTaskContextOld) ;
+        break;
+
+    case SYSCALL_ID_get_task_priority:
+        __get_task_priority_handler(usrTaskContextOld) ;
         break;
 
     default:
@@ -209,7 +213,7 @@ void __malloc_blk_handler(uint32_t *usrTaskContextOld)
 }
 
 
-void __malloc_mfree_blk(uint32_t *usrTaskContextOld ,void *blk_aval_start)
+void __malloc_mfree_blk_handler(uint32_t *usrTaskContextOld ,void *blk_aval_start)
 {
     free_blk(blk_aval_start) ;
 }
@@ -227,4 +231,12 @@ void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
         head = (uint32_t *)*head ;
     }
     kprintf("blk addr =%p ,content =%x\r\n",head ,*head) ;    
+}
+
+
+
+void __get_task_priority_handler(uint32_t *usrTaskContextOld)
+{
+    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    old_context->r0 = curr_running_task->priority ;    
 }

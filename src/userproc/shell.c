@@ -11,13 +11,14 @@
 #define TEST_CMD	"test\0"
 
 
-void main_origin()
+void main_shell()
 {
 	draw_console();
 	kprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
 	kprintf("\r\nThe command line is the first process\r\n") ;
 
 	kprintf("\r\nThe task id :%d\r\n",__gettid()) ;
+	kprintf("The task priority :%d\r\n",__get_task_priority()) ;
 
 	kprintf("\r\n|cmd>") ;
 

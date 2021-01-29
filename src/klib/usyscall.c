@@ -58,3 +58,10 @@ void __get_mblk_list()
 {
     syscall_get_mblk_list() ;
 }
+
+
+
+int __get_task_priority()
+{
+    return syscall_get_task_priority() ;
+}

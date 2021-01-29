@@ -3,7 +3,7 @@
 #define __USRTASKS_H_
 
 
-void main_origin(void) ;
+void main_shell(void) ;
 
 int fork_test();
 void fork_test_main(void) ;
