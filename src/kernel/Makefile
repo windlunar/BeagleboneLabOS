@@ -12,7 +12,7 @@ obj_destination_path = ../../obj
 CFLAGS  += -march=armv7-a -mtune=cortex-a8
 
 
-c_obj=main.o debug.o task.o interrupt.o syscall.o memory.o
+c_obj=main.o debug.o task.o interrupt.o syscall.o memory.o file.o
 
 asm_obj=start.o syscall_asm.o exception.o task_asm.o
 

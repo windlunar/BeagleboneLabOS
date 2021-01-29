@@ -29,7 +29,7 @@ extern uint32_t *kernal_end ;
 /***********************************************************************************************/
 // Define area_status
 #define FREE    0
-#define INUSE_AREAIALLY_FREE    1
+#define INUSE_PARTIALLY_FREE    1
 #define INUSE_FULL  2
 #define TASK_AREA  3
 

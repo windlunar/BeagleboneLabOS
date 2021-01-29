@@ -13,6 +13,7 @@ TASK_INFO_t *curr_running_task = NULL ;
 int32_t taskid = -1 ;
 int32_t prio = -1 ;
 
+/****************************************************************************************/
 // 原來在執行的 user proccess在返回之前設定成 TASK_READY ,然後放入ready queue 最後面
 void sched(void)
 {
@@ -60,19 +61,23 @@ void sched(void)
 }
 
 
-void task_init()
-{
-	for(int i=0 ; i<MAXNUM_PRIORITY; i++)
-	{
-		task_ready_queue_head[i] = NULL ;
-	}	
-}
+
 
 
 void schedFuncContextPrepare(void)
 {
 	//跳轉address為 task.c的函式shed()
 	schedFuncContextSPtr->lr = (uint32_t)sched ;	
+}
+
+/****************************************************************************************/
+
+void task_init()
+{
+	for(int i=0 ; i<MAXNUM_PRIORITY; i++)
+	{
+		task_ready_queue_head[i] = NULL ;
+	}	
 }
 
 
@@ -196,7 +201,7 @@ void remove_from_readylist(TASK_INFO_t *task)
 	task->prev_ptr = NULL ;
 }
 
-
+/****************************************************************************************/
 void print_task_id_from_head(int32_t prio)
 {
 	if(task_ready_queue_head[prio] == NULL){

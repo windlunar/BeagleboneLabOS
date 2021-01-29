@@ -66,7 +66,7 @@ MEM_AREA_INFO_t *memAreaAlloc(void)
 
     //設定原來的 head node
     prev_head->next_ptr =NULL ;
-    prev_head->area_status = INUSE_AREAIALLY_FREE ;
+    prev_head->area_status = INUSE_PARTIALLY_FREE ;
 
     insert_to_inuse_list(prev_head) ;
 
@@ -200,7 +200,7 @@ MEM_AREA_INFO_t *find_aval_inuse_memarea(void)
     MEM_AREA_INFO_t *head = inuse_area_list_head ;
 
     while(head != NULL){
-        if(head->area_status = INUSE_AREAIALLY_FREE){
+        if(head->area_status = INUSE_PARTIALLY_FREE){
             return head;
         }
         head = head->next_ptr ;

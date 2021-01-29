@@ -22,6 +22,8 @@
 #define UART4_PTR       ((UART_REG_T *)UART4_BASE)
 #define UART5_PTR       ((UART_REG_T *)UART5_BASE)
 
+#define CONSOLE         UART0_PTR
+
 /** Define UART related structure*/
 typedef struct{
     union{
