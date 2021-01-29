@@ -1,6 +1,6 @@
 
 #include "usrtasks.h"
-#include "../kernel/kprint.h"
+#include "../klib/std_io.h"
 #include "../klib/usyscall.h"
 
 
@@ -9,14 +9,14 @@
 
 
 void usertask0(void){
-	kprintf("Starting User Task 0 \r\n");
+	uprintf("Starting User Task 0 \r\n");
 
 	int k = 0 ;
 	int tid = -1 ;
 	while(k<LOOP_NUM)
 	{	
 		tid = __gettid() ;	
-		kprintf("tid=%d,#%d\r\n" ,tid ,k);
+		uprintf("tid=%d,#%d\r\n" ,tid ,k);
 		//__yield() ;	
 		k++ ;
 	}
@@ -25,14 +25,14 @@ void usertask0(void){
 
 
 void usertask1(void){
-	kprintf("Starting User Task 1 \r\n");
+	uprintf("Starting User Task 1 \r\n");
 
 	int k = 0 ;
 	int tid = -1 ;
 	while(k<LOOP_NUM)
 	{
 		tid = __gettid() ;
-		kprintf("tid=%d,#%d\r\n" ,tid ,k);
+		uprintf("tid=%d,#%d\r\n" ,tid ,k);
     	//__print_hello(&k);
 		//__yield() ;			
 		k++ ;
@@ -41,14 +41,14 @@ void usertask1(void){
 }
 
 void usertask2(void){
-	kprintf("Starting User Task 2 \r\n");
+	uprintf("Starting User Task 2 \r\n");
 
 	int k = 0 ;
 	int tid = -1 ;
 	while(k<LOOP_NUM)
 	{
 		tid = __gettid() ;
-		kprintf("tid=%d,#%d\r\n" ,tid ,k);
+		uprintf("tid=%d,#%d\r\n" ,tid ,k);
 		//__yield() ;			
 		k++ ;
 	}
@@ -56,7 +56,7 @@ void usertask2(void){
 }
 
 void usertask3(void){
-	kprintf("Starting User Task 3 \r\n");
+	uprintf("Starting User Task 3 \r\n");
 
 	int k = 0 ;
 	int tid = -1 ;
@@ -64,7 +64,7 @@ void usertask3(void){
 	while(k<LOOP_NUM)
 	{
 		tid = __gettid() ;	
-		kprintf("tid=%d,#%d\r\n" ,tid ,k);
+		uprintf("tid=%d,#%d\r\n" ,tid ,k);
 		//__yield() ;	
 		k++ ;
 	}
@@ -74,14 +74,14 @@ void usertask3(void){
 
 void usertask4(void){
 
-	kprintf("Starting User Task 4 \r\n");
+	uprintf("Starting User Task 4 \r\n");
 
 	int k = 0 ;
 	int tid = -1 ;
 	while(k<LOOP_NUM)
 	{
 		tid = __gettid() ;
-		kprintf("tid=%d,#%d\r\n" ,tid ,k);
+		uprintf("tid=%d,#%d\r\n" ,tid ,k);
 		//__yield() ;		
 		k++ ;
 	}
@@ -91,8 +91,8 @@ void usertask4(void){
 
 int multitasking_test_main(void)
 {
-	kprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
-	kprintf("Now test multitasking.\r\n") ;
+	uprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
+	uprintf("Now test multitasking.\r\n") ;
 
 	__do_taskCreate(&usertask0 ,HIGHEST_PRIORITY) ;
 	__do_taskCreate(&usertask1 ,HIGHEST_PRIORITY) ;

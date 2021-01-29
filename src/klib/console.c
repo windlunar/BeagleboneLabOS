@@ -1,10 +1,9 @@
 
-
-
-#include "../common.h"
 #include "console.h"
-#include "../kernel/kprint.h"
+#include "std_io.h"
+#include "usyscall.h"
 #include "../driver/uart.h"
+
 
 
 // |---------->h(h)
@@ -100,7 +99,8 @@ void draw_console(void)
 	draw_last_pix_every_line(&p[0][0] ,VERTICAL_LENTH ,HORIZENTAL_LENTH ,'\n') ;
 	draw_vertical_line(&p[0][0] ,HORIZENTAL_LENTH ,HORIZENTAL_LENTH-2 ,0 ,'\r' ,VERTICAL_LENTH) ;
 	
-	uart_tx_str(UART0_PTR ,&p[0][0] ,VERTICAL_LENTH*HORIZENTAL_LENTH) ;
+	//uart_tx_str(UART0_PTR ,&p[0][0] ,VERTICAL_LENTH*HORIZENTAL_LENTH) ;
+	__write(FD_CONSOLE_OUT ,&p[0][0] ,VERTICAL_LENTH*HORIZENTAL_LENTH) ;
 
 }
 

@@ -1,6 +1,6 @@
 
 #include "usrtasks.h"
-#include "../kernel/kprint.h"
+#include "../klib/std_io.h"
 #include "../klib/usyscall.h"
 
 
@@ -9,7 +9,7 @@
 
 
 void prio_test(void){
-	kprintf("Starting prio_test_%d \r\n" ,__gettid());
+	uprintf("Starting prio_test_%d \r\n" ,__gettid());
 
 	int k = 0 ;
 	int tid = -1 ;
@@ -18,7 +18,7 @@ void prio_test(void){
 	{	
 		tid = __gettid() ;	
 		prio = __get_task_priority() ;
-		kprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
+		uprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
 		k++ ;
 	}
 	// test syscall __write
@@ -32,8 +32,8 @@ void prio_test(void){
 
 int priority_test_main(void)
 {
-	kprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
-	kprintf("Now test priority base multitasking.\r\n") ;
+	uprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
+	uprintf("Now test priority base multitasking.\r\n") ;
 
 	__do_taskCreate(&prio_test ,HIGHEST_PRIORITY) ;
 	__do_taskCreate(&prio_test ,HIGHEST_PRIORITY) ;
