@@ -10,18 +10,26 @@
 #include "../klib/mem.h"
 
 /***************************************************************************************/
-#define DEVICE_FILE     0
-#define FIFO_FILE       1
-#define TEXT_FILE       2
+#define CONSOLE_IN_TYPE     0
+#define CONSOLE_OUT_TYPE     1
+#define TTY0_TYPE        2
+#define FIFO_TYPE       3
+#define TEXT_TYPE       4
 
-#define NAME_BUF_SIZE   12
+#define NAME_BUF_SIZE   16
 /***************************************************************************************/
 struct _FILE
 {
+    struct _FILE *next_sibling ;
     uint32_t type ;
-    int (*file_read)(unsigned char *rdbuf ,unsigned int n_bytes) ;
-    int (*file_write)(unsigned char *wrbuf ,unsigned int n_bytes) ;
 
+    struct _TREE_NODE *parent ;
+
+    int (*file_read)(uint8_t *rdbuf ,uint32_t n_bytes) ;
+    int (*file_write)(uint8_t *wrbuf ,uint32_t n_bytes) ;
+
+    char namebuf[NAME_BUF_SIZE] ;
+    char *name ;
 };
 typedef struct _FILE FILE ;
 
@@ -31,7 +39,7 @@ struct _TREE_NODE
     struct _TREE_NODE *firstchild ;   //list head
     struct _TREE_NODE *parent ;
     struct _TREE_NODE *next_sibling ;
-    FILE    *files;  //list head
+    FILE    *firstfile;  //list head
     char namebuf[NAME_BUF_SIZE] ;
     char *name ;
 };
@@ -53,10 +61,17 @@ extern PATH_NODE *root ;
 int file_in_ram_init() ;
 int path_tree_init() ;
 int create_root_path() ;
-int create_path_node(PATH_NODE *parent ,char *name);
+PATH_NODE *create_path_node(PATH_NODE *parent ,char *name);
 
 PATH_NODE *find_end_sibling(PATH_NODE *node) ;
 
-void print_path_tree();
+void print_under_node(PATH_NODE *node) ;
+
+
+
+FILE *find_end_filesibling(FILE *node) ;
+FILE *create_file_under_node(PATH_NODE *node ,char * filename ,int type) ;
+int console_read_func(uint8_t *rdbuf ,uint32_t n_bytes);
+int console_write_func(uint8_t *wrbuf ,uint32_t n_bytes);
 
 #endif

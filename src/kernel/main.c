@@ -72,7 +72,9 @@ int kernal_entry(void)
 // Test	
 /***************************************************************************************/
 	file_in_ram_init() ;
-	print_path_tree() ;
+	//print_under_node(root) ;
+	print_under_node(root->firstchild) ;
+	//print_under_node(root->firstchild->next_sibling) ;
 	//for(;;) ;
 /***************************************************************************************/
 // 
