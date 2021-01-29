@@ -18,9 +18,9 @@
 #include "../driver/rtc_reg.h"
 #include "../driver/cm_per.h"
 #include "../driver/gpio_reg.h"
-#include "../klib/queue.h"
+//#include "../klib/queue.h"
 #include "memory.h"
-#include "../klib/mem.h"
+//#include "../klib/mem.h"
 
 
 

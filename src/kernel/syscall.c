@@ -5,7 +5,7 @@
 #include "debug.h"
 #include "task.h"
 //#include "../klib/queue.h"
-//#include "../klib/mem.h"
+#include "../klib/mem.h"
 #include "memory.h"
 
 
