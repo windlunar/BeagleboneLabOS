@@ -30,6 +30,7 @@
 .equ	 SYSCALL_ID_get_task_priority	,		10
 .equ	 SYSCALL_ID_write				,		11
 .equ	 SYSCALL_ID_read				,		12
+.equ	 SYSCALL_ID_open				,		13
 
 /************************************************************************************************/
 
@@ -100,6 +101,10 @@ syscall_get_tid:
 	bx lr	//返回 user proc
 	
 
+/*****************************************************************************************/
+//
+//
+/*****************************************************************************************/
 .global syscall_exit; 
 .align	4
 syscall_exit:
@@ -313,6 +318,24 @@ syscall_read:
 	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_read
+
+	svc 0x00
+	pop	{r2 ,lr}
+	msr     CPSR_c, #CPSR_M_USR
+	bx lr	//返回 user proc
+
+
+
+/*****************************************************************************************/
+// 
+/*****************************************************************************************/
+.global syscall_open; 
+.align	4
+syscall_open:
+	//保存傳入參數 到r2
+	push {r2 ,lr}
+	mov	r2 ,r0
+	mov r0, #SYSCALL_ID_open
 
 	svc 0x00
 	pop	{r2 ,lr}

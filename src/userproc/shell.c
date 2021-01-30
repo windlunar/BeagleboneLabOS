@@ -25,8 +25,8 @@ void main_shell()
 	uprintf("\r\n|cmd>") ;
 
 	char byte = '\0' ;
-	char cmdbuf[10] ;
-	_memset((void *)cmdbuf ,0 ,10) ;
+	char cmdbuf[16] ;
+	_memset((void *)cmdbuf ,0 ,sizeof(cmdbuf)) ;
 	char *cmd = cmdbuf ;
 	char *s = cmd;
 
@@ -62,8 +62,12 @@ void main_shell()
 		case 0x0d:	//Enter ,按下Enter鍵後的處理
 			if (strcmp(cmd ,"test\0")==0){
 				uprintf("\r\n");
-				uprintf("Please key '1' for fork function test or '2' for multitasking test\r\n") ; 
-				uprintf(",or '3' for priority-based multitasking test ,or '0' break.\r\n") ;
+				uprintf("Please key\r\n");
+				uprintf("	'1' for fork function test.\r\n") ;
+				uprintf("	'2' for multitasking test\r\n") ; 
+				uprintf("	'3' for priority-based multitasking test.\r\n") ;
+				uprintf("	'4' for tty0 open test.\r\n") ;
+				uprintf("Or '0' break.\r\n") ;
 
 				while(1)
 				{
@@ -93,11 +97,17 @@ void main_shell()
 						for(int i = 0 ; i<500000;i++) ;
 						break ;
 
+					}else if(get == '4'){
+						// 測試 tty0							
+						tty0_test_main() ;
+						for(int i = 0 ; i<20000;i++) ;
+						break ;
+
 					}else if(get == '0'){
 						break ;
 					}
 				}
-				
+
 			}else if(strcmp(cmd ,"help\0")==0){
 				uprintf("\r\n");
 				uprintf("help:\r\n") ;

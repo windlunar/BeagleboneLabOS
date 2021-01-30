@@ -22,5 +22,6 @@ void __get_mblk_list();
 int __get_task_priority();
 int __write(int fd ,char *buf ,uint32_t n_bytes);
 int __read(int fd ,char *buf ,uint32_t n_bytes);
+int __open(char *path);    //return fd
 
 #endif

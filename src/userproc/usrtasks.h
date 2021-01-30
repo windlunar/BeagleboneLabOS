@@ -18,7 +18,7 @@ void usertask4(void);
 int priority_test_main(void);
 void prio_test(void);
 
-
+int tty0_test_main(void);
 
 #endif
 

@@ -63,6 +63,9 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __read_handler(usrTaskContextOld ,args) ;
         break;
 
+    case SYSCALL_ID_open:
+        __open_handler(usrTaskContextOld ,args) ;
+        break;
 
     default:
         break;
@@ -284,4 +287,19 @@ void __read_handler(uint32_t *usrTaskContextOld ,void *args)
 
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
     old_context->r0 = ret ;    
+}
+
+
+
+void __open_handler(uint32_t *usrTaskContextOld ,void *args)
+{
+    char *path = (char *)args ;
+    int fd = -1 ;
+
+    fd = file_open(path ,(void *)curr_running_task) ;
+    if(fd < 0) kprintf("Error :Can't open file.\r\n") ;
+
+    // Setting return value
+    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    old_context->r0 = fd ;  
 }

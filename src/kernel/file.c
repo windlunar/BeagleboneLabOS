@@ -309,8 +309,9 @@ FILE *find_file(char *filename)
 
         head = head->list_next ;
     }
+    if(strcmp(filename ,head->name) == 0) return head ;
 
-    kprintf("File not exit\r\n") ;
+    kprintf("Error :File not exit\r\n") ;
     return NULL ;    
 }
 
@@ -326,11 +327,15 @@ FILE_DESCRIPTOR_t file_open(char *filename ,void *_task)
 
     for(int i =0 ; i<MAX_FD; i++)
     {
-        if(task->openfiles[i] == NULL)
+        if( (task->openfiles[i] == NULL) && (i!=2) )
         {
             task->openfiles[i] = file ;
             fd = i ;
             break ;
+        }
+        else if( (task->openfiles[i] == NULL) && (i==2) )
+        {
+            //i = fd = 2 for stderr ,not implement yet.
         }
     }
     return fd ;

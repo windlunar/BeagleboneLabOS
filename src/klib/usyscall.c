@@ -88,3 +88,9 @@ int __read(int fd ,char *buf ,uint32_t n_bytes)
 
     return syscall_read(&args) ;    
 }
+
+
+int __open(char *path)
+{
+    return syscall_open(path) ;
+}
