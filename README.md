@@ -19,7 +19,7 @@ Feature:
 System call:
 =
 
-目前實作了7個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br>
+目前實作了11個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br>
 
 1. __yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br><br>
 2. __gettid :獲得現在正在執行的task的task id.<br><br>
@@ -29,6 +29,10 @@ System call:
 6. __malloc_blk :分配一個block的記憶體空間.<br><br>
 7. __mfree_blk :歸還使用__malloc_blk獲得的空間.<br><br>
 8. __get_task_priority :獲得現在正在執行的task的priority.<br><br>
+9. __write :寫資料到file(如tty0).<br><br>
+10. __read :從file(如tty0)讀資料.<br><br>
+11. __open :打開file ,目前每個task打開consile_in 跟 out (fd =0 and 1).可以打開uart0(tty0)<br><br>   
+
 
 簡易的 command line:
 =
@@ -36,7 +40,7 @@ System call:
 Commands:
 <br>
 
-1. test :執行之後鍵盤按1或2或3, 用於測試 fork 與 multitasking ,priority multitasking<br>
+1. test :執行之後鍵盤按1或2或3或4, 測試 fork 與 multitasking ,priority multitasking ,tty0 open tese.<br>
 2. help :列出可用的指令.<br>
 3. info :印出一些資訊.<br>
 

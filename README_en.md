@@ -26,6 +26,9 @@ System call:
 6. __malloc_blk :Allocate a block of memory space.<br><br>
 7. __mfree_blk :Free the memory space which was allocated by __malloc_blk.<br><br>
 8. __get_task_priority :Get the priority of current running task priority.<br><br>
+9. __write :Write data to file(ex:tty0).<br><br>
+10. __read :Read data from file(ex:tty0).<br><br>
+11. __open :Open file ,Every task will open consile_in and out (fd =0 and 1) by default.
 
 Simple command line interface:
 =
@@ -33,7 +36,7 @@ Simple command line interface:
 Commands:
 <br>
 
-1. test :Press '1' for fork function test ,'2' for multitasking test ,'3' for priority-based multitasking test<br>
+1. test :Press '1' for fork function test ,'2' for multitasking test ,'3' for priority-based multitasking test ,'4' for tty0 open test.<br>
 2. help :List available command.<br>
 3. info :Print some info.<br>
 
