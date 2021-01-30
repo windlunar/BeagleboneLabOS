@@ -305,10 +305,6 @@ FILE *find_file(char *filename)
     FILE *head = file_list_head ;
     while(head->list_next != NULL)
     {
-        //uart_tx_str(CONSOLE ,head->name ,strlen(head->name)) ;
-        //uart_putC(CONSOLE ,'\r') ;
-        //uart_putC(CONSOLE ,'\n') ;
-        
         if(strcmp(filename ,head->name) == 0) return head ;
 
         head = head->list_next ;

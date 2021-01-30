@@ -14,6 +14,14 @@
 // ap point to const char * ,last point to ...
 //
 
+char get_c()
+{
+    char byte = '\0' ;
+    __read(FD_CONSOLE_IN ,&byte ,1) ; 
+
+    return byte ;
+}
+
 
 void put_c(char character)
 {
@@ -35,7 +43,6 @@ int32_t uprintf(const char *fmt, ...)
 
     return i ;
 }
-
 
 
 int uprint(const char *fmt ,__builtin_va_list args){

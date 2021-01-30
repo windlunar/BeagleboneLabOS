@@ -34,7 +34,7 @@ void main_shell()
 	while(1)
 	{
 		//獲取在console輸入的字元
-		byte = uart_getC(UART0_PTR) ;
+		byte = get_c() ;
 
 		//在console上印出輸入的字元
 		uprintf("%c" ,byte) ;
@@ -68,7 +68,7 @@ void main_shell()
 				while(1)
 				{
 					//獲取在console輸入的字元
-					uint8_t get = uart_getC(UART0_PTR) ;
+					uint8_t get = get_c() ;
 
 					//在console上印出輸入的字元
 					uprintf("%c" ,get) ;

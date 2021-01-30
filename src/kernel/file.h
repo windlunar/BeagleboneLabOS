@@ -68,13 +68,13 @@ struct TREE_INFO
 typedef struct TREE_INFO   PATH_TREE_INFO ;
 
 
-struct __FILE_WRITE_SETUP
+struct __FILE_RDWR_ARGS
 {
     int fd ;
-    uint8_t *wrbuf ;
+    uint8_t *buf ;
     uint32_t n_bytes;
 };
-typedef struct __FILE_WRITE_SETUP FILE_WRITE_SETUP_t ;
+typedef struct __FILE_RDWR_ARGS FILE_RDWR_ARGS_t ;
 
 
 /***************************************************************************************/

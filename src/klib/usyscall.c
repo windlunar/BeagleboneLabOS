@@ -70,10 +70,21 @@ int __get_task_priority()
 
 int __write(int fd ,char *buf ,uint32_t n_bytes)
 {
-    FILE_WRITE_SETUP_t args ;
+    FILE_RDWR_ARGS_t args ;
     args.fd = fd ;
-    args.wrbuf =buf ;
+    args.buf =buf ;
     args.n_bytes = n_bytes ;
 
     return syscall_write(&args) ;    
+}
+
+
+int __read(int fd ,char *buf ,uint32_t n_bytes)
+{
+    FILE_RDWR_ARGS_t args ;
+    args.fd = fd ;
+    args.buf =buf ;
+    args.n_bytes = n_bytes ;
+
+    return syscall_read(&args) ;    
 }

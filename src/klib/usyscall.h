@@ -21,5 +21,6 @@ void __mfree_blk(void *blk_aval_start) ;
 void __get_mblk_list();
 int __get_task_priority();
 int __write(int fd ,char *buf ,uint32_t n_bytes);
+int __read(int fd ,char *buf ,uint32_t n_bytes);
 
 #endif

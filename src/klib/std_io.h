@@ -4,7 +4,7 @@
 
 #include "../common.h"
 
-
+char get_c() ;
 void put_c(char chartr);
 int32_t uprintf(const char *fmt, ...);
 int uprint(const char *fmt ,__builtin_va_list args);

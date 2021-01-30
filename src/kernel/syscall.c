@@ -59,6 +59,11 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __write_handler(usrTaskContextOld ,args) ;
         break;
 
+    case SYSCALL_ID_read:
+        __read_handler(usrTaskContextOld ,args) ;
+        break;
+
+
     default:
         break;
     }
@@ -255,13 +260,28 @@ void __get_task_priority_handler(uint32_t *usrTaskContextOld)
 // 之後再implement讓該task staus轉為block ,等寫完在ready
 void __write_handler(uint32_t *usrTaskContextOld ,void *args)
 {
-    FILE_WRITE_SETUP_t *write_args = (FILE_WRITE_SETUP_t *)args ;
+    FILE_RDWR_ARGS_t *write_args = (FILE_RDWR_ARGS_t *)args ;
     int fd = write_args->fd ;
-    uint8_t *wrbuf = write_args->wrbuf ;
+    uint8_t *wrbuf = write_args->buf ;
     uint32_t n_bytes = write_args->n_bytes ;
 
     int ret = curr_running_task->openfiles[fd]->file_write(wrbuf ,n_bytes) ;
 
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
     old_context->r0 = ret ;  
+}
+
+
+
+void __read_handler(uint32_t *usrTaskContextOld ,void *args)
+{
+    FILE_RDWR_ARGS_t *write_args = (FILE_RDWR_ARGS_t *)args ;
+    int fd = write_args->fd ;
+    uint8_t *rdbuf = write_args->buf ;
+    uint32_t n_bytes = write_args->n_bytes ;
+
+    int ret = curr_running_task->openfiles[fd]->file_read(rdbuf ,n_bytes) ; 
+
+    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    old_context->r0 = ret ;    
 }
