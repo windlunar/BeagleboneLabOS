@@ -53,8 +53,8 @@ void main_shell()
 		switch (byte)
 		{
 		case 0x08 : //Backspace
-			uart_putC(UART0_PTR ,' ') ;
-			uart_putC(UART0_PTR ,0x08) ;
+			put_c(' ') ;
+			put_c(0x08) ;
 			_memset((void *)cmdbuf ,0 ,10) ;
 			s = cmd ;
 			break;
@@ -115,7 +115,7 @@ void main_shell()
 			_memset((void *)cmdbuf ,0 ,10) ;
 			s = cmd ;
 
-			uart_tx_str(UART0_PTR ,"\r\n|cmd>",7) ;
+			__write(FD_CONSOLE_OUT ,"\r\n|cmd>",7) ;
 			break;
 		
 		default:

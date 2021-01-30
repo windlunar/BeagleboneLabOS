@@ -15,11 +15,10 @@
 //
 
 
-void put_c(int32_t character)
+void put_c(char character)
 {
     char byte = (char)character ;
     __write(FD_CONSOLE_OUT ,&byte ,1) ; 
-    //terminal_printC(character) ;
 }
 
 
