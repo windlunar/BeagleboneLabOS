@@ -71,7 +71,7 @@ int kernal_entry(void)
 	open_console_in_out(&task_shell) ;
 
 	// 設定shell初始路徑為 /root
-	strcat(task_shell.cwd ,PATH_root) ;
+	task_shell.cwdn = root ;
 
 /***************************************************************************************/
 // Test	

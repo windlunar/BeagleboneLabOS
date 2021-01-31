@@ -2,8 +2,8 @@
 #include "file.h"
 #include "task.h"
 /***************************************************************************************/
-PATH_TREE_INFO path_tree ;
-PATH_NODE *root = NULL ;
+DIRTREE_INFO path_tree ;
+DIR_NODE *root = NULL ;
 FILE *file_list_head = NULL;
 /***************************************************************************************/
 
@@ -12,10 +12,10 @@ int file_in_ram_init()
     if(path_tree_init() < 0) return -1 ;
     if(create_root_path() < 0) return -1 ;
 
-    PATH_NODE *dev = create_path_node(root ,PATH_dev) ;
+    DIR_NODE *dev = create_path_node(root ,PATH_dev) ;
     if(dev == NULL) return -1 ;
 
-    PATH_NODE *fifo = create_path_node(root ,PATH_fifo) ;
+    DIR_NODE *fifo = create_path_node(root ,PATH_fifo) ;
     if(fifo == NULL) return -1 ;
 
     create_file_under_node(dev ,FILE_CONSOLE_IN ,CONSOLE_IN_TYPE) ;
@@ -46,8 +46,8 @@ int create_root_path()
         return -1 ;
     }
 
-    root = (PATH_NODE *)path_tree.ma_aval_start ;
-    path_tree.ma_aval_start += sizeof(PATH_NODE) ;
+    root = (DIR_NODE *)path_tree.ma_aval_start ;
+    path_tree.ma_aval_start += sizeof(DIR_NODE) ;
 
     root->firstchild = NULL ;
     root->parent = NULL ;
@@ -59,12 +59,12 @@ int create_root_path()
 }
 
 
-PATH_NODE *create_path_node(PATH_NODE *parent ,char *name)
+DIR_NODE *create_path_node(DIR_NODE *parent ,char *name)
 {
     if( (root == NULL) || (parent == NULL) ) return NULL ;
 
-    PATH_NODE *node = (PATH_NODE *)path_tree.ma_aval_start ;
-    path_tree.ma_aval_start += sizeof(PATH_NODE) ;
+    DIR_NODE *node = (DIR_NODE *)path_tree.ma_aval_start ;
+    path_tree.ma_aval_start += sizeof(DIR_NODE) ;
 
     node->firstchild = NULL ;
     node->parent = parent ;
@@ -87,7 +87,7 @@ PATH_NODE *create_path_node(PATH_NODE *parent ,char *name)
     // Should be link list
     if(node->parent->firstchild != NULL){
 
-        PATH_NODE *end = find_end_sibling(node->parent->firstchild) ;
+        DIR_NODE *end = find_end_sibling(node->parent->firstchild) ;
         end->next_sibling = node ;
 
     }else{
@@ -101,9 +101,9 @@ PATH_NODE *create_path_node(PATH_NODE *parent ,char *name)
 }
 
 
-PATH_NODE *find_end_sibling(PATH_NODE *node)
+DIR_NODE *find_end_sibling(DIR_NODE *node)
 {
-    PATH_NODE *start = node ;
+    DIR_NODE *start = node ;
     while(start->next_sibling != NULL)
     {
         start = start->next_sibling ;
@@ -115,11 +115,11 @@ PATH_NODE *find_end_sibling(PATH_NODE *node)
 
 
 // 目前只能印出root下第一階
-void print_under_node(PATH_NODE *node)
+void print_under_node(DIR_NODE *node)
 {
     if(node == NULL) return ;
 
-    PATH_NODE *node_head = node->firstchild ;
+    DIR_NODE *node_head = node->firstchild ;
     FILE *file_head = node->firstfile ;
 
     while(node_head != NULL)
@@ -156,7 +156,7 @@ FILE *find_end_filesibling(FILE *f)
 
 
 
-FILE *create_file_under_node(PATH_NODE *node ,char * filename ,int type)
+FILE *create_file_under_node(DIR_NODE *node ,char * filename ,int type)
 {
     if( (root == NULL) || (node == NULL) ) return NULL ;
 

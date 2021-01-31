@@ -32,6 +32,7 @@
 .equ	 SYSCALL_ID_read				,		12
 .equ	 SYSCALL_ID_open				,		13
 .equ	 SYSCALL_ID_getcwd				,		14
+.equ	 SYSCALL_ID_getdirent			,		15
 
 /************************************************************************************************/
 
@@ -356,6 +357,24 @@ syscall_getcwd:
 	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_getcwd
+
+	svc 0x00
+	pop	{r2 ,lr}
+	msr     CPSR_c, #CPSR_M_USR
+	bx lr	//返回 user proc
+
+
+
+/*****************************************************************************************/
+// 
+/*****************************************************************************************/
+.global syscall_getdirent; 
+.align	4
+syscall_getdirent:
+	//保存傳入參數 到r2
+	push {r2 ,lr}
+	mov	r2 ,r0
+	mov r0, #SYSCALL_ID_getdirent
 
 	svc 0x00
 	pop	{r2 ,lr}

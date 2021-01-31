@@ -121,7 +121,8 @@ struct _TASK
     USR_TASK_CONTEXT_t *task_context ; // task context ,存放在stack中
     int32_t priority ; 
     FILE *openfiles[MAX_FD] ;   //打開的檔案
-    char cwd[MAX_DIR_LENGTH] ; //current work dir
+    DIR_NODE *cwdn ;
+    //char cwd[MAX_DIR_LENGTH] ; //current work dir
 };
 typedef struct _TASK TASK_INFO_t ;
 

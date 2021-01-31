@@ -124,8 +124,8 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t p
 		task->openfiles[i] = NULL ;
 	}
 
-	// 初始話存放路徑的buf為空字串
-	_memset(task->cwd ,0 ,MAX_DIR_LENGTH) ;
+	// 初始dir為空
+	task->cwdn = NULL ;
 	
 	//回傳task id
 	return task->task_id ;

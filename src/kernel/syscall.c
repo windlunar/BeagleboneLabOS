@@ -70,6 +70,10 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __getcwd_handler(usrTaskContextOld ,args) ;
         break;
 
+    case SYSCALL_ID_getdirent:
+        __getdirent_handler(usrTaskContextOld ,args) ;
+        break;
+
     default:
         break;
     }
@@ -221,7 +225,7 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
     open_console_in_out(ntask) ;
 
     //設定路徑
-    strcat(ntask->cwd ,curr_running_task->cwd) ;
+    ntask->cwdn = curr_running_task->cwdn ;
 
     task_enqueue(ntask) ; 
 }
@@ -316,7 +320,15 @@ void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args)
 {
     GETCWD_ARG_t *getcwdarg = (GETCWD_ARG_t *)args ;
 
-    if( strlen(curr_running_task->cwd) > getcwdarg->n_size) getcwdarg->buf = NULL ;
+    if( strlen(curr_running_task->cwdn->namebuf) > getcwdarg->n_size) getcwdarg->buf = NULL ;
 
-    strcat(getcwdarg->buf ,curr_running_task->cwd) ;
+    strcat(getcwdarg->buf ,curr_running_task->cwdn->name) ;
+}
+
+
+
+void __getdirent_handler(uint32_t *usrTaskContextOld ,void *args)
+{
+    char *dir_ens = (char *)args ;
+
 }
