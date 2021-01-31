@@ -35,3 +35,29 @@ int strcmp(char *s ,char *b)
     // not eq
     return 1 ;
 }
+
+
+// dest須保留能夠串接src的空間
+int strcat(char *dest ,char *src)
+{
+    char *d = dest ;
+    char *s = src ;
+
+    // 先把pointer移動到 dest的尾部 '\0'
+    while(*d != '\0')
+    {
+        d++ ;
+    }
+    // 現在 d指向 dest的尾 '\0'
+
+    while(*s != '\0')
+    {
+        *d = *s ;
+        d++ ;
+        s++ ;
+    }
+    *d = '\0' ;
+
+    return 0 ;
+
+}

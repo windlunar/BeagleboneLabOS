@@ -30,6 +30,16 @@ void put_c(char character)
 }
 
 
+void put_str(char *s)
+{
+    while(*s != '\0')
+    {
+        put_c(*s) ;
+        s++ ;
+    }
+}
+
+
 int32_t uprintf(const char *fmt, ...)
 {
     /** __builtin_va_start初始化args, fmt指向輸入字串*/

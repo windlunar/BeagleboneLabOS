@@ -4,7 +4,6 @@
 #include "../kernel/kprint.h"
 #include "debug.h"
 #include "task.h"
-//#include "../klib/queue.h"
 #include "../klib/mem.h"
 #include "memory.h"
 #include "file.h"
@@ -65,6 +64,10 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
 
     case SYSCALL_ID_open:
         __open_handler(usrTaskContextOld ,args) ;
+        break;
+
+    case SYSCALL_ID_getcwd:
+        __getcwd_handler(usrTaskContextOld ,args) ;
         break;
 
     default:
@@ -217,6 +220,9 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
     //
     open_console_in_out(ntask) ;
 
+    //設定路徑
+    strcat(ntask->cwd ,curr_running_task->cwd) ;
+
     task_enqueue(ntask) ; 
 }
 
@@ -302,4 +308,15 @@ void __open_handler(uint32_t *usrTaskContextOld ,void *args)
     // Setting return value
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
     old_context->r0 = fd ;  
+}
+
+
+
+void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args)
+{
+    GETCWD_ARG_t *getcwdarg = (GETCWD_ARG_t *)args ;
+
+    if( strlen(curr_running_task->cwd) > getcwdarg->n_size) getcwdarg->buf = NULL ;
+
+    strcat(getcwdarg->buf ,curr_running_task->cwd) ;
 }

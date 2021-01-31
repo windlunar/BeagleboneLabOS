@@ -7,6 +7,9 @@
 #include "../klib/std_io.h"
 #include "usrtasks.h"
 
+////////////////////////////////////////////////////////////////////////////////////
+#include "../kernel/task.h"
+////////////////////////////////////////////////////////////////////////////////////
 
 void main_shell()
 {
@@ -21,6 +24,13 @@ void main_shell()
 
 	uprintf("\r\nThe task id :%d\r\n",__gettid()) ;
 	uprintf("The task priority :%d\r\n",__get_task_priority()) ;
+
+	char cwd[32] ;
+	_memset(cwd ,0 ,sizeof(cwd)) ;
+	__getcwd(cwd ,sizeof(cwd)) ;
+	put_str("Current dir :") ;
+	put_str(cwd) ;
+	put_str("\r\n\0") ;
 
 	uprintf("\r\n|cmd>") ;
 

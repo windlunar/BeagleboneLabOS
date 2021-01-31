@@ -1,6 +1,6 @@
 
 #include "task.h"
-//#include "../klib/queue.h"
+#include "../klib/mem.h"
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
 TASK_INFO_t task_shell ;
@@ -124,7 +124,8 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t p
 		task->openfiles[i] = NULL ;
 	}
 
-	
+	// 初始話存放路徑的buf為空字串
+	_memset(task->cwd ,0 ,MAX_DIR_LENGTH) ;
 	
 	//回傳task id
 	return task->task_id ;

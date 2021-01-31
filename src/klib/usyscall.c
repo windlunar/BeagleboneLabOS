@@ -94,3 +94,13 @@ int __open(char *path)
 {
     return syscall_open(path) ;
 }
+
+
+void __getcwd(char *buf ,int n_bytes)
+{
+    GETCWD_ARG_t args ;
+    args.buf = buf ;
+    args.n_size = n_bytes ;
+
+    syscall_getcwd(&args) ;
+}

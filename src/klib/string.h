@@ -6,5 +6,6 @@
 
 int strlen(char *s) ;
 int strcmp(char *s ,char *b) ;
+int strcat(char *dest ,char *src);
 
 #endif

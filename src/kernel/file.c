@@ -12,10 +12,10 @@ int file_in_ram_init()
     if(path_tree_init() < 0) return -1 ;
     if(create_root_path() < 0) return -1 ;
 
-    PATH_NODE *dev = create_path_node(root ,"/dev\0") ;
+    PATH_NODE *dev = create_path_node(root ,PATH_dev) ;
     if(dev == NULL) return -1 ;
 
-    PATH_NODE *fifo = create_path_node(root ,"/fifo\0") ;
+    PATH_NODE *fifo = create_path_node(root ,PATH_fifo) ;
     if(fifo == NULL) return -1 ;
 
     create_file_under_node(dev ,FILE_CONSOLE_IN ,CONSOLE_IN_TYPE) ;
@@ -54,7 +54,7 @@ int create_root_path()
     root->next_sibling = NULL ;
     root->firstfile = NULL ;
     root->name = root->namebuf ;
-    root->name = "/root\0" ;
+    root->name = PATH_root ;
     return 0 ;
 }
 

@@ -20,6 +20,7 @@
 #define SYSCALL_ID_write                11
 #define SYSCALL_ID_read                 12
 #define SYSCALL_ID_open                 13
+#define SYSCALL_ID_getcwd               14
 
 /***************************************************************************************/
 //
@@ -44,7 +45,7 @@ void __get_task_priority_handler(uint32_t *usrTaskContextOld) ;
 void __write_handler(uint32_t *usrTaskContextOld ,void *args) ;
 void __read_handler(uint32_t *usrTaskContextOld ,void *args) ;
 void __open_handler(uint32_t *usrTaskContextOld ,void *args) ;
-
+void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args) ;
 
 /***************************************************************************************/
 //syscall call by user task ,define in syscall_asm.s
@@ -62,6 +63,17 @@ extern int syscall_get_task_priority() ;
 extern int syscall_write() ;
 extern int syscall_read() ;
 extern int syscall_open() ;
+extern void syscall_getcwd(void *arg) ;
+
+/***************************************************************************************/
+// Args Structure for syscall
+/***************************************************************************************/
+struct getcwd_args
+{
+    char *buf ;
+    uint32_t n_size ;
+};
+typedef struct getcwd_args GETCWD_ARG_t ;
 
 /***************************************************************************************/
 #endif

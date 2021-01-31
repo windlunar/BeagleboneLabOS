@@ -8,7 +8,10 @@
 #include "../driver/uart.h"
 #include "../klib/string.h"
 #include "../klib/mem.h"
-
+/***************************************************************************************/
+#define PATH_root   "/root\0"
+#define PATH_dev    "/dev\0"
+#define PATH_fifo   "/fifo\0"
 /***************************************************************************************/
 #define CONSOLE_IN_FD      0
 #define CONSOLE_OUT_FD     1
