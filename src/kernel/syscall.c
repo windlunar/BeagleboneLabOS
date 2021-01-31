@@ -70,8 +70,12 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __getcwd_handler(usrTaskContextOld ,args) ;
         break;
 
-    case SYSCALL_ID_getdirent:
-        __getdirent_handler(usrTaskContextOld ,args) ;
+    case SYSCALL_ID_getsubdir:
+        __getsubdir_handler(usrTaskContextOld ,args) ;
+        break;
+
+    case SYSCALL_ID_getfdir:
+        __getfdir_handler(usrTaskContextOld ,args) ;
         break;
 
     default:
@@ -318,17 +322,81 @@ void __open_handler(uint32_t *usrTaskContextOld ,void *args)
 
 void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args)
 {
-    GETCWD_ARG_t *getcwdarg = (GETCWD_ARG_t *)args ;
+    BUFSZ_ARG_t *getcwdarg = (BUFSZ_ARG_t *)args ;
 
-    if( strlen(curr_running_task->cwdn->namebuf) > getcwdarg->n_size) getcwdarg->buf = NULL ;
+    if( _strlen(curr_running_task->cwdn->namebuf) > getcwdarg->n_size) getcwdarg->buf = NULL ;
 
-    strcat(getcwdarg->buf ,curr_running_task->cwdn->name) ;
+    _strcat(getcwdarg->buf ,curr_running_task->cwdn->name) ;
 }
 
 
 
-void __getdirent_handler(uint32_t *usrTaskContextOld ,void *args)
+void __getsubdir_handler(uint32_t *usrTaskContextOld ,void *args)
 {
-    char *dir_ens = (char *)args ;
+    BUFSZ_ARG_t *bufsz = (BUFSZ_ARG_t *)args ;
 
+    char *dir_ens_buf = bufsz->buf ;
+    int sz_buf = bufsz->n_size ;
+
+    _memset(dir_ens_buf ,0 ,sz_buf) ;
+
+    DIR_NODE *curr_dir_n = curr_running_task->cwdn ;
+    DIR_NODE *en = curr_dir_n->firstchild ;
+
+    char *delim =";;\0" ;
+    //串dir下的 entry
+    while(en != NULL)
+    {
+        if( (sz_buf - _strlen(dir_ens_buf)) < _strlen(en->name)+sizeof(delim) )
+        {
+            dir_ens_buf = NULL ;
+            break ;
+        }
+
+        _strcat(dir_ens_buf ,en->name) ;
+        _strcat(dir_ens_buf ,delim) ;
+        en = en->next_sibling ;
+    }
+    /*
+    //再串file
+    if( dir_ens_buf != NULL )
+    {
+        while(f != NULL)
+        {
+            _strcat(dir_ens_buf ,f->name) ;
+            _strcat(dir_ens_buf ,delim) ;
+            f = f->next_sibling ;
+        }
+    }
+    */
+}
+
+
+
+void __getfdir_handler(uint32_t *usrTaskContextOld ,void *args)
+{
+    BUFSZ_ARG_t *bufsz = (BUFSZ_ARG_t *)args ;
+
+    char *dir_fs_buf = bufsz->buf ;
+    int sz_buf = bufsz->n_size ;
+
+    _memset(dir_fs_buf ,0 ,sz_buf) ;
+
+    DIR_NODE *curr_dir_n = curr_running_task->cwdn ;
+    FILE *f = curr_dir_n->firstfile ;
+
+    char *delim =";;\0" ;
+    //串dir下 files
+    while(f != NULL)
+    {
+        if( (sz_buf - _strlen(dir_fs_buf)) < _strlen(f->name)+sizeof(delim) )
+        {
+            dir_fs_buf = NULL ;
+            break ;
+        }
+
+        _strcat(dir_fs_buf ,f->name) ;
+        _strcat(dir_fs_buf ,delim) ;
+        f = f->next_sibling ;
+    }  
 }

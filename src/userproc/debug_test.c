@@ -1,0 +1,54 @@
+#include "usrtasks.h"
+#include "../klib/std_io.h"
+#include "../klib/queue.h"
+#include "../klib/usyscall.h"
+
+
+void test_sys_getsubdir_and_getfdir()
+{
+	char buf[16*5] ;
+	_memset(buf ,0 ,sizeof(buf)) ;
+	if(__getsubdir(buf ,sizeof(buf)) < 0)
+	{
+		kprintf("buf size not enough.\r\n") ;
+	}
+	put_str(buf) ;
+	put_str("\r\n") ;
+	kprintf("Split subdir list string.") ;
+
+	char *delim = ";;\0" ;
+	char token[16] ;
+	char *start = buf ;
+
+	while(start != NULL)
+	{
+		_memset(token ,0 ,sizeof(token)) ;
+		start = strtok_fst(start ,delim ,_strlen(delim) ,token) ;
+
+		put_str("\r\n\0") ;
+		put_str(token) ;
+	}
+	kprintf("__getsubdir Test end\r\n\r\n") ;
+
+	//
+	_memset(buf ,0 ,sizeof(buf)) ;
+	if(__getfdir(buf ,sizeof(buf)) < 0)
+	{
+		kprintf("buf size not enough.\r\n") ;
+	}
+	put_str(buf) ;
+	put_str("\r\n") ;
+	kprintf("Split file list string.") ;
+
+	start = buf ;
+
+	while(start != NULL)
+	{
+		_memset(token ,0 ,sizeof(token)) ;
+		start = strtok_fst(start ,delim ,_strlen(delim) ,token) ;
+
+		put_str("\r\n\0") ;
+		put_str(token) ;		
+	}
+	kprintf("__getfdir Test end\r\n") ;
+}

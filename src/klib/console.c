@@ -1,7 +1,7 @@
 
-#include "console.h"
-#include "std_io.h"
-#include "usyscall.h"
+#include "../klib/console.h"
+#include "../klib/std_io.h"
+#include "../klib/usyscall.h"
 #include "../driver/uart.h"
 
 

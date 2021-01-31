@@ -21,7 +21,8 @@
 #define SYSCALL_ID_read                 12
 #define SYSCALL_ID_open                 13
 #define SYSCALL_ID_getcwd               14
-#define SYSCALL_ID_getdirent            15
+#define SYSCALL_ID_getsubdir            15
+#define SYSCALL_ID_getfdir              16
 
 /***************************************************************************************/
 //
@@ -47,7 +48,8 @@ void __write_handler(uint32_t *usrTaskContextOld ,void *args) ;
 void __read_handler(uint32_t *usrTaskContextOld ,void *args) ;
 void __open_handler(uint32_t *usrTaskContextOld ,void *args) ;
 void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args) ;
-void __getdirent_handler(uint32_t *usrTaskContextOld ,void *args) ;
+void __getsubdir_handler(uint32_t *usrTaskContextOld ,void *args) ;
+void __getfdir_handler(uint32_t *usrTaskContextOld ,void *args) ;
 
 /***************************************************************************************/
 //syscall call by user task ,define in syscall_asm.s
@@ -66,17 +68,18 @@ extern int syscall_write() ;
 extern int syscall_read() ;
 extern int syscall_open() ;
 extern void syscall_getcwd(void *arg) ;
-extern void syscall_getdirent() ;
+extern void syscall_getsubdir() ;
+extern void syscall_getfdir() ;
 
 /***************************************************************************************/
 // Args Structure for syscall
 /***************************************************************************************/
-struct getcwd_args
+struct bufsz_args
 {
     char *buf ;
     uint32_t n_size ;
 };
-typedef struct getcwd_args GETCWD_ARG_t ;
+typedef struct bufsz_args BUFSZ_ARG_t ;
 
 
 /***************************************************************************************/

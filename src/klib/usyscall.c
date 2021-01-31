@@ -1,5 +1,5 @@
 
-#include "usyscall.h"
+#include "../klib/usyscall.h"
 
 
 void __print_hello(uint32_t *input)
@@ -100,9 +100,41 @@ void __getcwd(char *buf ,int n_bytes)
 {
     _memset(buf ,0 ,n_bytes) ;
 
-    GETCWD_ARG_t args ;
+    BUFSZ_ARG_t args ;
     args.buf = buf ;
     args.n_size = n_bytes ;
 
     syscall_getcwd(&args) ;
+}
+
+
+int __getsubdir(char *buf ,int n_bytes)
+{
+    _memset(buf ,0 ,n_bytes) ;
+
+    BUFSZ_ARG_t args ;
+    args.buf = buf ;
+    args.n_size = n_bytes ;
+
+    syscall_getsubdir(&args) ;    
+
+    if(args.buf == NULL) return -1 ;
+    return 0 ;
+
+}
+
+
+int __getfdir(char *buf ,int n_bytes)
+{
+    _memset(buf ,0 ,n_bytes) ;
+
+    BUFSZ_ARG_t args ;
+    args.buf = buf ;
+    args.n_size = n_bytes ;
+
+    syscall_getfdir(&args) ;    
+
+    if(args.buf == NULL) return -1 ;
+    return 0 ;
+
 }

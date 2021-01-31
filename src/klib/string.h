@@ -4,8 +4,11 @@
 
 #include "../common.h"
 
-int strlen(char *s) ;
-int strcmp(char *s ,char *b) ;
-int strcat(char *dest ,char *src);
+int _strlen(char *s) ;
+int _strcmp(char *s ,char *b) ;
+int _strcat(char *dest ,char *src);
+void _strcpy(char *dest ,char *src);
+char *strtok_fst(char *start ,char *delim ,int delim_sz ,char *token) ;
+void _strncpy(char *dest ,char *src ,int count) ;
 
 #endif

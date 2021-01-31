@@ -21,6 +21,13 @@ int file_in_ram_init()
     create_file_under_node(dev ,FILE_CONSOLE_IN ,CONSOLE_IN_TYPE) ;
     create_file_under_node(dev ,FILE_CONSOLE_OUT ,CONSOLE_OUT_TYPE) ;
     create_file_under_node(dev ,FILE_TTY0 ,TTY0_TYPE) ;
+
+    // Only For test
+    create_file_under_node(root ,"/fileForTest1\0" ,TEXT_TYPE) ;
+    create_file_under_node(root ,"/fileForTest2\0" ,TEXT_TYPE) ;
+    create_file_under_node(root ,"/fileForTest3\0" ,TEXT_TYPE) ;
+    create_file_under_node(root ,"/fileForTest4\0" ,TEXT_TYPE) ;
+    create_file_under_node(root ,"/fileForTest5\0" ,TEXT_TYPE) ;
 }
 
 
@@ -124,7 +131,7 @@ void print_under_node(DIR_NODE *node)
 
     while(node_head != NULL)
     {
-        uart_tx_str(CONSOLE ,node_head->name ,strlen(node_head->name)) ;
+        uart_tx_str(CONSOLE ,node_head->name ,_strlen(node_head->name)) ;
         uart_putC(CONSOLE ,'\r') ;
         uart_putC(CONSOLE ,'\n') ;
         
@@ -133,7 +140,7 @@ void print_under_node(DIR_NODE *node)
     }
     while(file_head != NULL)
     {
-        uart_tx_str(CONSOLE ,file_head->name ,strlen(file_head->name)) ;
+        uart_tx_str(CONSOLE ,file_head->name ,_strlen(file_head->name)) ;
         uart_putC(CONSOLE ,'\r') ;
         uart_putC(CONSOLE ,'\n') ;
         
@@ -260,7 +267,7 @@ void print_file_list()
     FILE *head = file_list_head ;
     while(head != NULL)
     {
-        uart_tx_str(CONSOLE ,head->name ,strlen(head->name)) ;
+        uart_tx_str(CONSOLE ,head->name ,_strlen(head->name)) ;
         uart_putC(CONSOLE ,'\r') ;
         uart_putC(CONSOLE ,'\n') ;
 
@@ -305,11 +312,11 @@ FILE *find_file(char *filename)
     FILE *head = file_list_head ;
     while(head->list_next != NULL)
     {
-        if(strcmp(filename ,head->name) == 0) return head ;
+        if(_strcmp(filename ,head->name) == 0) return head ;
 
         head = head->list_next ;
     }
-    if(strcmp(filename ,head->name) == 0) return head ;
+    if(_strcmp(filename ,head->name) == 0) return head ;
 
     kprintf("Error :File not exit\r\n") ;
     return NULL ;    

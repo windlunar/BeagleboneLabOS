@@ -1,6 +1,6 @@
 
-#include "std_io.h"
-#include "usyscall.h"
+#include "../klib/std_io.h"
+#include "../klib/usyscall.h"
 
 //__builtin_va_list is built in to the compiler ,not a macro
 //

@@ -5,6 +5,7 @@
 #include "../klib/string.h"
 #include "../klib/usyscall.h"
 #include "../klib/std_io.h"
+#include "debug_test.h"
 #include "usrtasks.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -17,6 +18,9 @@ void main_shell()
 // Test
 /***********************************************************************************/
 
+	test_sys_getsubdir_and_getfdir() ;
+
+	
 /***********************************************************************************/
 	draw_console();
 	uprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
@@ -51,7 +55,7 @@ void main_shell()
 		//在console上印出輸入的字元
 		uprintf("%c" ,byte) ;
 		
-		if(strlen(cmd) == 9)
+		if(_strlen(cmd) == 9)
 		{
 			_memset((void *)cmdbuf ,0 ,10) ;
 			s = cmd ;
@@ -72,7 +76,7 @@ void main_shell()
 			break;
 		
 		case 0x0d:	//Enter ,按下Enter鍵後的處理
-			if (strcmp(cmd ,"test\0")==0){
+			if (_strcmp(cmd ,"test\0")==0){
 				uprintf("\r\n");
 				uprintf("Please key\r\n");
 				uprintf("	'1' for fork function test.\r\n") ;
@@ -120,12 +124,12 @@ void main_shell()
 					}
 				}
 
-			}else if(strcmp(cmd ,"help\0")==0){
+			}else if(_strcmp(cmd ,"help\0")==0){
 				uprintf("\r\n");
 				uprintf("help:\r\n") ;
 				uprintf("Available command :test ,info ,help\r\n") ;
 
-			}else if(strcmp(cmd ,"info\0")==0){
+			}else if(_strcmp(cmd ,"info\0")==0){
 				uprintf("\r\n");
 				uprintf("A simple os running on Beaglebone black\r\n\r\n") ;
 				uprintf("Feature:\r\n") ;
