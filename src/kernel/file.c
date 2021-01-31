@@ -1,6 +1,7 @@
 
 #include "file.h"
 #include "task.h"
+#include "../klib/string.h"
 /***************************************************************************************/
 DIRTREE_INFO path_tree ;
 DIR_NODE *root = NULL ;
@@ -309,6 +310,7 @@ int console_write_func(uint8_t *wrbuf ,uint32_t n_bytes)
 
 FILE *find_file(char *filename)
 {
+    //print_file_list() ;
     FILE *head = file_list_head ;
     while(head->list_next != NULL)
     {
@@ -318,7 +320,6 @@ FILE *find_file(char *filename)
     }
     if(_strcmp(filename ,head->name) == 0) return head ;
 
-    kprintf("Error :File not exit\r\n") ;
     return NULL ;    
 }
 
@@ -346,4 +347,34 @@ FILE_DESCRIPTOR_t file_open(char *filename ,void *_task)
         }
     }
     return fd ;
+}
+
+
+DIR_NODE *find_target_subdir(DIR_NODE *curdir ,char *subdir_name)
+{
+    DIR_NODE *en = curdir->firstchild ;
+
+    int neq = _strcmp(subdir_name ,"..\0") ;
+
+    if(neq) //neq
+    {
+        while(en != NULL)
+        {
+            if(!_strcmp(en->name ,subdir_name)) return en ; //eq
+            en = en->next_sibling ;
+        }
+
+        return NULL ;   // No match
+    }
+    else if(neq == 0)   //eq ,切換道上一層路徑
+    {
+        if(curdir->parent == NULL) return NULL ; // No parent dir
+
+        return curdir->parent ; //return parent dir
+    }
+    else
+    {
+        return NULL ;
+    }
+       
 }

@@ -11,11 +11,11 @@
 extern uint32_t _end ;	//_end is define in linker.ld
 extern uint32_t *kernal_end ;
 
-#define AREA_SIZE	        4096	//bytes
+#define AREA_SIZE	        65536	// 4096 * 16 = 65536(0x10000) bytes(64KB) 
 #define KB_SIZE             1024
 #define MB_SIZE             1024 * 1024
 #define VALUABLE_MEM_SIZE   128 * 1024 * 1024  //128 MB
-#define TOTAL_AREA_NUM      VALUABLE_MEM_SIZE/4096  //32*1024個areas
+#define TOTAL_AREA_NUM      VALUABLE_MEM_SIZE/(AREA_SIZE)  //2*1024個areas
 
 // 如果第一個area的adde = 0x82004000
 // 那128MB就是到 0x8a000000

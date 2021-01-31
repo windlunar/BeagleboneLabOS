@@ -126,7 +126,7 @@ FILE_DESCRIPTOR_t file_open(char *filename ,void *_task) ;
 /***************************************************************************************/
 DIR_NODE *find_end_sibling(DIR_NODE *node) ;
 FILE *find_end_filesibling(FILE *node) ;
-
+DIR_NODE *find_target_subdir(DIR_NODE *curdir ,char *subdir_name) ;
 
 /***************************************************************************************/
 // For debug

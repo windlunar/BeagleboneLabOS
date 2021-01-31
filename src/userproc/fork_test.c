@@ -29,8 +29,8 @@ void fork_test_main()
 	__mfree_blk(p1) ;
 	__mfree_blk(p3) ;
 
-	uprintf("\r\nPrint current memory area block list:\r\n\r\n") ;
-	__get_mblk_list() ;	//for test and debug
+	//uprintf("\r\nPrint current memory area block list:\r\n\r\n") ;
+	//__get_mblk_list() ;	//for test and debug
 
 	uprintf("\r\n+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	uprintf("Now test syscall fork function.\r\n") ;

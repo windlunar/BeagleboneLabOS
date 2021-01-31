@@ -78,6 +78,10 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __getfdir_handler(usrTaskContextOld ,args) ;
         break;
 
+    case SYSCALL_ID_chdir:
+        __chdir_handler(usrTaskContextOld ,args) ;
+        break;
+
     default:
         break;
     }
@@ -357,18 +361,6 @@ void __getsubdir_handler(uint32_t *usrTaskContextOld ,void *args)
         _strcat(dir_ens_buf ,delim) ;
         en = en->next_sibling ;
     }
-    /*
-    //再串file
-    if( dir_ens_buf != NULL )
-    {
-        while(f != NULL)
-        {
-            _strcat(dir_ens_buf ,f->name) ;
-            _strcat(dir_ens_buf ,delim) ;
-            f = f->next_sibling ;
-        }
-    }
-    */
 }
 
 
@@ -399,4 +391,27 @@ void __getfdir_handler(uint32_t *usrTaskContextOld ,void *args)
         _strcat(dir_fs_buf ,delim) ;
         f = f->next_sibling ;
     }  
+}
+
+
+
+// 切換至下一層路徑 :路徑名稱
+// 上一層路徑 : ".."
+void __chdir_handler(uint32_t *usrTaskContextOld ,void *args)
+{
+    char *subdir_name = (char *)args ;
+
+    DIR_NODE *curdir = curr_running_task->cwdn ;
+    DIR_NODE *targetdir = find_target_subdir(curdir ,subdir_name) ;
+
+    // Setting return value
+    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    if(targetdir != NULL){
+        curr_running_task->cwdn = targetdir ;   // changer current dir
+        old_context->r0 = 0 ;
+    }else
+    {
+        // Keep the current dir.
+        old_context->r0 = -1 ;
+    }
 }

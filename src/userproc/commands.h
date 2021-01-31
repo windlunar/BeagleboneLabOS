@@ -4,5 +4,6 @@
 #include "../common.h"
 
 void lsdir() ;
+int cd(char *subdir) ;
 
 #endif

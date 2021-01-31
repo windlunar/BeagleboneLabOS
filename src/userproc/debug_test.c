@@ -3,7 +3,7 @@
 #include "../klib/std_io.h"
 #include "../klib/queue.h"
 #include "../klib/usyscall.h"
-
+#include "commands.h"
 
 void test_sys_getsubdir_and_getfdir()
 {
@@ -52,4 +52,26 @@ void test_sys_getsubdir_and_getfdir()
 		put_str(token) ;		
 	}
 	kprintf("__getfdir Test end\r\n") ;
+}
+
+
+void test_sys_chdir()
+{
+	put_str("\r\nList subdirs and files\r\n") ;
+	lsdir() ;
+
+	put_str("\r\n\r\nChange dir test.") ;
+	if(__chdir("/dev\0") < 0) put_str("\r\nDir not found\r\n") ;
+	lsdir();
+
+	put_str("\r\n\r\nChange dir test.") ;
+	if(__chdir("..\0") < 0) put_str("\r\nDir not found\r\n") ;
+	lsdir();
+
+	put_str("\r\n\r\nChange dir test.") ;
+	if(__chdir("..\0") < 0) put_str("\r\nDir not found\r\n") ;
+	put_str("\r\nList subdirs and files") ;
+	lsdir();
+
+
 }

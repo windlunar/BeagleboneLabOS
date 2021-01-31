@@ -138,3 +138,10 @@ int __getfdir(char *buf ,int n_bytes)
     return 0 ;
 
 }
+
+// return 0  : success
+// return -1 : No dir found
+int __chdir(char *subdirname)
+{
+    return syscall_chdir(subdirname) ;
+}

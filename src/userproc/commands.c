@@ -45,3 +45,9 @@ void lsdir()
 		put_str(token) ;		
 	}
 }
+
+
+int cd(char *subdir)
+{
+    return __chdir(subdir) ;
+}

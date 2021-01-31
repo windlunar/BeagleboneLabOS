@@ -26,5 +26,6 @@ int __open(char *path);    //return fd
 void __getcwd(char *buf ,int n_bytes);
 int __getsubdir(char *buf ,int n_bytes) ;
 int __getfdir(char *buf ,int n_bytes) ;
+int __chdir(char *subdirname) ;
 
 #endif

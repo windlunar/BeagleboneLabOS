@@ -4,5 +4,6 @@
 #include "../common.h"
 
 void test_sys_getsubdir_and_getfdir() ;
+void test_sys_chdir() ;
 
 #endif

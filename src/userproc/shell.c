@@ -9,8 +9,11 @@
 #include "usrtasks.h"
 #include "commands.h"
 
+#define SIZE_OF_CMDBUF	16
+#define SIZE_OF_CWD		32
+#define SIZE_OF_CMD_TOKEN		SIZE_OF_CMDBUF
 ////////////////////////////////////////////////////////////////////////////////////
-// #include "../kernel/task.h"
+ #include "../kernel/task.h"
 ////////////////////////////////////////////////////////////////////////////////////
 
 void main_shell()
@@ -27,9 +30,9 @@ void main_shell()
 	uprintf("\r\nThe task id :%d\r\n",__gettid()) ;
 	uprintf("The task priority :%d\r\n",__get_task_priority()) ;
 
-	char cwd[32] ;
-	_memset(cwd ,0 ,sizeof(cwd)) ;
-	__getcwd(cwd ,sizeof(cwd)) ;
+	char cwd[SIZE_OF_CWD] ;
+	_memset(cwd ,0 ,SIZE_OF_CWD) ;
+	__getcwd(cwd ,SIZE_OF_CWD) ;
 	put_str("Current dir :") ;
 	put_str(cwd) ;
 	put_str("\r\n\0") ;
@@ -39,10 +42,14 @@ void main_shell()
 	put_str(">\0") ;
 
 	char byte = '\0' ;
-	char cmdbuf[16] ;
-	_memset((void *)cmdbuf ,0 ,sizeof(cmdbuf)) ;
+	char cmdbuf[SIZE_OF_CMDBUF] ;
+	_memset((void *)cmdbuf ,0 ,SIZE_OF_CMDBUF) ;
 	char *cmd = cmdbuf ;
 	char *s = cmd;
+
+	char *delim = " \0" ;
+	char token[SIZE_OF_CMD_TOKEN] ;
+	char *start = NULL;
 
 	//command line
 	while(1)
@@ -53,9 +60,9 @@ void main_shell()
 		//在console上印出輸入的字元
 		uprintf("%c" ,byte) ;
 		
-		if(_strlen(cmd) == 9)
+		if(_strlen(cmd) == sizeof(cmdbuf)-1)
 		{
-			_memset((void *)cmdbuf ,0 ,10) ;
+			_memset((void *)cmdbuf ,0 ,SIZE_OF_CMDBUF) ;
 			s = cmd ;
 		}
 		if((byte!=0x08) && (byte!=0x0d))
@@ -69,12 +76,20 @@ void main_shell()
 		case 0x08 : //Backspace
 			put_c(' ') ;
 			put_c(0x08) ;
-			_memset((void *)cmdbuf ,0 ,10) ;
+			_memset((void *)cmdbuf ,0 ,SIZE_OF_CMDBUF) ;
 			s = cmd ;
 			break;
 		
 		case 0x0d:	//Enter ,按下Enter鍵後的處理
-			if (_strcmp(cmd ,"test\0")==0){
+			_memset(token ,0 ,SIZE_OF_CMD_TOKEN) ;
+			//put_str("/r/n\0") ;
+			//put_str(cmd);
+			//put_str("/r/n\0") ;
+			//start = cmd ;
+			_strcat(cmd ,delim) ;	//這行不加的話 type cd指令會出錯
+			cmd = strtok_fst(cmd ,delim ,_strlen(delim) ,token) ;
+
+			if (_strcmp(token ,"test\0")==0){
 				uprintf("\r\n");
 				uprintf("Please key\r\n");
 				uprintf("	'1' for fork function test.\r\n") ;
@@ -122,12 +137,12 @@ void main_shell()
 					}
 				}
 
-			}else if(_strcmp(cmd ,"help\0")==0){
+			}else if(_strcmp(token ,"help\0")==0){
 				uprintf("\r\n");
 				uprintf("help:\r\n") ;
 				uprintf("Available command :test ,info ,help\r\n") ;
 
-			}else if(_strcmp(cmd ,"info\0")==0){
+			}else if(_strcmp(token ,"info\0")==0){
 				uprintf("\r\n");
 				uprintf("A simple os running on Beaglebone black\r\n\r\n") ;
 				uprintf("Feature:\r\n") ;
@@ -135,15 +150,29 @@ void main_shell()
 				uprintf("  Simple memory management.\r\n");
 				uprintf("  Simple command line.\r\n");
 
-			}else if(_strcmp(cmd ,"ls\0")==0){
+			}else if(_strcmp(token ,"ls\0")==0){
 				lsdir() ;
+				put_str("\r\n\0") ;
+
+			}else if(_strcmp(token ,"cd\0")==0){
+				_memset(token ,0 ,SIZE_OF_CMD_TOKEN) ;
+				if(*cmd == '\0'){
+					put_str("No dir input\r\n") ;
+				}else{
+					cmd = strtok_fst(cmd ,delim ,_strlen(delim) ,token) ;
+				}
+
+				if(cd(token) < 0) put_str("\r\nDir not found") ;
 				put_str("\r\n\0") ;
 			}
 
-			_memset((void *)cmdbuf ,0 ,10) ;
+			_memset((void *)cmdbuf ,0 ,SIZE_OF_CMDBUF) ;
+			cmd = cmdbuf ;
 			s = cmd ;
 
 			put_str("\r\n|cmd>\0") ;
+			_memset(cwd ,0 ,SIZE_OF_CWD) ;
+			__getcwd(cwd ,SIZE_OF_CWD) ;
 			put_str(cwd);
 			put_str(">\0") ;
 			
