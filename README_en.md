@@ -14,6 +14,7 @@ Feature:
 1. Time slice ,priority-based multitasking multitasking.<br>
 2. Simple memory management function.<br>
 3. Simple command line interface.<br>
+4. A simple file system located in RAM.
 
 System call:
 =
@@ -22,14 +23,16 @@ System call:
 2. __gettid :Get the current running task id.<br>
 3. __exit :Terminate the current running task.<br>
 4. __fork :Create a new task by duplicate the task itself.<br>
-5. __do_taskCreate :Create another task.<br><br>
-6. __malloc_blk :Allocate a block of memory space.<br><br>
-7. __mfree_blk :Free the memory space which was allocated by __malloc_blk.<br><br>
-8. __get_task_priority :Get the priority of current running task priority.<br><br>
-9. __write :Write data to file(ex:tty0).<br><br>
-10. __read :Read data from file(ex:tty0).<br><br>
+5. __do_taskCreate :Create another task.<br>
+6. __malloc_blk :Allocate a block of memory space.<br>
+7. __mfree_blk :Free the memory space which was allocated by __malloc_blk.<br>
+8. __get_task_priority :Get the priority of current running task priority.<br>
+9. __write :Write data to file(ex:tty0).<br>
+10. __read :Read data from file(ex:tty0).<br>
 11. __open :Open file ,Every task will open consile_in and out (fd =0 and 1) by default.
+12. __getcwd :Get current dir.<br>
 
+<br>
 Simple command line interface:
 =
 

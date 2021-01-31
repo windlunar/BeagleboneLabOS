@@ -15,11 +15,12 @@ Feature:
 3. Priority-based round-robin multitasking.預設有0~4 ,5個priority.<br><br>
 4. 有簡易的 Memory分配機制(目前還沒有區分虛擬記憶體位址).<br><br>
 5. 有一個簡易的command line用於測試.<br>
+6. 一個存在於記憶體中的小檔案系統<br>
 
 System call:
 =
 
-目前實作了11個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br>
+目前實作了12個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br>
 
 1. __yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br><br>
 2. __gettid :獲得現在正在執行的task的task id.<br><br>
