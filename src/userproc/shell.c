@@ -32,7 +32,9 @@ void main_shell()
 	put_str(cwd) ;
 	put_str("\r\n\0") ;
 
-	uprintf("\r\n|cmd>") ;
+	put_str("\r\n|cmd>\0") ;
+	put_str(cwd);
+	put_str(">\0") ;
 
 	char byte = '\0' ;
 	char cmdbuf[16] ;
@@ -135,7 +137,10 @@ void main_shell()
 			_memset((void *)cmdbuf ,0 ,10) ;
 			s = cmd ;
 
-			__write(FD_CONSOLE_OUT ,"\r\n|cmd>",7) ;
+			put_str("\r\n|cmd>\0") ;
+			put_str(cwd);
+			put_str(">\0") ;
+			
 			break;
 		
 		default:

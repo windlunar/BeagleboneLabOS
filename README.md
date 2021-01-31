@@ -31,7 +31,10 @@ System call:
 8. __get_task_priority :獲得現在正在執行的task的priority.<br><br>
 9. __write :寫資料到file(如tty0).<br><br>
 10. __read :從file(如tty0)讀資料.<br><br>
-11. __open :打開file ,目前每個task打開consile_in 跟 out (fd =0 and 1).可以打開uart0(tty0)<br><br>   
+11. __open :打開file ,目前每個task打開consile_in 跟 out (fd =0 and 1).可以打開uart0(tty0)<br><br> 
+12. __getcwd :獲得當前目錄.<br><br>
+
+<br><br>   
 
 
 簡易的 command line:

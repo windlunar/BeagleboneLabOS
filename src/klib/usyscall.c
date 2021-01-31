@@ -98,6 +98,8 @@ int __open(char *path)
 
 void __getcwd(char *buf ,int n_bytes)
 {
+    _memset(buf ,0 ,n_bytes) ;
+
     GETCWD_ARG_t args ;
     args.buf = buf ;
     args.n_size = n_bytes ;
