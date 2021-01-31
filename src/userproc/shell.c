@@ -7,9 +7,10 @@
 #include "../klib/std_io.h"
 #include "debug_test.h"
 #include "usrtasks.h"
+#include "commands.h"
 
 ////////////////////////////////////////////////////////////////////////////////////
-#include "../kernel/task.h"
+// #include "../kernel/task.h"
 ////////////////////////////////////////////////////////////////////////////////////
 
 void main_shell()
@@ -17,9 +18,6 @@ void main_shell()
 /***********************************************************************************/
 // Test
 /***********************************************************************************/
-
-	test_sys_getsubdir_and_getfdir() ;
-
 	
 /***********************************************************************************/
 	draw_console();
@@ -136,6 +134,10 @@ void main_shell()
 				uprintf("  Time slice based round-robin multitasking.\r\n");
 				uprintf("  Simple memory management.\r\n");
 				uprintf("  Simple command line.\r\n");
+
+			}else if(_strcmp(cmd ,"ls\0")==0){
+				lsdir() ;
+				put_str("\r\n\0") ;
 			}
 
 			_memset((void *)cmdbuf ,0 ,10) ;
