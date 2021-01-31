@@ -141,8 +141,8 @@ typedef struct _CONFIG TASK_CONFIG ;
 
 /***********************************************************************************************/
 
-extern TASK_INFO_t task_shell ;
-extern uint32_t task_shell_stack[TASK_STACK_SIZE/4] ;
+//extern TASK_INFO_t task_shell ;
+//extern uint32_t task_shell_stack[TASK_STACK_SIZE/4] ;
 extern TASK_INFO_t *curr_running_task ;
 /***********************************************************************************************/
 void sched(void);
@@ -152,6 +152,7 @@ void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會�
 
 void task_init() ;
 int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t prio);
+int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)());
 void open_console_in_out(TASK_INFO_t *task) ;
 void task_enqueue(TASK_INFO_t *task) ;
 TASK_INFO_t *task_dequeue(int32_t prio) ;

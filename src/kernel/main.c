@@ -49,18 +49,7 @@ int kernal_entry(void)
 
 	kprintf("Init Timer0 to switch tasks.\r\n");
 
-/***************************************************************************************/
-// Init Task First thread :Shell
-/***************************************************************************************/
-	task_init() ;
-	
-	//Init the first thread
-	taskCreate(&task_shell ,&main_shell ,task_shell_stack ,LOWEST_PRIORITY) ;
 
-	//enqueue the first thread's info structure
-	task_enqueue(&task_shell) ;
-
-	kprintf("Init Tasks Shell.\r\n");
 
 /***************************************************************************************/
 // Init memory-area lists and files
@@ -69,10 +58,15 @@ int kernal_entry(void)
 
 	file_in_ram_init() ;
 
-	open_console_in_out(&task_shell) ;
+/***************************************************************************************/
+// Init Task First thread :Shell
+/***************************************************************************************/
+	kprintf("Init Tasks Shell...\r\n");
 
-	// 設定shell初始路徑為 /root
-	task_shell.cwdn = root ;
+	task_init() ;
+	
+	//Init the first thread
+	do_ktaskCreate(LOWEST_PRIORITY ,&main_shell) ;
 
 /***************************************************************************************/
 // Test	

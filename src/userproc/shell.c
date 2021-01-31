@@ -82,10 +82,6 @@ void main_shell()
 		
 		case 0x0d:	//Enter ,按下Enter鍵後的處理
 			_memset(token ,0 ,SIZE_OF_CMD_TOKEN) ;
-			//put_str("/r/n\0") ;
-			//put_str(cmd);
-			//put_str("/r/n\0") ;
-			//start = cmd ;
 			_strcat(cmd ,delim) ;	//這行不加的話 type cd指令會出錯
 			cmd = strtok_fst(cmd ,delim ,_strlen(delim) ,token) ;
 

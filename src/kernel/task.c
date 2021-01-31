@@ -3,8 +3,8 @@
 #include "../klib/mem.h"
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
-TASK_INFO_t task_shell ;
-uint32_t task_shell_stack[TASK_STACK_SIZE/4] ;
+//TASK_INFO_t task_shell ;
+//uint32_t task_shell_stack[TASK_STACK_SIZE/4] ;
 
 // 沒有static會出錯
 static TASK_INFO_t *task_ready_queue_head[MAXNUM_PRIORITY] ;
@@ -132,6 +132,32 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t p
 
 }
 
+// Create user task by kernel
+int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
+{
+    MEM_AREA_INFO_t *n_memarea = memAreaAlloc();
+    n_memarea->area_status = TASK_AREA ; 
+
+    TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_memarea->m_top) ;  
+
+    taskCreate(ntask ,taskFunc ,stktop2bottom(n_memarea->m_top) ,prio);
+
+    // init blocks
+    // 總共應該會有56個blks = (4096-512)/64
+    memblks_init(n_memarea 
+                ,DEFAULT_AVAL_BLK_SIZE 
+                ,DEFAULT_TASK_MA_BLKNUM) ;
+
+    //
+    open_console_in_out(ntask) ;
+
+    //設定路徑
+    ntask->cwdn = root ;
+
+    task_enqueue(ntask) ; 
+}
+
+
 
 void open_console_in_out(TASK_INFO_t *task)
 {
@@ -243,7 +269,6 @@ void print_task_addr_from_head(int32_t prio)
 		kprintf("Task queue is empty\r\n") ;
 		return;		
 	}
-	kprintf("task_shell addr =%p\r\n" ,&task_shell) ;
 
 	TASK_INFO_t *head = task_ready_queue_head[prio] ;
 	kprintf("task_ready_queue_head[prio] addr =%p\r\n" ,&task_ready_queue_head[prio]) ;
