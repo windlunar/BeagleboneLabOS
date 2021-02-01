@@ -15,12 +15,12 @@ Feature:
 3. Priority-based round-robin multitasking.預設有0~4 ,5個priority.<br><br>
 4. 有簡易的 Memory分配機制(目前還沒有區分虛擬記憶體位址).<br><br>
 5. 有一個簡易的command line用於測試.<br>
-6. 一個存在於記憶體中的小檔案系統<br>
+6. 有一個存在於記憶體中的小檔案系統<br>
 
 System call:
 =
 
-目前實作了12個 system call ,之後會增加(其實還有一個print_hello,是早期用於測試時第一個system call).<br>
+目前有這些 system call (其實還有一個print_hello,是早期用於測試時第一個system call).<br>
 
 1. __yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br><br>
 2. __gettid :獲得現在正在執行的task的task id.<br><br>
@@ -34,8 +34,12 @@ System call:
 10. __read :從file(如tty0)讀資料.<br><br>
 11. __open :打開file ,目前每個task打開consile_in 跟 out (fd =0 and 1).可以打開uart0(tty0)<br><br> 
 12. __getcwd :獲得當前目錄.<br><br>
+13. __getsubdir :獲得當前目錄的所有子目錄<br><br>
+14. __getfdir :獲得當前目錄的所有file<br><br>
+15. __chdir :改變當前目錄<br><br>
+16. __getfullpath :獲得當前目錄的完整路徑<br><br>
 
-<br><br>   
+<br>
 
 
 簡易的 command line:

@@ -31,7 +31,10 @@ System call:
 10. __read :Read data from file(ex:tty0).<br>
 11. __open :Open file ,Every task will open consile_in and out (fd =0 and 1) by default.
 12. __getcwd :Get current dir.<br>
-
+13. __getsubdir :<br>
+14. __getfdir :<br>
+15. __chdir :<br>
+16. __getfullpath :<br>
 <br>
 Simple command line interface:
 =
