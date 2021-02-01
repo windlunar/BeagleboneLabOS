@@ -7,7 +7,8 @@
 include ../../toolchain.make
 
 obj_destination_path = ../../obj
-CFLAGS  += -march=armv7-a -mtune=cortex-a8
+CFLAGS  += -march=armv7-a -mtune=cortex-a8 -nostdlib
+#CFLAGS  += -march=armv7-a -mtune=cortex-a8
 
 c_obj=usr_led.o uart.o timer.o
 
