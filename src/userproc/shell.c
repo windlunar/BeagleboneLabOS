@@ -144,10 +144,12 @@ void main_shell()
 				uprintf("  Simple memory management.\r\n");
 				uprintf("  Simple command line.\r\n");
 
+			// command 'ls'
 			}else if(_strcmp(token ,"ls\0")==0){
 				lsdir() ;
 				put_str("\r\n\0") ;
 
+			// command 'cd'
 			}else if(_strcmp(token ,"cd\0")==0){
 				_memset(token ,0 ,SIZE_OF_CMD_TOKEN) ;
 				if(*cmd == '\0'){
@@ -157,6 +159,14 @@ void main_shell()
 				}
 
 				if(cd(token) < 0) put_str("\r\nDir not found") ;
+				put_str("\r\n\0") ;
+
+			// command 'pwd'	
+			}else if(_strcmp(token ,"pwd\0")==0){
+				_memset(cwd ,0 ,SIZE_OF_CWD) ;
+				pwd(cwd ,SIZE_OF_CWD) ;
+				put_str("\r\n\0") ;
+				put_str(cwd);
 				put_str("\r\n\0") ;
 			}
 
