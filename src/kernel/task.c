@@ -3,8 +3,6 @@
 #include "../klib/mem.h"
 
 SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
-//TASK_INFO_t task_shell ;
-//uint32_t task_shell_stack[TASK_STACK_SIZE/4] ;
 
 // 沒有static會出錯
 static TASK_INFO_t *task_ready_queue_head[MAXNUM_PRIORITY] ;

@@ -51,3 +51,12 @@ int cd(char *subdir)
 {
     return __chdir(subdir) ;
 }
+
+
+
+int pwd(char *cwd ,int cwdsz)
+{
+	__getfullpath(cwd ,cwdsz) ;
+
+	return 0 ;
+}

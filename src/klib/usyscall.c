@@ -145,3 +145,14 @@ int __chdir(char *subdirname)
 {
     return syscall_chdir(subdirname) ;
 }
+
+
+
+void __getfullpath(char *buf ,int n_bytes)
+{
+    BUFSZ_ARG_t args ;
+    args.buf = buf ;
+    args.n_size = n_bytes ;
+    
+    syscall_getfullpath(&args) ;
+}

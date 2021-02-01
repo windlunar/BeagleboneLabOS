@@ -35,6 +35,7 @@
 .equ	 SYSCALL_ID_getsubdir			,		15
 .equ	 SYSCALL_ID_getfdir             ,		16
 .equ	 SYSCALL_ID_chdir               ,		17
+.equ	 SYSCALL_ID_getfullpath         ,		18
 
 /************************************************************************************************/
 
@@ -414,6 +415,23 @@ syscall_chdir:
 	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_chdir
+
+	svc 0x00
+	pop	{r2 ,lr}
+	msr     CPSR_c, #CPSR_M_USR
+	bx lr	//返回 user proc
+
+
+/*****************************************************************************************/
+// 
+/*****************************************************************************************/
+.global syscall_getfullpath; 
+.align	4
+syscall_getfullpath:
+	//保存傳入參數 到r2
+	push {r2 ,lr}
+	mov	r2 ,r0
+	mov r0, #SYSCALL_ID_getfullpath
 
 	svc 0x00
 	pop	{r2 ,lr}

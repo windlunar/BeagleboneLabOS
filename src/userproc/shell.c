@@ -9,9 +9,7 @@
 #include "usrtasks.h"
 #include "commands.h"
 
-#define SIZE_OF_CMDBUF	16
-#define SIZE_OF_CWD		32
-#define SIZE_OF_CMD_TOKEN		SIZE_OF_CMDBUF
+
 ////////////////////////////////////////////////////////////////////////////////////
  #include "../kernel/task.h"
 ////////////////////////////////////////////////////////////////////////////////////
@@ -168,7 +166,7 @@ void main_shell()
 
 			put_str("\r\n|cmd>\0") ;
 			_memset(cwd ,0 ,SIZE_OF_CWD) ;
-			__getcwd(cwd ,SIZE_OF_CWD) ;
+			pwd(cwd ,SIZE_OF_CWD) ;
 			put_str(cwd);
 			put_str(">\0") ;
 			

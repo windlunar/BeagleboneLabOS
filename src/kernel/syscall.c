@@ -82,6 +82,10 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __chdir_handler(usrTaskContextOld ,args) ;
         break;
 
+    case SYSCALL_ID_getfullpath:
+        __getfullpath_handler(usrTaskContextOld ,args) ;
+        break;
+
     default:
         break;
     }
@@ -413,5 +417,39 @@ void __chdir_handler(uint32_t *usrTaskContextOld ,void *args)
     {
         // Keep the current dir.
         old_context->r0 = -1 ;
+    }
+}
+
+
+void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args)
+{
+    BUFSZ_ARG_t *arg = (BUFSZ_ARG_t *)args ;
+    char *buf = arg->buf ;
+    int n_size = arg->n_size ;
+
+    DIR_NODE *curdir = curr_running_task->cwdn ;
+    DIR_NODE *dirwk[16] ;   //最多16層 dir
+
+    for(int i=0 ; i<16; i++)
+    {
+        dirwk[i] = NULL ;
+    }
+
+    int j = 0 ;
+    while(curdir != NULL)
+    {
+        dirwk[j] = curdir ;
+        curdir = curdir->parent ;
+        j++ ;
+    }
+    int level_dir = j ;
+    j-- ;
+
+
+    while(j >= 0)
+    {
+        if( (n_size - _strlen(buf)) < _strlen(dirwk[j]->name)) kprintf("Buf not enough\r\n");
+        _strcat(buf ,dirwk[j]->name) ;
+        j-- ;
     }
 }

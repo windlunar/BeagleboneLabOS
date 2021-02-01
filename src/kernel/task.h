@@ -141,8 +141,6 @@ typedef struct _CONFIG TASK_CONFIG ;
 
 /***********************************************************************************************/
 
-//extern TASK_INFO_t task_shell ;
-//extern uint32_t task_shell_stack[TASK_STACK_SIZE/4] ;
 extern TASK_INFO_t *curr_running_task ;
 /***********************************************************************************************/
 void sched(void);
