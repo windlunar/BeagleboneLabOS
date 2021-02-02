@@ -72,21 +72,23 @@ Commands:
 <br><br>
 3. UART 轉 USB的模組
 <br><br>
-4. SD卡, 裡面只要灌 U-boot(Bootloader for Beaglebone black)
+4. SD卡
 <br>
 安裝img映像檔 :
 <br><br>
-將sdcard-img資料夾內的bos-boot16M-rootfs48M.zip解壓縮
-<br>
-會得到 bos-boot16M-rootfs48M.img 映像檔,該映像檔有兩個分割區
-<br>
- boot分割區放 MLO,u-boot.img 與 OS的elf檔bos
- 另一個分割區為rootfs ,為保留用目前沒有使用到
-<br>
-
-製作boot ,rootfs分割區的方法可以參考下面這本書:
+如要自行編譯u-boot與製作boot ,rootfs分割區的話可以參考下面這本書:
 <br>
 https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition
+
+<br><br>
+或是用已經製作好的：<br>
+將sdcard-img資料夾內的bos-boot16M-rootfs48M.zip解壓縮後 ,會得到 bos-boot16M-rootfs48M.img 映像檔,
+<br><br>
+該映像檔有兩個分割區 ,boot分割區放 MLO,u-boot.img 與 OS的elf檔bos ,另一個分割區為rootfs ,為保留用目前沒有使用到
+<br><br>
+使用 sd卡燒錄軟體將bos-boot16M-rootfs48M.img燒進sd卡中
+
+
 
 
 
