@@ -66,7 +66,7 @@ Commands:
 =
 
 需要準備:
-<br><br>
+<br>
 1. 一台PC或筆電作為寫程式的電腦 ,安裝Linux Ubuntu 18.04
 <br>
 2. Beaglebone black 開發板
