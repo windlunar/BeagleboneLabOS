@@ -22,24 +22,22 @@ System call:
 
 目前有這些 system call (其實還有一個print_hello,是早期用於測試時第一個system call).<br>
 
-1. __yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br><br>
-2. __gettid :獲得現在正在執行的task的task id.<br><br>
-3. __exit :結束正在運行的task.<br><br>
-4. __fork :複製task自己 ,創造子task.<br><br>
-5. __do_taskCreate :建立task.<br><br>
-6. __malloc_blk :分配一個block的記憶體空間.<br><br>
-7. __mfree_blk :歸還使用__malloc_blk獲得的空間.<br><br>
-8. __get_task_priority :獲得現在正在執行的task的priority.<br><br>
-9. __write :寫資料到file(如tty0).<br><br>
-10. __read :從file(如tty0)讀資料.<br><br>
-11. __open :打開file ,目前每個task打開consile_in 跟 out (fd =0 and 1).可以打開uart0(tty0)<br><br> 
-12. __getcwd :獲得當前目錄.<br><br>
-13. __getsubdir :獲得當前目錄的所有子目錄<br><br>
-14. __getfdir :獲得當前目錄的所有file<br><br>
-15. __chdir :改變當前目錄<br><br>
-16. __getfullpath :獲得當前目錄的完整路徑<br><br>
-
-<br>
+1. __yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br>
+2. __gettid :獲得現在正在執行的task的task id.<br>
+3. __exit :結束正在運行的task.<br>
+4. __fork :複製task自己 ,創造子task.<br>
+5. __do_taskCreate :建立task.<br>
+6. __malloc_blk :分配一個block的記憶體空間.<br>
+7. __mfree_blk :歸還使用__malloc_blk獲得的空間.<br>
+8. __get_task_priority :獲得現在正在執行的task的priority.<br>
+9. __write :寫資料到file(如tty0).<br>
+10. __read :從file(如tty0)讀資料.<br>
+11. __open :打開file ,目前每個task打開consile_in 跟 out (fd =0 and 1).可以打開uart0(tty0)<br>
+12. __getcwd :獲得當前目錄.<br>
+13. __getsubdir :獲得當前目錄的所有子目錄<br>
+14. __getfdir :獲得當前目錄的所有file<br>
+15. __chdir :改變當前目錄<br>
+16. __getfullpath :獲得當前目錄的完整路徑<br>
 
 
 簡易的 command line:
