@@ -15,7 +15,7 @@ Feature:
 3. Priority-based round-robin multitasking.預設有0~4 ,5個priority.<br><br>
 4. 有簡易的 Memory分配機制(目前還沒有區分虛擬記憶體位址).<br><br>
 5. 有一個簡易的command line用於測試.<br>
-6. 有一個存在於記憶體中的小檔案系統<br>
+6. 有一個存在於記憶體中的類似檔案系統的小系統<br>
 
 System call:
 =
@@ -61,7 +61,7 @@ Commands:
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/test.png)
 
 
-環境建立:
+環境準備:
 =
 
 需要準備:
@@ -74,38 +74,31 @@ Commands:
 <br><br>
 4. SD卡, 裡面只要灌 U-boot(Bootloader for Beaglebone black)
 <br>
-安裝u-boot :
+安裝img映像檔 :
 <br><br>
-使用u-boot資料夾內的MLO與u-boot.img檔案
+將sdcard-img資料夾內的bos-boot16M-rootfs48M.zip解壓縮
 <br>
-將sd卡插入電腦, 我是使用sd卡讀卡機
+會得到 bos-boot16M-rootfs48M.img 映像檔,該映像檔有兩個分割區
 <br>
-查看sd卡 ,我的分區是 sdb
-
-        lsblk
-
+ boot分割區放 MLO,u-boot.img 與 OS的elf檔bos
+ 另一個分割區為rootfs ,為保留用目前沒有使用到
 <br>
-進到 arm-os-from-scratch/u-boot 資料夾  ,執行以下腳本format sd卡
-<br>
-要注意sd卡是不是在sdb下, 避免format錯
 
-        ./format-sdcard.sh <你的sd卡:如sdb>
-
-format-sdcard.sh 這個腳本檔來自下面這本書:
+製作boot ,rootfs分割區的方法可以參考下面這本書:
 <br>
 https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition
 
-<br>
-一樣在  arm-os-from-scratch/u-boot 資料夾下:
-
-        cp MLO u-boot.img /media/<你的使用者名稱>/boot
-
 
 
 <br>
-5.安裝編譯環境 ,這是我使用的 arm gcc版本: "gcc-arm-none-eabi-6-2017-q2-update" 
+5.安裝編譯環境 ,這是我使用的 arm gcc版本: "gcc-arm-none-eabi-9-2020-q2-update" 
+<br>
+確定該編譯器安裝在 ubuntu系統的 /opt 下<br> 
+如果不是的話可以到這個project的 obj/MakeFile中更改<br>
+/opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1 成實際的路徑
+
 <br><br>
-6.安裝 "minicom" ,類似putty的終端軟體
+6.安裝 "minicom" ,類似putty的終端軟體 ,或使用putty,等其他終端軟體
 
         sudo apt-get install minicom
 
@@ -138,6 +131,40 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 
 <br>
 13.當看到 "Press SPACE to abort autoboot in 2 seconds" 這行時按空白鍵 ,這時應該就會進去 Uboot自己的 command line.<br>
+<br>
+這時可以選擇從sd卡載入kernel, 或是透過uart將kernel從電腦端傳到beaglebone black
+
+
+從sd卡載入:
+=
+
+<br>
+14.輸入下面的指令可以看到 boot分割區下的檔案 ,應該可以看到一個名叫bos的檔案
+
+        fatls mmc 0:1 
+
+
+15.下面的指令將bos從sd卡中載入到beaglebone black的記憶體內 放置位址從 0x81000000開始.
+
+        fatload mmc 0:1 0x81000000 bos
+
+
+16.下面的指令將bos從sd卡中載入到beaglebone black的記憶體內 放置位址從 0x81000000開始.
+
+        fatload mmc 0:1 0x81000000 bos
+
+
+17.上載完成後, 輸入以下指令 ,代表執行放在0x81000000處的執行檔, 就是剛剛上載的 kernel執行檔:
+
+        bootelf 0x81000000
+
+接下來就進入 kernel了 ,然後就能看到一開始那張圖的畫面！
+<br>
+
+
+
+透過uart上傳:
+=
 
 <br>
 14.輸入下面的指令將 kernel從電腦上載到 beaglebone black的記憶體內 ,放置位址從 0x81000000開始.
