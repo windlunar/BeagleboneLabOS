@@ -80,7 +80,7 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 使用 sd卡燒錄軟體將bos-boot16M-rootfs48M.img燒進sd卡中
 
 
-<br>
+<br><br>
 5.安裝編譯環境 ,這是我使用的 arm gcc版本: "gcc-arm-none-eabi-9-2020-q2-update" 
 <br>
 確定該編譯器安裝在 ubuntu系統的 /opt 下<br> 
