@@ -29,7 +29,7 @@
 /***************************************************************************************/
 //
 /***************************************************************************************/
-void svc_handler(void) ;
+void svc_entry(void) ;
 extern void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args);
 
 

@@ -36,12 +36,13 @@ clobj :
 .PHONY : clean_diasm
 cldisasm :
 	-rm $(bin_destination_path)/*.disasm
+	#-rm ./*.disasm
 
 
 .PHONY : disasm
 disasm:
-	$(toolchain)-objdump -D ./bin/beaglebonLabOS.elf > ./bin/beaglebonLabOS.elf.disasm
-	#$(toolchain)-objdump -D ./u-boot/u-boot > ./u-boot/u-boot.disasm
+	$(toolchain)-objdump -D ./bin/bos > ./bin/bos.disasm
+	#$(toolchain)-objdump -D ./u-boot > ./u-boot.disasm
 
 
 

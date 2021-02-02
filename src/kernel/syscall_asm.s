@@ -46,7 +46,7 @@
 //
 /*****************************************************************************************/
 .global syscall_print_hello; 
-.align	4
+.align	2
 syscall_print_hello:
 	//保存傳入參數
 	push {r0 ,r2 ,lr}
@@ -65,7 +65,7 @@ syscall_print_hello:
 //
 /*****************************************************************************************/
 .global syscall_yield; 
-.align	4
+.align	2
 syscall_yield: 
 	push {r0 ,lr}
 	mov r0, #SYSCALL_ID_yield
@@ -94,7 +94,7 @@ syscall_yield:
 //
 /*****************************************************************************************/
 .global syscall_get_tid; 
-.align	4
+.align	2
 syscall_get_tid:
 	//保存傳入參數
 	push {r2 ,lr}
@@ -111,7 +111,7 @@ syscall_get_tid:
 //
 /*****************************************************************************************/
 .global syscall_exit; 
-.align	4
+.align	2
 syscall_exit:
 	//保存傳入參數
 	push {r0 ,r2 ,lr}
@@ -138,7 +138,7 @@ syscall_exit:
 //
 /*****************************************************************************************/
 .global syscall_fork; 
-.align	4
+.align	2
 syscall_fork:
 	//保存傳入參數
 	push {r2 ,lr}
@@ -167,7 +167,7 @@ syscall_fork:
 //
 /*****************************************************************************************/
 .global syscall_do_taskCreate; 
-.align	4
+.align	2
 syscall_do_taskCreate:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -195,7 +195,7 @@ syscall_do_taskCreate:
 //
 /*****************************************************************************************/
 .global syscall_malloc_blk; 
-.align	4
+.align	2
 syscall_malloc_blk:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -224,7 +224,7 @@ syscall_malloc_blk:
 //
 /*****************************************************************************************/
 .global syscall_mfree_blk; 
-.align	4
+.align	2
 syscall_mfree_blk:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -251,7 +251,7 @@ syscall_mfree_blk:
 //
 /*****************************************************************************************/
 .global syscall_get_mblk_list; 
-.align	4
+.align	2
 syscall_get_mblk_list:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -282,7 +282,7 @@ syscall_get_mblk_list:
 // 直到所有的迴圈執行完畢才會換到下一個task
 /*****************************************************************************************/
 .global syscall_get_task_priority; 
-.align	4
+.align	2
 syscall_get_task_priority:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -300,7 +300,7 @@ syscall_get_task_priority:
 // 
 /*****************************************************************************************/
 .global syscall_write; 
-.align	4
+.align	2
 syscall_write:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -317,7 +317,7 @@ syscall_write:
 // 
 /*****************************************************************************************/
 .global syscall_read; 
-.align	4
+.align	2
 syscall_read:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -335,7 +335,7 @@ syscall_read:
 // 
 /*****************************************************************************************/
 .global syscall_open; 
-.align	4
+.align	2
 syscall_open:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -354,7 +354,7 @@ syscall_open:
 // 
 /*****************************************************************************************/
 .global syscall_getcwd; 
-.align	4
+.align	2
 syscall_getcwd:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -372,7 +372,7 @@ syscall_getcwd:
 // 
 /*****************************************************************************************/
 .global syscall_getsubdir; 
-.align	4
+.align	2
 syscall_getsubdir:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -391,7 +391,7 @@ syscall_getsubdir:
 // 
 /*****************************************************************************************/
 .global syscall_getfdir; 
-.align	4
+.align	2
 syscall_getfdir:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -409,7 +409,7 @@ syscall_getfdir:
 // 
 /*****************************************************************************************/
 .global syscall_chdir; 
-.align	4
+.align	2
 syscall_chdir:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
@@ -426,7 +426,7 @@ syscall_chdir:
 // 
 /*****************************************************************************************/
 .global syscall_getfullpath; 
-.align	4
+.align	2
 syscall_getfullpath:
 	//保存傳入參數 到r2
 	push {r2 ,lr}
