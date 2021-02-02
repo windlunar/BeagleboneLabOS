@@ -65,15 +65,6 @@ Commands:
 環境準備:
 =
 
-需要準備:
-<br>
-
-1. 一台PC或筆電作為寫程式的電腦 ,安裝Linux Ubuntu 18.04<br>
-2. Beaglebone black 開發板<br>
-3. UART 轉 USB的模組<br>
-4. SD卡<br>
-
-<br>
 安裝img映像檔 :
 <br><br>
 如要自行編譯u-boot與製作boot ,rootfs分割區的話可以參考下面這本書:
