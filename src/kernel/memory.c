@@ -4,15 +4,80 @@
 
 uint32_t *kernal_end = &_end ;
 
-
+/****************************************************************************************/
+// MMU
 /****************************************************************************************/
 
+
+// 獲得pte內容 ,PTE:
+//  -----------------------------------------------------------
+//  || base   |   0   |   AP | 0 | Domain | 1 | C | B | 1 | 0 |        Content
+//  -----------------------------------------------------------
+//   31  ~ 20 |19 ~ 12| 11 10| 9 | 8 ~ 5  | 4 | 3 | 2 | 1 | 0 |        bit
+//
+pte_t gen_pte (paddr_t paddr)
+{
+    return (paddr & L1_PAGE_PTE_BASE_MASK) | L1_PAGE_PTE_BITS ;
+}
+
+
+pte_paddr_t gen_pte_addr (pgt_paddr_t pgt_base ,vaddr_t vaddr)
+{
+    return (pgt_base & L1_PAGE_TABLE_BASE_MASK) | VADDR2L1PTEIDX(vaddr) ;
+}
+
+
+void mmu_init (void)
+{
+    pte_t pte ;
+    pte_paddr_t pte_paddr ;
+
+    // 初始化 page table 的 pte
+    for(int i=0 ; i<L1_PAGES_NUM/*L1_PAGES_NUM*/; i++)
+    { 
+        pte = gen_pte(PADDR_MAP_START + (i << 20)) ;
+        pte |= NO_CACHE_WRITEBUF << CACHE_WRITEBUF_BITNO ;
+        pte |= DEFAULT_DOMAIN << DOMAIN_BIT_NO ;
+        pte |= AP_USER_RW << AP_BIT_NO ;
+        pte |= 1 << 4 ;
+
+        pte_paddr = gen_pte_addr(L1_PAGE_TABLE_BASE ,VADDR_MAP_START + (i << 20)) ;
+        _memset((void *)(pte_paddr_t *) pte_paddr ,0 ,4) ;
+        *(pte_paddr_t *) pte_paddr = pte ;
+    }
+}
+
+
+void enable_mmu(void)
+{
+    pgt_paddr_t ttb = (pgt_paddr_t)L1_PAGE_TABLE_BASE ;
+    kprintf("Here #4\r\n");
+    asm(
+        "stmfd sp! ,{r0}\n"
+        "mov r0 ,%0\n"
+        "mcr p15 ,0 ,%0 ,c2 ,c0 ,0\n"       // 設定 page table base, CP15的c2 register保存
+        "mvn r0 ,#0\n"
+        "mcr p15 ,0 ,r0 ,c3 ,c0 ,0\n"       // c3為16個domain
+        "mov r0 ,#0x01\n"
+        "mcr p15 ,0 ,r0 ,c1 ,c0 ,0\n"       // enable mmu
+        "mov r0 ,r0\n"
+        "mov r0 ,r0\n"
+        "mov r0 ,r0\n"
+        "ldmfd sp! ,{r0}\n"
+        :
+        :"r" (ttb)
+        :
+    ) ;
+    kprintf("Here #5\r\n");
+}
+
+/****************************************************************************************/
 MEM_AREA_INFO_t *free_area_list_head = NULL;
 MEM_AREA_INFO_t *inuse_area_list_head = NULL;
 MEM_AREA_INFO_t areas_list[TOTAL_AREA_NUM] ;   //存放在 kernel binary的bss segment中
 
 /****************************************************************************************/
-// Memory Area Functions
+// Memory Area Allocate
 /****************************************************************************************/
 //
 // 將所有memory area (1 area 其實就是一個page的大小)用link list串起來
@@ -56,6 +121,10 @@ void mem_areas_list_init()
             areas_list[i].prev_ptr = &areas_list[i-1] ;
         }
     }   
+
+    // 保留給page table
+    MEM_AREA_INFO_t *pgt_area = memAreaAlloc() ;
+    pgt_area->area_status = INUSE_FULL ;
 }
 
 

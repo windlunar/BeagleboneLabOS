@@ -14,7 +14,7 @@ void _memset(void *start ,uint8_t value ,uint32_t SizeofBytes)
 }
 
 
-void _showMem(void *start ,uint32_t SizeofBytes)
+void _showmm(void *start ,uint32_t SizeofBytes)
 {
     uint8_t *startPtr = (uint8_t *)start ;
 

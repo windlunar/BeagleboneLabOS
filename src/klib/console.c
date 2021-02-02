@@ -17,6 +17,7 @@
 // arg4 : h軸(橫軸)的開始(要畫的起點)
 // arg5 : 長度(像素點)
 // arg6 : 要填的字 (如果是像素點的話可以改成顏色)
+
 void draw_horizental_line(char *input ,int n_h,int h ,int v ,char character ,int len)
 {
 	char *s = input ;
@@ -52,6 +53,8 @@ void draw_vertical_line(char *input ,int n_h ,int h ,int v ,char character ,int 
 		len--;
 	}
 }
+
+
 
 void draw_whole(char *input ,int n_v ,int n_h ,char character)
 {
