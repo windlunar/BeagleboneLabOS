@@ -7,7 +7,7 @@
 include ../toolchain.make
 
 bin_destination_path = ../bin
-bin_name = beaglebonLabOS.elf
+bin_name = bos
 #LIB_GCC = /opt/gcc-arm-none-eabi-6-2017-q2-update/lib/gcc/arm-none-eabi/6.3.1
 LIB_GCC = /opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1
 
