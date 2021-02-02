@@ -67,13 +67,12 @@ Commands:
 
 需要準備:
 <br>
-1. 一台PC或筆電作為寫程式的電腦 ,安裝Linux Ubuntu 18.04
-<br>
-2. Beaglebone black 開發板
-<br>
-3. UART 轉 USB的模組
-<br>
-4. SD卡
+
+1. 一台PC或筆電作為寫程式的電腦 ,安裝Linux Ubuntu 18.04<br>
+2. Beaglebone black 開發板<br>
+3. UART 轉 USB的模組<br>
+4. SD卡<br>
+
 <br>
 安裝img映像檔 :
 <br><br>
@@ -81,16 +80,13 @@ Commands:
 <br>
 https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition
 
-<br><br>
+<br>
 或是用已經製作好的：<br>
 將sdcard-img資料夾內的bos-boot16M-rootfs48M.zip解壓縮後 ,會得到 bos-boot16M-rootfs48M.img 映像檔,
 <br><br>
 該映像檔有兩個分割區 ,boot分割區放 MLO,u-boot.img 與 OS的elf檔bos ,另一個分割區為root ,為保留用目前沒有使用到
 <br><br>
 使用 sd卡燒錄軟體將bos-boot16M-rootfs48M.img燒進sd卡中
-
-
-
 
 
 <br>
