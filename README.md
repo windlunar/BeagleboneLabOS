@@ -10,10 +10,10 @@ Hi ,<br><br>
 
 Feature:
 =
-1. 有區分kernel模式與使用者模式(user mode) ,一般的task(process)運行在使用者模式 ,呼叫system call之後轉到kernel模式運行<br><br>
-2. 基於 Time slice 切換不同 task.<br><br>
-3. Priority-based round-robin multitasking.預設有0~4 ,5個priority.<br><br>
-4. 有簡易的 Memory分配機制(目前還沒有區分虛擬記憶體位址).<br><br>
+1. 有區分kernel模式與使用者模式(user mode) ,一般的task(process)運行在使用者模式 ,呼叫system call之後轉到kernel模式運行<br>
+2. 基於 Time slice 切換不同 task.<br>
+3. Priority-based round-robin multitasking.預設有0~4 ,5個priority.<br>
+4. 有簡易的 Memory分配機制(目前還沒有區分虛擬記憶體位址).<br>
 5. 有一個簡易的command line用於測試.<br>
 6. 有一個存在於記憶體中的類似檔案系統的小系統<br>
 
