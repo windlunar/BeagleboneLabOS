@@ -51,6 +51,9 @@ Commands:
 1. test :執行之後鍵盤按1或2或3或4, 測試 fork 與 multitasking ,priority multitasking ,tty0 open tese.<br>
 2. help :列出可用的指令.<br>
 3. info :印出一些資訊.<br>
+4. ls :列出當前目錄下的子目錄與檔案.<br>
+5. cd :切換目錄.<br>
+6. pwd :列出當前路徑.<br>
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/cmd.png)
 
@@ -151,12 +154,7 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
         fatload mmc 0:1 0x81000000 bos
 
 
-16.下面的指令將bos從sd卡中載入到beaglebone black的記憶體內 放置位址從 0x81000000開始.
-
-        fatload mmc 0:1 0x81000000 bos
-
-
-17.上載完成後, 輸入以下指令 ,代表執行放在0x81000000處的執行檔, 就是剛剛上載的 kernel執行檔:
+16.上載完成後, 輸入以下指令 ,代表執行放在0x81000000處的執行檔, 就是剛剛上載的 kernel執行檔:
 
         bootelf 0x81000000
 
