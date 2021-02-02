@@ -120,48 +120,35 @@ _start:
 /********************************************************************/
 // 設定 exception vector的起始位址
 // 以下這些位址應該要存放跳轉指令 ,以SVC為例 ,PC = [0x9ff52024] (跳轉到這個記憶體存放的內容)
-// 0x9ff52000 Reset 				
-// 0x9ff52004 Undefined 			
-// 0x9ff52008 SWI 				
-// 0x9ff5200C Pre-fetch abort 	
-// 0x9ff52010 Data abort 			
-// 0x9ff52014 Unused 				
-// 0x9ff52018 IRQ 				
-// 0x9ff52020 FIQ 				
+// exception_vector_base +0x00		 	Reset 				
+// exception_vector_base +0x04		 	Undefined 			
+// exception_vector_base +0x08 			SWI 				
+// exception_vector_base +0x0c 			Pre-fetch abort 	
+// exception_vector_base +0x10	 		Data abort 			
+// exception_vector_base +0x14 			Unused 				
+// exception_vector_base +0x18 			IRQ 				
+// exception_vector_base +0x1c 			FIQ 
+
+// ldr 	r0, =exception_vector_base
+// mcr 	p15, #0, r0, c12, c0, #0		//Set the exception vector base	
+
 /********************************************************************/
-	// ldr 	r0, =exception_vector_base
-	// mcr 	p15, #0, r0, c12, c0, #0		//Set the exception vector base
-	mrc 	p15, #0, r0, c12, c0, #0		//Get the exception vector base from c12
+
+	mrc 	p15, #0, r0, c12, c0, #0	//Get the exception vector base from c12
+	
 /********************************************************************/
 
-	ldr		r1, =0xe59ff014 // 0xe59ff014 = ldr	 pc, [pc, #20]
-	add		r0 ,r0 ,#4
-	str		r1 ,[r0]	//Undefined ,exception_vector_base +0x04
-
-	add		r0 ,r0 ,#4
-	str		r1 ,[r0]	//SWI ,exception_vector_base +0x08	
-
-	add		r0 ,r0 ,#4
-	str		r1 ,[r0]	//Pre-fetch abort ,exception_vector_base +0x0c	 
-
-	add		r0 ,r0 ,#4
-	str		r1 ,[r0]	//Data abort ,exception_vector_base +0x10	 	
-
-	add		r0 ,r0 ,#4
-	str		r1 ,[r0]	//Unused ,exception_vector_base +0x14	
-
-	add		r0 ,r0 ,#4
-	str		r1 ,[r0]	//IRQ ,exception_vector_base +0x18	
-
-	add		r0 ,r0 ,#4
-	str		r1 ,[r0]	//FIQ ,exception_vector_base +0x1c	
+	stmfd	sp!	,{r0-r3}
+	bl 		set_exception_entry
+	ldmfd	sp!	,{r0-r3}
 
 /****************************************************************************************/
 // 設定 svc_entry ,irq_handler的 entry位址
 /****************************************************************************************/
+
 	// 存放 svc entry 位址的位址 =exception_vector_base +0x24
 	//mrc 	p15, #0, r0, c12, c0, #0		//Get the exception vector base from c12
-	add	r0 ,r0 ,#0x8						//r0 =exception_vector_base +0x24
+	add	r0 ,r0 ,#0x24						//r0 =exception_vector_base +0x24
 	ldr r1, =svc_entry
 	str r1, [r0]
 	

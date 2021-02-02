@@ -38,5 +38,8 @@ void eableINT_NUM(uint8_t irq_num);
 void disableINT_NUM(uint8_t irq_num);
 void irq_isr_bind(uint8_t irq_num, void (*handler)(void));
 void irq_isr_unbind(uint8_t irq_num);
+/************************************************************************************************/
+
+void set_exception_entry(uint32_t *exept_vec_base);
 
 #endif

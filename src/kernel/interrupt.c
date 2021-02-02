@@ -248,3 +248,14 @@ void timer2_ISR(void)
 }
 
 /************************************************************************************************/
+#define EXCEPT_NUMS		7 // Not include reset
+void set_exception_entry(uint32_t *exept_vec_base)
+{
+	uint32_t *base = exept_vec_base ;
+	base += 1 ;
+	for(int i=0 ; i<EXCEPT_NUMS; i++)
+	{
+		*base = 0xe59ff014 ;
+		base += 1 ;
+	}
+}

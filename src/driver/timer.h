@@ -67,7 +67,7 @@ void disnableTimerAndUnbindISR(int32_t IRQ_ID);
 void __attribute__((optimize("O0"))) delay(uint32_t num);
 
 void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr) ;
-
+void reloadOsTick(uint32_t msecs) ;
 
 
 void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr);
