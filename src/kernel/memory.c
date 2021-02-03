@@ -23,51 +23,149 @@ pte_t gen_pte (paddr_t paddr)
 
 pte_paddr_t gen_pte_addr (pgt_paddr_t pgt_base ,vaddr_t vaddr)
 {
-    return (pgt_base & L1_PAGE_TABLE_BASE_MASK) | VADDR2L1PTEIDX(vaddr ,VADDR_MAP_START) ;
+    return (pgt_base & L1_PAGE_TABLE_BASE_MASK) | vaddr2L1pteidx(vaddr ,MAP_START_VADDR) ;
 }
 
 
-
-void mmu_init (void)
+// AP_USER_RW          (0x03)  // privilege R/W
+// AP_USER_R_ONLY      (0x02)  // privilege R/W
+// AP_USER_PROHIBIT    (0x01)  // privilege R/W
+void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart)
 {
     pte_t pte ;
     pte_paddr_t pte_paddr ;
+    paddr_t vs ;
+    paddr_t ve ;
+    int page_num = 0 ;
+
+    vs = ROUNDDOWN(pstart ,PAGE_SIZE) ;
+
+    //避免變成 0x1 0000 0000 時 overflow的情況
+    if(pend < 0xfff00000){
+        ve = ROUNDUP(pend ,PAGE_SIZE) ;
+    }else{
+        ve = ROUNDDOWN(pend ,PAGE_SIZE) ;
+        //page_num++ ;
+    }
+    page_num += pstartend2pagenum(pstart ,pend) ;
 
     // 初始化 page table 的 pte
-    for(int i=0 ; i<L1_PAGES_NUM/*L1_PAGES_NUM*/; i++)
+    for(int i=0 ; i<page_num; i++)
     { 
-        pte = gen_pte(PADDR_MAP_START + (i << 20)) ;
+        pte = gen_pte(vs + (i << 20)) ;
         pte |= NO_CACHE_WRITEBUF << CACHE_WRITEBUF_BIT_SHIFT ;
         pte |= DEFAULT_DOMAIN << DOMAIN_BIT_SHIFT ;
-        pte |= AP_USER_RW << AP_BIT_SHIFT ;
-        pte |= 1 << 4 ;
+        pte |= permision << AP_BIT_SHIFT ;
+        pte |= XN_DEFAULT << XN_SHIFT ;
 
-        pte_paddr = gen_pte_addr(L1_PAGE_TABLE_BASE ,VADDR_MAP_START + (i << 20)) ;
+        pte_paddr = gen_pte_addr(L1_PAGE_TABLE_BASE ,vstart + (i << 20)) ;
         _memset((void *)(pte_paddr_t *) pte_paddr ,0 ,4) ;
         *(pte_paddr_t *) pte_paddr = pte ;
+        //kprintf("pte addr =%p------pte content =%x\r\n",(pte_paddr_t *) pte_paddr,*(pte_paddr_t *) pte_paddr) ;
+
     }
 }
 
 
+void mmu_init (void)
+{
+    // Map 0x00000000 ~ 0x82000000
+    pte_init(PADDR_MAP_START ,KUSE_START_PADDR ,AP_USER_PROHIBIT ,MAP_START_VADDR) ;
+
+    // Map 0x82000000 ~ 0x82100000
+    // 目前還沒有調整 mem area alloc的區域大小 ,user tasks的 stack空間目前還在這個區域內
+    // 所以先暫時讓user space可以讀寫
+    pte_init(KUSE_START_PADDR ,UMEM_START_PADDR ,AP_USER_RW ,KUSE_START_VADDR) ;
+
+    // Map 0x82100000 ~ 0x9df00000
+    pte_init(UMEM_START_PADDR ,KSTACK_BOTTOM_PADDR ,AP_USER_RW ,UMEM_START_VADDR) ;
+
+    // Map 0x9df00000 ~ 0xffffffff
+    pte_init(KSTACK_BOTTOM_PADDR ,MEM_END_PADDR ,AP_USER_PROHIBIT ,KSTACK_BOTTOM_PADDR) ;
+}
+
+
+
 void enable_mmu(void)
 {
-    pgt_paddr_t ttb = (pgt_paddr_t)L1_PAGE_TABLE_BASE ;
-    asm(
-        "stmfd sp! ,{r0}\n"
-        "mov r0 ,%0\n"
-        "mcr p15 ,0 ,%0 ,c2 ,c0 ,0\n"       // 設定 page table base, CP15的c2 register保存
-        "mvn r0 ,#0\n"
-        "mcr p15 ,0 ,r0 ,c3 ,c0 ,0\n"       // c3為16個domain
+
+    set_domain() ;
+    //kprintf("Domain :%x\r\n" ,get_domain()) ;
+    set_pgt_base() ;
+
+    asm volatile(
+        "stmfd sp! ,{r0}\n\t"
         "mov r0 ,#0x01\n"
-        "mcr p15 ,0 ,r0 ,c1 ,c0 ,0\n"       // enable mmu
-        "mov r0 ,r0\n"
-        "mov r0 ,r0\n"
-        "mov r0 ,r0\n"
-        "ldmfd sp! ,{r0}\n"
+        "mcr p15 ,0 ,r0 ,c1 ,c0 ,0\n\t"       // enable mmu
+        "mov r0 ,r0\n\t"
+        "mov r0 ,r0\n\t"
+        "mov r0 ,r0\n\t"
+        "ldmfd sp! ,{r0}\n\t"
         :
-        :"r" (ttb)
+        :
         :
     ) ;
+}
+
+
+void set_pgt_base(void)
+{
+    pgt_paddr_t pgtb = (pgt_paddr_t)L1_PAGE_TABLE_BASE ;
+    asm volatile(
+        "stmfd sp! ,{r0}\n\t"
+        "mov r0 ,%0\n\t"
+        "mcr p15 ,0 ,%0 ,c2 ,c0 ,0\n\t"       // 設定 page table base, CP15的c2 register保存
+        "ldmfd sp! ,{r0}\n\t"
+        :
+        :"r" (pgtb)
+        :
+    ) ;
+}
+
+uint32_t get_pgt_base(void)
+{
+	uint32_t pgtb;
+	asm volatile(
+        "mrc p15, 0, %0, c2, c0, 0\n\t" 
+        : "=r" (pgtb) 
+        : 
+        : 
+    );
+	
+	return pgtb;
+}
+
+// C3 保存16個domain ,一個domain佔用2bits
+// 00 :記憶體區域不能訪問 ,會引起domain fault
+// 01 :記憶體訪問須配合pte中的AP bits
+// 10 :保留
+// 11 :都不進行permission檢查
+void set_domain(void)
+{
+    uint32_t domain = 0x55555555 ;
+    asm volatile(
+        "stmfd sp! ,{r0}\n\t"
+        "mov r0 ,%0\n"
+        "mcr p15 ,0 ,%0 ,c3 ,c0 ,0\n\t"
+        "ldmfd sp! ,{r0}\n\t"
+        :
+        :"r" (domain)
+        :
+    );
+}
+
+
+uint32_t get_domain(void)
+{
+	uint32_t domain;
+	asm volatile(
+        "mrc p15, 0, %0, c3, c0, 0\n\t" 
+        : "=r" (domain) 
+        : 
+        : 
+    );
+	
+	return domain;
 }
 
 /****************************************************************************************/

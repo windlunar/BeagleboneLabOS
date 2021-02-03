@@ -29,31 +29,24 @@ void stackDisplay(uint32_t stackTop ,int num){
 }
 
 
-int32_t readCpsr(){
-	int32_t cpsr;
-
-    asm volatile("mrs %[v], CPSR" : : [v] "r" (cpsr));
-	return cpsr ;
-}
-
 
 int32_t readCpsrMode(){
-    int32_t cpsr = readCpsr() ;
+    int32_t cpsr = READ_CPSR() ;
     int32_t mode = cpsr & 0x1F ;
 
     switch (mode)
     {
     case 0x10:
-        kprintf("In user mode. cpsr mode :%x\r\n",mode) ;
+        kprintf("In user mode. cpsr mode bits :%x\r\n",mode) ;
         break;
     case 0x1f:
-        kprintf("In system mode. cpsr mode :%x\r\n",mode) ;
+        kprintf("In system mode. cpsr mode bits :%x\r\n",mode) ;
         break;
     case 0x12:
-        kprintf("In irq mode. cpsr mode :%x\r\n",mode) ;
+        kprintf("In irq mode. cpsr mode bits :%x\r\n",mode) ;
         break;
     case 0x13:
-        kprintf("In kernel mode. cpsr mode :%x\r\n",mode) ;
+        kprintf("In kernel mode. cpsr mode bits :%x\r\n",mode) ;
         break;
     default:
         break;

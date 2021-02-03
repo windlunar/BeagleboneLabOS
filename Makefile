@@ -25,7 +25,7 @@ build:
 #Clean objects and bin
 .PHONY : clean
 clean :
-	-rm $(bin_destination_path)/*.*
+	-rm $(bin_destination_path)/bos
 	-rm $(obj_destination_path)/*.o
 
 .PHONY : clobj

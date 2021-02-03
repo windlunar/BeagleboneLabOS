@@ -35,7 +35,8 @@ RD_REG8:
 	ldrb 	r0,[r0]
 	bx 		lr
 	
-
+	
+.type _start, %function 
 .align	2
 .global READ_CPSR
 READ_CPSR:
@@ -83,7 +84,7 @@ READ_VECTOR_BASE:
 /****************************************************************************************/
  //.equ exception_vector_base,	0x9ff52000
 .equ kernel_stack_top ,0x9df3fffc
-.equ STACK_SIZE, 4096
+.equ NON_KSTACK_SIZE, 4096
 /****************************************************************************************/
 
 .type _start, %function  
@@ -162,7 +163,7 @@ _start:
 // 設定 svc stack top	
 /****************************************************************************************/
 	ldr sp, =kernel_stack_top	
-    add r1, sp, #STACK_SIZE		//Now r1 = kernel_stack_top +0x1000
+    add r1, sp, #NON_KSTACK_SIZE		//Now r1 = kernel_stack_top +0x1000
 
     // save svc mode
     mrs r3, cpsr
@@ -173,7 +174,7 @@ _start:
     mov r2, #0x12 		
     msr cpsr_cxsf, r2
     mov sp, r1					//irq's sp = kernel_stack_top +0x1000
-    add r1, sp, #STACK_SIZE		//Now r1 = kernel_stack_top +0x2000
+    add r1, sp, #NON_KSTACK_SIZE		//Now r1 = kernel_stack_top +0x2000
 
 /****************************************************************************************/
 // 回到 svc mode

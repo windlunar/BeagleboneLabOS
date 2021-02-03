@@ -33,7 +33,7 @@ int kernal_entry(void)
 	kprintf("\r\nKernel Init start...\r\n") ;
 
 	kprintf("sp : %x ---CP15_c1 : %x\r\n" ,READ_SP() ,READ_CP15_c1());
-	kprintf("CPSR register %x\r\n", readCpsr());
+	kprintf("CPSR register %x\r\n", READ_CPSR());
 	kprintf("Exception Vector Base = %x\r\n",getIntVectorAddr());
 	kprintf("kernel_end address :%p\r\n" ,kernal_end) ;
 	kprintf("First area of memeory address start at :%p\r\n" ,FIRST_AREA_PTR) ;
@@ -46,15 +46,17 @@ int kernal_entry(void)
 
 	OsTickInit(DMTIMER0_BASE_PTR_t);
 	enableOsTick(IRQ_NUM_TIMER0) ;
-
 	kprintf("Init Timer0 to switch tasks.\r\n");
-
 /***************************************************************************************/
 // Test	
 /***************************************************************************************/
+	readCpsrMode();
+	_memset(FIRST_AREA_PTR, 0, AREA_SIZE) ;
 	mmu_init() ;
 	enable_mmu();
+	readCpsrMode();
 
+	kprintf("Enable MMU.\r\n") ;
 /***************************************************************************************/
 // Init memory-area lists and files
 /***************************************************************************************/
