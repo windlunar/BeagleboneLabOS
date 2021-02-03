@@ -27,7 +27,7 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         break;  
 
     case SYSCALL_ID_exit:
-        __exit_handler() ;
+        __exit_handler(usrTaskContextOld) ;
         break;  
 
     case SYSCALL_ID_fork:
@@ -122,24 +122,22 @@ void __get_tid_handler(uint32_t *usrTaskContextOld)
 
 // 回收資源
 // 將task設定為 terminate
-void __exit_handler()
+void __exit_handler(uint32_t *usrTaskContextOld)
 {
     kprintf("task id=%d exit\r\n" ,curr_running_task->task_id) ;
     curr_running_task->task_status = TASK_TERMINATE ;
 
+    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
+
     //從queue中移除
-    remove_from_readylist(curr_running_task) ;
+    task_pop(curr_running_task) ;
 
     //釋放空間
-    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
     free_mem_area(curr_ma) ;
   
-    curr_running_task->stk_bottom = NULL ;
-    curr_running_task = NULL ;
-
-	//prepare sched() context
-	schedFuncContextPrepare();
-	_call_sched((uint32_t)schedFuncContextSPtr) ;
+    //curr_running_task->stk_bottom = NULL ;
+    curr_running_task = choose_task() ;
+    set_context_sp((uint32_t *)curr_running_task->task_context) ;
 }
 
 
@@ -151,6 +149,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     // 並將該 area使用狀況設為 INUSE_FULL ,只屬於這個task使用
     MEM_AREA_INFO_t *n_ma = alloc_mem_area();
     n_ma->area_status = TASK_AREA ;
+    _memset((void *)n_ma->m_start, 0, AREA_SIZE) ;
 
 
     // 分配 描述 task的TASK_INFO_t結構體, 其起始位置設定為 stack bottom
@@ -220,6 +219,7 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
 
     MEM_AREA_INFO_t *n_ma = alloc_mem_area();
     n_ma->area_status = TASK_AREA ; 
+    _memset((void *)n_ma->m_start, 0, AREA_SIZE) ;
 
     // 把 TASK_INFO 結構放在該 memo區域的起始位址
     TASK_INFO_t *ntask = (TASK_INFO_t *)(n_ma->m_start) ;

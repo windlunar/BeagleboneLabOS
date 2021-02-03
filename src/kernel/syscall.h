@@ -39,7 +39,7 @@ extern void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,vo
 void __print_hello_handler(uint32_t input) ;
 void __yield_handler(uint32_t *usrTaskContextOld);
 void __get_tid_handler(uint32_t *usrTaskContextOld);
-void __exit_handler();
+void __exit_handler(uint32_t *usrTaskContextOld);
 void __fork_handler(uint32_t *usrTaskContextOld);
 void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg) ;
 void __malloc_blk_handler(uint32_t *usrTaskContextOld) ;
@@ -89,4 +89,7 @@ typedef struct bufsz_args BUFSZ_ARG_t ;
 
 
 /***************************************************************************************/
+extern void set_context_sp(uint32_t *context) ;
+
+
 #endif
