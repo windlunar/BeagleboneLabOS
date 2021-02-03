@@ -16,7 +16,14 @@ void usertask3(void);
 void usertask4(void);
 
 int priority_test_main(void);
-void prio_test(void);
+void prio_test1(void);
+void prio_test2(void);
+void prio_test3(void);
+void prio_test4(void);
+void prio_test5(void);
+void prio_test6(void);
+void prio_test7(void);
+void prio_test8(void);
 
 int tty0_test_main(void);
 

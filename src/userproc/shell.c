@@ -22,6 +22,7 @@ void main_shell()
 // Test
 /***********************************************************************************/
 	readCpsrMode();
+	kprintf("%x" ,*(uint32_t *)0x9ff52000) ;
 /***********************************************************************************/
 	draw_console();
 	uprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
@@ -107,21 +108,21 @@ void main_shell()
 						if(get == '1'){
 							// Test Fork function
 							fork_test() ;
-							for(int i = 0 ; i<20000;i++) ;
+							uprintf("Back to Shell.\r\n") ;
 							break ;
 
 						}else if(get == '2'){
 							// 測試 multitasking							
 							// Time slice base. Round Robin Multitasking    
 							multitasking_test_main() ;
-							for(int i = 0 ; i<20000;i++) ;
+							uprintf("Back to Shell.\r\n") ;
 							break ;
 
 						}else if(get == '3'){
 							// 測試 priority							
 							// Time slice base. priority base Multitasking    
 							priority_test_main() ;
-							for(int i = 0 ; i<500000;i++) ;
+							uprintf("Back to Shell.\r\n") ;
 							break ;
 
 						}else if(get == '4'){
