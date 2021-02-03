@@ -23,8 +23,9 @@ pte_t gen_pte (paddr_t paddr)
 
 pte_paddr_t gen_pte_addr (pgt_paddr_t pgt_base ,vaddr_t vaddr)
 {
-    return (pgt_base & L1_PAGE_TABLE_BASE_MASK) | VADDR2L1PTEIDX(vaddr) ;
+    return (pgt_base & L1_PAGE_TABLE_BASE_MASK) | VADDR2L1PTEIDX(vaddr ,VADDR_MAP_START) ;
 }
+
 
 
 void mmu_init (void)
@@ -36,9 +37,9 @@ void mmu_init (void)
     for(int i=0 ; i<L1_PAGES_NUM/*L1_PAGES_NUM*/; i++)
     { 
         pte = gen_pte(PADDR_MAP_START + (i << 20)) ;
-        pte |= NO_CACHE_WRITEBUF << CACHE_WRITEBUF_BITNO ;
-        pte |= DEFAULT_DOMAIN << DOMAIN_BIT_NO ;
-        pte |= AP_USER_RW << AP_BIT_NO ;
+        pte |= NO_CACHE_WRITEBUF << CACHE_WRITEBUF_BIT_SHIFT ;
+        pte |= DEFAULT_DOMAIN << DOMAIN_BIT_SHIFT ;
+        pte |= AP_USER_RW << AP_BIT_SHIFT ;
         pte |= 1 << 4 ;
 
         pte_paddr = gen_pte_addr(L1_PAGE_TABLE_BASE ,VADDR_MAP_START + (i << 20)) ;
@@ -51,7 +52,6 @@ void mmu_init (void)
 void enable_mmu(void)
 {
     pgt_paddr_t ttb = (pgt_paddr_t)L1_PAGE_TABLE_BASE ;
-    kprintf("Here #4\r\n");
     asm(
         "stmfd sp! ,{r0}\n"
         "mov r0 ,%0\n"
@@ -68,7 +68,6 @@ void enable_mmu(void)
         :"r" (ttb)
         :
     ) ;
-    kprintf("Here #5\r\n");
 }
 
 /****************************************************************************************/
