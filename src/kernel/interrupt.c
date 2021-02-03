@@ -186,7 +186,7 @@ void irq_isr_unbind(uint8_t irq_num)
 	irq_handler_array[irq_num] = NULL;
 }
 
-/************************************************************************************************/
+/****************************************************************************************/
 
 void __attribute__((interrupt("IRQ"))) irqs_handler(void)	
 {
@@ -206,7 +206,7 @@ void __attribute__((interrupt("IRQ"))) irqs_handler(void)
 	*(INTC_BASE_PTR + INTC_CONTROL) = (NEW_IRQ_AGREE << 0); 
 }
 
-/************************************************************************************************/
+/****************************************************************************************/
 
 void timer0_ISR(uint32_t *usrTaskContextOld)
 {
@@ -247,7 +247,7 @@ void timer2_ISR(void)
 	(DMTIMER2_BASE_PTR_t->IRQSTATUS) = (1 << 1);
 }
 
-/************************************************************************************************/
+/****************************************************************************************/
 #define EXCEPT_NUMS		7 // Not include reset
 void set_exception_entry(uint32_t *exept_vec_base)
 {
@@ -258,4 +258,17 @@ void set_exception_entry(uint32_t *exept_vec_base)
 		*base = 0xe59ff014 ;
 		base += 1 ;
 	}
+}
+
+/****************************************************************************************/
+
+void __attribute__((interrupt("ABORT"))) prefetch_abort_handler(void)
+{
+	kprintf("In prefetch_abort_handler\r\n");
+}
+
+
+void __attribute__((interrupt("ABORT"))) data_abort_handler(void)
+{
+	kprintf("In data_abort_handler\r\n");
 }
