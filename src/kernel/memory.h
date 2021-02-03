@@ -11,6 +11,8 @@
 extern uint32_t _end ;	//_end is define in linker.ld
 extern uint32_t *kernal_end ;
 
+
+
 #define AREA_SIZE	        ( 65536 )	// 4096 * 16 = 65536(0x10000) bytes(64KB) 
 #define PAGE_SIZE           ( 0x100000) // 1M
 #define KB_SIZE             ( 1024 )
@@ -176,6 +178,8 @@ uint32_t get_domain(void);
 /****************************************************************************************/
 // Memory Area Allocate Functions
 /****************************************************************************************/
+
+
 //主要
 void mem_areas_list_init();
 MEM_AREA_INFO_t *alloc_mem_area(void);

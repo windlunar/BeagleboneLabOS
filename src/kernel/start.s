@@ -148,16 +148,33 @@ _start:
 /****************************************************************************************/
 
 	// 存放 svc entry 位址的位址 =exception_vector_base +0x24
-	//mrc 	p15, #0, r0, c12, c0, #0		//Get the exception vector base from c12
+	mrc 	p15, #0, r0, c12, c0, #0		//Get the exception vector base from c12
 	add	r0 ,r0 ,#0x24						//r0 =exception_vector_base +0x24
 	ldr r1, =svc_entry
 	str r1, [r0]
-	
+
+
+	// prefetch_abort
+	mrc 	p15, #0, r0, c12, c0, #0
+	add	r0 ,r0 ,#0x28
+	ldr r1, =prefetch_abort_entry
+	str r1, [r0]
+
+
+	// data_abort
+	mrc 	p15, #0, r0, c12, c0, #0
+	add	r0 ,r0 ,#0x2c
+	ldr r1, =data_abort
+	str r1, [r0]
+
 
 	// 存放 irq entry 位址的位址 =exception_vector_base +0x34
-	add	r0 ,r0 ,#0x10			//r0 =exception_vector_base +0x34
+	mrc 	p15, #0, r0, c12, c0, #0
+	add	r0 ,r0 ,#0x34			//r0 =exception_vector_base +0x34
 	ldr r1, =irq_entry
 	str r1, [r0]
+
+	// fiq
 
 /****************************************************************************************/
 // 設定 svc stack top	
@@ -173,8 +190,16 @@ _start:
 /****************************************************************************************/
     mov r2, #0x12 		
     msr cpsr_cxsf, r2
-    mov sp, r1					//irq's sp = kernel_stack_top +0x1000
-    add r1, sp, #NON_KSTACK_SIZE		//Now r1 = kernel_stack_top +0x2000
+    mov sp, r1						//irq's sp = kernel_stack_top +0x1000
+    add r1, sp, #NON_KSTACK_SIZE	//Now r1 = kernel_stack_top +0x2000
+
+/****************************************************************************************/
+// 設定 abort(prefetch_abort and data_abort) stack top
+/****************************************************************************************/
+    mov r2, #0x17
+    msr cpsr_cxsf, r2
+    mov sp, r1						//abort's sp = kernel_stack_top +0x2000
+    add r1, sp, #NON_KSTACK_SIZE	//Now r1 = kernel_stack_top +0x3000
 
 /****************************************************************************************/
 // 回到 svc mode
