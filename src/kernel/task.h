@@ -19,7 +19,7 @@ extern int32_t taskid;
 #define LOWEST_PRIORITY    MAXNUM_PRIORITY-1 
 #define HIGHEST_PRIORITY   0 
 /***********************************************************************************************/
-#define TASK_STACK_SIZE 1024
+#define TASK_STACK_SIZE 2048
 #define TASK_NUM_MAX 32
 #define stktop2bottom(x)   (x)-(TASK_STACK_SIZE/4)+1
 #define stkbottom2top(x)   (x)+(TASK_STACK_SIZE/4)-1
@@ -29,7 +29,7 @@ extern int32_t taskid;
 #define MAX_FD   8
 #define MAX_DIR_LENGTH  64
 /***********************************************************************************************/
-
+#define KSTACK_SCHED_CONTEXT_SP	( KSTACK_TOP_PADDR-(4*13) )
 // -----------------
 // ......
 // lr
@@ -140,13 +140,14 @@ typedef struct _CONFIG TASK_CONFIG ;
 
 
 /***********************************************************************************************/
-
+//extern TASK_INFO_t *task_ready_list_head[MAXNUM_PRIORITY] ;
 extern TASK_INFO_t *curr_running_task ;
 /***********************************************************************************************/
 void sched(void);
 void schedFuncContextPrepare(void);
 extern void _call_sched(uint32_t schedContext) ;    //定義在task_asm.s
 void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
+TASK_INFO_t *choose_task(void) ;
 
 void task_init() ;
 int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t prio);
@@ -154,7 +155,7 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)());
 void open_console_in_out(TASK_INFO_t *task) ;
 void task_enqueue(TASK_INFO_t *task) ;
 TASK_INFO_t *task_dequeue(int32_t prio) ;
-void remove_from_readylist(TASK_INFO_t *task);
+void task_pop(TASK_INFO_t *task);
 /***********************************************************************************************/
 void print_task_id_from_head(int32_t prio) ;
 void print_task_addr_from_head(int32_t prio) ;

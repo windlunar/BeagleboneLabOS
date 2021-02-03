@@ -2,10 +2,17 @@
 #include "task.h"
 #include "../klib/mem.h"
 
-SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)0x9df31000 ; 
+
+
+SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)KSTACK_SCHED_CONTEXT_SP ; 
 
 // 沒有static會出錯
-static TASK_INFO_t *task_ready_queue_head[MAXNUM_PRIORITY] ;
+typedef struct{
+	TASK_INFO_t *head
+}TASK_READY_LIST_HEAD_t ;
+
+TASK_READY_LIST_HEAD_t task_ready_list[MAXNUM_PRIORITY] ;
+//static TASK_INFO_t *task_ready_list_head[MAXNUM_PRIORITY] ;
 TASK_INFO_t *curr_running_task = NULL ;
 
 int32_t taskid = -1 ;
@@ -13,26 +20,27 @@ int32_t prio = -1 ;
 
 /****************************************************************************************/
 // 原來在執行的 user proccess在返回之前設定成 TASK_READY ,然後放入ready queue 最後面
+/*
 void sched(void)
 {
 	// 從IRQ handler跟SVC handler返回到user mode會直接進到這個sched
 	//choose a task to run
-
-
+	//uart_tx_str(CONSOLE ,"Here #1\r\n" ,9) ;
+	//print_task_id_from_head(HIGHEST_PRIORITY) ;
 	for(;;)
 	{
 		// 從priority 0開始
-		for(int i=0 ; i<MAXNUM_PRIORITY; i++)
-		{
-			// 如果該prio的ready list不為空時
-			if(task_ready_queue_head[i] != NULL)
-			{
-				prio = i ;
+		//uart_tx_str(CONSOLE ,"#2\r\n\0" ,5) ;
+		for(int i=0 ; i<MAXNUM_PRIORITY; i++){
 
+			// 如果該prio的ready list不為空時
+			if(task_ready_list[i].head != NULL){
+				prio = i ;
+				
 				//將task 從ready list 的 head 拿出 ,然後執行 TaskRun,切換到user mode跑task
-				if(task_ready_queue_head[prio]->task_status == TASK_READY)
-				{					
-					TASK_INFO_t *_head = task_ready_queue_head[prio] ;
+				if(task_ready_list[prio].head->task_status == TASK_READY){	
+									
+					TASK_INFO_t *_head = task_ready_list[prio].head ;
 
 					//dequeue task ,回傳值目前不需要用到
 					TASK_INFO_t *r = task_dequeue(prio) ;
@@ -41,23 +49,53 @@ void sched(void)
 					_head->task_status = TASK_RUNNING ;
 					task_enqueue(_head) ;
 
-
 					//設定 現在正在 running 的 task結構
 					curr_running_task = _head ;
-
-
+					if(_head->task_id != 0){
+					}
+					
 					//Switch to user mode and run the task
 					TaskRun((uint32_t *)_head->task_context) ;
-				}
-				else
-				{
+				}else{
 					kprintf("Error :The head in ready queue is not READY.\r\n") ;
 				}
 			}
 		}	
 	}
 }
+*/
 
+
+void sched (void)
+{
+	//choose a task to run
+	curr_running_task = choose_task() ;
+	TaskRun((uint32_t *)curr_running_task->task_context) ;
+}
+
+
+TASK_INFO_t *choose_task(void)
+{
+	for(int i=0 ; i<MAXNUM_PRIORITY; i++){
+
+		// 如果該prio的ready list不為空時
+		if((task_ready_list[i].head != NULL) && (task_ready_list[i].head->task_status == TASK_READY)){
+								
+			TASK_INFO_t *_head = task_ready_list[i].head ;
+
+			//dequeue task ,回傳值目前不需要用到
+			TASK_INFO_t *r = task_dequeue(i) ;
+
+			//And the put it to back ,and set it to running
+			_head->task_status = TASK_RUNNING ;
+			task_enqueue(_head) ;
+
+
+			//設定 現在正在 running 的 task結構
+			return _head ;	
+		}
+	}	
+}
 
 
 
@@ -74,7 +112,7 @@ void task_init()
 {
 	for(int i=0 ; i<MAXNUM_PRIORITY; i++)
 	{
-		task_ready_queue_head[i] = NULL ;
+		task_ready_list[i].head = NULL ;
 	}	
 }
 
@@ -135,6 +173,7 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 {
     MEM_AREA_INFO_t *n_ma = alloc_mem_area();
     n_ma->area_status = TASK_AREA ; 
+	_memset((void *)n_ma->m_start, 0, AREA_SIZE) ;
 
     TASK_INFO_t *ntask = (TASK_INFO_t *)(n_ma->m_start) ;
     n_ma->m_aval_start = (uint32_t *)((uint32_t)n_ma->m_start + sizeof(TASK_INFO_t)) ;  
@@ -171,16 +210,16 @@ void open_console_in_out(TASK_INFO_t *task)
 
 void task_enqueue(TASK_INFO_t *task)
 {
-	if(task_ready_queue_head[task->priority] == NULL){
+	if(task_ready_list[task->priority].head == NULL){
 		//create the first node
 		task->next_ptr = NULL ;
 		task->prev_ptr = NULL ;
-		task_ready_queue_head[task->priority] = task ;
+		task_ready_list[task->priority].head = task ;
 		return ;
 	}
 	// 不是第一個node
 	// 從head找最後一個node
-	TASK_INFO_t *head = task_ready_queue_head[task->priority] ;
+	TASK_INFO_t *head = task_ready_list[task->priority].head ;
 	while(head->next_ptr != NULL){
 		head = head->next_ptr ;
 	}
@@ -196,23 +235,23 @@ void task_enqueue(TASK_INFO_t *task)
 //從頭部取出返回原來的 TASK_INFO_t
 TASK_INFO_t *task_dequeue(int32_t prio)
 {
-	if(task_ready_queue_head[prio] == NULL){
+	if(task_ready_list[prio].head == NULL){
 		kprintf("Task queue is empty\r\n") ;
 		return NULL;
 	}
 
-	if(task_ready_queue_head[prio]->next_ptr == NULL){
-		TASK_INFO_t *head = task_ready_queue_head[prio] ;
-		task_ready_queue_head[prio] = NULL ;
+	if(task_ready_list[prio].head->next_ptr == NULL){
+		TASK_INFO_t *head = task_ready_list[prio].head ;
+		task_ready_list[prio].head = NULL ;
 		return head;
 	}
-	TASK_INFO_t *origin_head = task_ready_queue_head[prio] ;
+	TASK_INFO_t *origin_head = task_ready_list[prio].head ;
 
 	//next node becoome the new node
 	TASK_INFO_t *next = origin_head->next_ptr ;
 	
 	next->prev_ptr = NULL ;
-	task_ready_queue_head[prio] = next ;
+	task_ready_list[prio].head = next ;
 
 	origin_head->next_ptr = NULL ;
 
@@ -220,28 +259,29 @@ TASK_INFO_t *task_dequeue(int32_t prio)
 }
 
 
-void remove_from_readylist(TASK_INFO_t *task)
+// 從尾部取出
+void task_pop(TASK_INFO_t *task)
 {
-	if(task ==NULL){
+	if((task == NULL) || (task->next_ptr != NULL)){
 		return ;
 	}
 
 	//list沒有node
-	if(task_ready_queue_head[task->priority] == NULL){
+	if(task_ready_list[task->priority].head == NULL){
 		kprintf("Task queue is empty\r\n") ;
 		return;		
 	}
 
 	//list中只有自己
-	if(task_ready_queue_head[task->priority]->next_ptr == NULL){
-		task_ready_queue_head[task->priority] = NULL ;
+	if(task_ready_list[task->priority].head->next_ptr == NULL){
+		kprintf("Only itself\r\n") ;
+		task_ready_list[task->priority].head = NULL ;
+		return ;
 	}
 
 	TASK_INFO_t *prev = task->prev_ptr ;
-	TASK_INFO_t *next = task->next_ptr ;
 
-	prev->next_ptr = next ;
-	next->prev_ptr = prev ;
+	prev->next_ptr = NULL ;
 
 	task->next_ptr = NULL ;
 	task->prev_ptr = NULL ;
@@ -250,11 +290,11 @@ void remove_from_readylist(TASK_INFO_t *task)
 /****************************************************************************************/
 void print_task_id_from_head(int32_t prio)
 {
-	if(task_ready_queue_head[prio] == NULL){
+	if(task_ready_list[prio].head == NULL){
 		kprintf("Task queue is empty\r\n") ;
 		return;		
 	}
-	TASK_INFO_t *head = task_ready_queue_head[prio] ;
+	TASK_INFO_t *head = task_ready_list[prio].head ;
 	while(head->next_ptr != NULL)
 	{
 		kprintf("task id = %d\r\n" ,head->task_id) ;
@@ -266,13 +306,13 @@ void print_task_id_from_head(int32_t prio)
 
 void print_task_addr_from_head(int32_t prio)
 {
-	if(task_ready_queue_head[prio] == NULL){
+	if(task_ready_list[prio].head == NULL){
 		kprintf("Task queue is empty\r\n") ;
 		return;		
 	}
 
-	TASK_INFO_t *head = task_ready_queue_head[prio] ;
-	kprintf("task_ready_queue_head[prio] addr =%p\r\n" ,&task_ready_queue_head[prio]) ;
+	TASK_INFO_t *head = task_ready_list[prio].head ;
+	kprintf("task_ready_list[prio].head addr =%p\r\n" ,&task_ready_list[prio].head) ;
 	while(head->next_ptr != NULL)
 	{
 		kprintf("task addr = %p\r\n" ,head) ;
