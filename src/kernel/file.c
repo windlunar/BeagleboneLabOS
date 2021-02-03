@@ -34,7 +34,7 @@ int file_in_ram_init()
 
 int path_tree_init()
 {
-    path_tree.ma = memAreaAlloc() ;
+    path_tree.ma = alloc_mem_area() ;
     if(path_tree.ma == NULL) return -1 ;
 
     path_tree.ma_aval_start = path_tree.ma->m_start ;

@@ -133,16 +133,19 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t p
 // Create user task by kernel
 int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 {
-    MEM_AREA_INFO_t *n_memarea = memAreaAlloc();
-    n_memarea->area_status = TASK_AREA ; 
+    MEM_AREA_INFO_t *n_ma = alloc_mem_area();
+    n_ma->area_status = TASK_AREA ; 
 
-    TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_memarea->m_top) ;  
+    TASK_INFO_t *ntask = (TASK_INFO_t *)(n_ma->m_start) ;
+    n_ma->m_aval_start = (uint32_t *)((uint32_t)n_ma->m_start + sizeof(TASK_INFO_t)) ;  
+    n_ma->blk_head_ptr = n_ma->m_aval_start ;
 
-    taskCreate(ntask ,taskFunc ,stktop2bottom(n_memarea->m_top) ,prio);
+
+    taskCreate(ntask ,taskFunc ,stktop2bottom(n_ma->m_top) ,prio);
 
     // init blocks
     // 總共應該會有56個blks = (4096-512)/64
-    memblks_init(n_memarea 
+    memblks_init(n_ma 
                 ,DEFAULT_AVAL_BLK_SIZE 
                 ,DEFAULT_TASK_MA_BLKNUM) ;
 

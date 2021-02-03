@@ -100,8 +100,9 @@ void mem_areas_list_init()
         areas_list[i].area_status = FREE ; 
         areas_list[i].area_id = i ;
         areas_list[i].m_start = FIRST_AREA_PTR + i*(AREA_SIZE/4) ;
-        areas_list[i].blk_head_ptr = (uint32_t *)areas_list[i].m_start ;
         areas_list[i].m_top = areas_list[i].m_start + (AREA_SIZE/4) -1 ;
+        areas_list[i].blk_head_ptr = (uint32_t *)areas_list[i].m_start ;
+        areas_list[i].m_aval_start = areas_list[i].m_start ;
 
         //0 means blks not init
         areas_list[i].blksize = 0 ; 
@@ -122,12 +123,12 @@ void mem_areas_list_init()
     }   
 
     // 保留給page table
-    MEM_AREA_INFO_t *pgt_area = memAreaAlloc() ;
+    MEM_AREA_INFO_t *pgt_area = alloc_mem_area() ;
     pgt_area->area_status = INUSE_FULL ;
 }
 
 
-MEM_AREA_INFO_t *memAreaAlloc(void)
+MEM_AREA_INFO_t *alloc_mem_area(void)
 {
     //保存原有的 head node
     MEM_AREA_INFO_t *prev_head = free_area_list_head ;
@@ -292,8 +293,8 @@ MEM_AREA_INFO_t *find_aval_inuse_memarea(void)
 //  |       |
 /****************************************************************************************/
 // Need to alloc a mem area fitst
-// (call memAreaAlloc() first)
-// arg1 : 已經allocate的memory area (memAreaAlloc()的回傳值)
+// (call alloc_mem_area() first)
+// arg1 : 已經allocate的memory area (alloc_mem_area()的回傳值)
 // arg2 : number of bytes
 MEM_AREA_INFO_t 
 *memblks_init(MEM_AREA_INFO_t *ma ,uint32_t blk_aval_size ,uint32_t num_blks)
@@ -333,7 +334,7 @@ MEM_AREA_INFO_t
 }
 
 // alloc a blk
-// mem_areas_list_init() -> memAreaAlloc() -> memblks_init() 
+// mem_areas_list_init() -> alloc_mem_area() -> memblks_init() 
 // -> blk_alloc()
 void *blk_alloc(MEM_AREA_INFO_t *ma)
 {
@@ -348,7 +349,7 @@ void *blk_alloc(MEM_AREA_INFO_t *ma)
 
     if(ma==NULL)
     {
-        ma = memAreaAlloc();
+        ma = alloc_mem_area();
         ma = memblks_init(ma
                         ,DEFAULT_AVAL_BLK_SIZE 
                         ,DEFAULT_TASK_MA_BLKNUM) ;
@@ -374,7 +375,7 @@ void *blk_alloc(MEM_AREA_INFO_t *ma)
     if(ma->blk_head_ptr == NULL){
         ma->area_status = INUSE_FULL ;
 
-        ma = memAreaAlloc();
+        ma = alloc_mem_area();
         ma = memblks_init(ma
                         ,DEFAULT_AVAL_BLK_SIZE 
                         ,DEFAULT_TASK_MA_BLKNUM) ;
@@ -469,7 +470,7 @@ uint32_t no_blks(MEM_AREA_INFO_t *ma)
 // alloc 小塊記憶體相關function
 // 都沒空間的話,要先呼叫 
 // mem_areas_list_init()
-// memAreaAlloc()
+// alloc_mem_area()
 // memblks_init();
 // blk_alloc() ;
 /****************************************************************************************/
@@ -479,7 +480,7 @@ void *demand_a_blk()
     // 尚未 alloc 一個 mem area
     if(atleast_a_memarea_alloc() == FALSE)
     {
-        ma = memAreaAlloc() ;
+        ma = alloc_mem_area() ;
         ma = memblks_init(ma
                         ,DEFAULT_AVAL_BLK_SIZE 
                         ,DEFAULT_TASK_MA_BLKNUM) ;
@@ -494,7 +495,7 @@ void *demand_a_blk()
     //沒有可用的 mem area
     //預設1個block 64bytes(前4個用作blks linklist指標)
     if(ma == NULL){
-        ma = memAreaAlloc() ;
+        ma = alloc_mem_area() ;
         ma = memblks_init(ma
                             ,DEFAULT_AVAL_BLK_SIZE 
                             ,DEFAULT_TASK_MA_BLKNUM) ;

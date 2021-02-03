@@ -149,13 +149,14 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 {    
     // Alloc 一個 Memory Area,並回傳描述該area的結構體 MEM_AREA_INFO_t
     // 並將該 area使用狀況設為 INUSE_FULL ,只屬於這個task使用
-    MEM_AREA_INFO_t *n_memarea = memAreaAlloc();
-    n_memarea->area_status = TASK_AREA ;
+    MEM_AREA_INFO_t *n_ma = alloc_mem_area();
+    n_ma->area_status = TASK_AREA ;
 
 
     // 分配 描述 task的TASK_INFO_t結構體, 其起始位置設定為 stack bottom
     // 這樣就能空出前面 4096 -512 bytes的連續空間
-    TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_memarea->m_top) ;
+    //TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_memarea->m_top) ;
+    TASK_INFO_t *ntask = (TASK_INFO_t *)(n_ma->m_start) ;
 
 
     // 找目前正在執行的task(父task)的stack空間屬於那一個 memory area
@@ -163,7 +164,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 
 
     // 複製父task使用的記憶體區段內的data給子task的記憶體區段, 包含stack空間內所有內容
-    _memcpy((void *)(n_memarea->m_start)
+    _memcpy((void *)(n_ma->m_start)
             ,(void *)(curr_ma->m_start)
             ,AREA_SIZE) ;
 
@@ -175,8 +176,8 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     // Stack pointer要指向stack中相同的相對位址上
     // (curr_running_task->stk_top - usrTaskContextOld)
     //  = old context相對於stack top 的offset
-    ntask->stk_bottom = stktop2bottom(n_memarea->m_top) ;
-    ntask->stk_top = n_memarea->m_top ;
+    ntask->stk_bottom = stktop2bottom(n_ma->m_top) ;
+    ntask->stk_top = n_ma->m_top ;
     ntask->task_context = (USR_TASK_CONTEXT_t *)(ntask->stk_top - (curr_running_task->stk_top - usrTaskContextOld) ) ;
     
 
@@ -198,7 +199,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 
     // init blocks
     // 總共應該會有56個blks = (4096-512)/64
-    memblks_init(n_memarea 
+    memblks_init(n_ma 
                 ,DEFAULT_AVAL_BLK_SIZE 
                 ,DEFAULT_TASK_MA_BLKNUM) ;
 
@@ -217,19 +218,24 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
 {
     TASK_CONFIG *config = (TASK_CONFIG *)arg ;
 
-    MEM_AREA_INFO_t *n_memarea = memAreaAlloc();
-    n_memarea->area_status = TASK_AREA ; 
+    MEM_AREA_INFO_t *n_ma = alloc_mem_area();
+    n_ma->area_status = TASK_AREA ; 
 
-    TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_memarea->m_top) ;  
+    // 把 TASK_INFO 結構放在該 memo區域的起始位址
+    TASK_INFO_t *ntask = (TASK_INFO_t *)(n_ma->m_start) ;
+    n_ma->m_aval_start = (uint32_t *)((uint32_t)n_ma->m_start + sizeof(TASK_INFO_t)) ;  
+    n_ma->blk_head_ptr = n_ma->m_aval_start ;
 
-    taskCreate(ntask ,config->taskCallBack ,stktop2bottom(n_memarea->m_top) ,config->prio);
+
+    taskCreate(ntask ,config->taskCallBack ,stktop2bottom(n_ma->m_top) ,config->prio);
+
 
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
     old_context->r0 = ntask->task_id ;
 
     // init blocks
     // 總共應該會有56個blks = (4096-512)/64
-    memblks_init(n_memarea 
+    memblks_init(n_ma 
                 ,DEFAULT_AVAL_BLK_SIZE 
                 ,DEFAULT_TASK_MA_BLKNUM) ;
 

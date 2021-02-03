@@ -125,9 +125,9 @@ void mem_area_alloc_free_test()
 
 	kprintf("Test alloc\r\n") ;
 
-	MEM_AREA_INFO_t *mem_area0 = memAreaAlloc() ;
-	MEM_AREA_INFO_t *mem_area1 = memAreaAlloc() ;
-	MEM_AREA_INFO_t *mem_area2 = memAreaAlloc() ;
+	MEM_AREA_INFO_t *mem_area0 = alloc_mem_area() ;
+	MEM_AREA_INFO_t *mem_area1 = alloc_mem_area() ;
+	MEM_AREA_INFO_t *mem_area2 = alloc_mem_area() ;
 
 	print_free_area_list_from_head();
 	print_inuse_area_list_from_head();
@@ -156,7 +156,7 @@ void mem_area_blk_init_test()
 
 	kprintf("Test alloc\r\n") ;
 
-	MEM_AREA_INFO_t *mem_area = memAreaAlloc() ;
+	MEM_AREA_INFO_t *mem_area = alloc_mem_area() ;
 
 	print_free_area_list_from_head();
 	print_inuse_area_list_from_head();

@@ -43,6 +43,7 @@ struct AREA_INFO{
     uint32_t area_id ;
     uint32_t *m_start ;
     uint32_t *m_top ;
+    uint32_t *m_aval_start ;
 
     uint32_t *blk_head_ptr ; //在memory area(page)中可用的起始位址 head
     uint32_t blksize ;
@@ -114,7 +115,7 @@ void enable_mmu (void) ;
 /****************************************************************************************/
 //主要
 void mem_areas_list_init();
-MEM_AREA_INFO_t *memAreaAlloc(void);
+MEM_AREA_INFO_t *alloc_mem_area(void);
 void free_mem_area(MEM_AREA_INFO_t *area_node);
 
 //次要
