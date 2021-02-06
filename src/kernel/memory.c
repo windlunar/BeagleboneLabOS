@@ -34,7 +34,7 @@ void mem_areas_list_init()
     {
         areas_list[i].area_status = FREE ; 
         areas_list[i].area_id = i ;
-        areas_list[i].m_start = FIRST_AREA_PADDR_PTR + i*(AREA_SIZE/4) ;
+        areas_list[i].m_start = AREAS_START_PADDR_PTR + i*(AREA_SIZE/4) ;
         areas_list[i].m_top = areas_list[i].m_start + (AREA_SIZE/4) -1 ;
         areas_list[i].blk_head_ptr = (uint32_t *)areas_list[i].m_start ;
         areas_list[i].m_aval_start = areas_list[i].m_start ;

@@ -19,7 +19,7 @@ typedef unsigned int pgt_paddr_t ;  // page table addr
 /****************************************************************************************/
 #define L1_PAGE_PTE_BASE_MASK       (0xfff00000)
 #define L1_PAGE_PTE_BITS            (0x02)      //代表 1M page(section) ,只有一個level的轉換
-#define L1_PAGE_TABLE_BASE_PADDR          FIRST_AREA_PADDR
+#define L1_PAGE_TABLE_BASE_PADDR          AFTER_KEND_PADDR
 #define L1_PAGE_TABLE_BASE_VADDR          (L1_PAGE_TABLE_BASE_PADDR)
 #define L1_PAGE_TABLE_BASE_MASK     (0xffffc000)
 

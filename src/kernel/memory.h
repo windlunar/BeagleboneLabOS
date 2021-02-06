@@ -15,21 +15,25 @@ extern uint32_t *kernal_end ;
 
 
 
-#define AREA_SIZE	        ( 65536 )	// 4096 * 16 = 65536(0x10000) bytes(64KB) 
-#define PAGE_SIZE           ( 0x100000) // 1M
-#define KB_SIZE             ( 1024 )
-#define MB_SIZE             ( 1024 * 1024 )
-#define VALUABLE_MEM_SIZE   ( 128 * 1024 * 1024 )  //128 MB
-#define TOTAL_AREA_NUM      ( VALUABLE_MEM_SIZE/(AREA_SIZE) )  //2*1024個areas
+//#define AREA_SIZE	        (65536)	// 4096 * 16 = 65536(0x10000) bytes(64KB) 
+//#define AREA_SIZE	        (0x100000)	
+#define AREA_SIZE	        (8192)	
+#define PAGE_SIZE           (0x100000) // 1M
+#define KB_SIZE             (1024)
+#define MB_SIZE             (1024 * 1024)
+#define VALUABLE_MEM_SIZE   (128 * 1024 * 1024)  //128 MB
+#define TOTAL_AREA_NUM      (VALUABLE_MEM_SIZE/(AREA_SIZE))  //2*1024個areas
 
 // 如果第一個area的adde = 0x82004000
 // 那128MB就是到 0x8a000000
-#define FIRST_AREA_PADDR     ( ROUNDUP((uint32_t)kernal_end ,AREA_SIZE) )
-#define FIRST_AREA_PADDR_PTR      ( (uint32_t *)FIRST_AREA_PADDR )     
+#define AFTER_KEND_PADDR     ( ROUNDUP((uint32_t)kernal_end ,AREA_SIZE) )
+#define AFTER_KEND_PADDR_PTR      ( (uint32_t *)AFTER_KEND_PADDR )     
 
-#define FIRST_AREA_VADDR    (FIRST_AREA_PADDR)
-#define FIRST_AREA_VADDR_PTR    ( (uint32_t *)FIRST_AREA_VADDR ) 
+#define AFTER_KEND_VADDR    (AFTER_KEND_PADDR)
+#define AFTER_KEND_VADDR_PTR    ( (uint32_t *)AFTER_KEND_VADDR ) 
 
+#define AREAS_START_PADDR    (AFTER_KEND_PADDR + 0x100000)
+#define AREAS_START_PADDR_PTR    ( (uint32_t *)AREAS_START_PADDR ) 
 
 /****************************************************************************************/
 // Structs
