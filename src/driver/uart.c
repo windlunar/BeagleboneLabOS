@@ -31,7 +31,7 @@ void uart_putC(UART_REG_T *uartChannel ,char byte){
      * not necessarily completed.
      */ 
     //If tx fifo is not empty, then wait.
-    while( ( (uartChannel->LSR_UART) & (1 << 5) ) != (1 << 5) ) ;
+    while (((uartChannel->LSR_UART) & (1 << 5)) != (1 << 5) ) ;
 
     //Put a byte on THR register to send out the data
     uartChannel->THR = byte ;
@@ -44,7 +44,7 @@ void uart_putC(UART_REG_T *uartChannel ,char byte){
 // 1h = At least one data character in the RX FIFO.
 uint8_t uart_getC(UART_REG_T *uartChannel)
 {
-    while( ((uartChannel->LSR_UART) & (0x01 << 0)) == 0 ) ;
+    while (((uartChannel->LSR_UART) & (0x01 << 0)) == 0) ;
     uint8_t byte = (uint8_t)uartChannel->RHR  ;
     
     return byte ;
@@ -52,7 +52,7 @@ uint8_t uart_getC(UART_REG_T *uartChannel)
 
 
 void uart_tx_str(UART_REG_T *uartChannel ,char *str ,int32_t len){
-    for(int32_t i = 0 ; i < len ; i++ ){
+    for (int32_t i = 0 ; i < len ; i++ ) {
         uart_putC(uartChannel ,*(str + i)) ;
     }
 }

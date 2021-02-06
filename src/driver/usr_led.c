@@ -25,10 +25,10 @@ void usrLedInitAsm(){
 
 void usrLedBlinkAsm(){
     WRITE_REG32((unsigned int)&(GPIO1_PTR->GPIO_SETDATAOUT), (15 << 21));
-	for(read_val = 0; read_val < 1000000; read_val ++);
+	for (read_val = 0; read_val < 1000000; read_val ++) ;
 
 	WRITE_REG32((unsigned int)&(GPIO1_PTR->GPIO_CLEARDATAOUT) ,15 << 21);
-	for(read_val = 0; read_val < 1000000; read_val ++);
+	for (read_val = 0; read_val < 1000000; read_val ++) ;
 }
 
 
@@ -47,10 +47,10 @@ void usrLedInit(){
 
 void usrLedBlink(){
     GPIO1_PTR->GPIO_SETDATAOUT = (15<<21) ;
-    for(read_val = 0; read_val < 500000; read_val ++);
+    for (read_val = 0; read_val < 500000; read_val ++) ;
 
     GPIO1_PTR->GPIO_CLEARDATAOUT = (15 << 21) ;
-	for(read_val = 0; read_val < 500000; read_val ++);
+	for (read_val = 0; read_val < 500000; read_val ++) ;
 }
 
 

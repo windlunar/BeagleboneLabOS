@@ -26,13 +26,12 @@ extern uint32_t *kernal_end ;
 
 // 如果第一個area的adde = 0x82004000
 // 那128MB就是到 0x8a000000
-#define AFTER_KEND_PADDR     ( ROUNDUP((uint32_t)kernal_end ,AREA_SIZE) )
+#define AFTER_KEND_PADDR     ( ROUNDUP((uint32_t)kernal_end ,0x10000) )
 #define AFTER_KEND_PADDR_PTR      ( (uint32_t *)AFTER_KEND_PADDR )     
-
 #define AFTER_KEND_VADDR    (AFTER_KEND_PADDR)
 #define AFTER_KEND_VADDR_PTR    ( (uint32_t *)AFTER_KEND_VADDR ) 
 
-#define AREAS_START_PADDR    (AFTER_KEND_PADDR + 0x100000)
+#define AREAS_START_PADDR    ( ROUNDUP((uint32_t)kernal_end ,PAGE_SIZE) )
 #define AREAS_START_PADDR_PTR    ( (uint32_t *)AREAS_START_PADDR ) 
 
 /****************************************************************************************/

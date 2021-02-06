@@ -20,52 +20,6 @@ int32_t taskid = -1 ;
 int32_t prio = -1 ;
 
 /****************************************************************************************/
-// 原來在執行的 user proccess在返回之前設定成 TASK_READY ,然後放入ready queue 最後面
-/*
-void sched(void)
-{
-	// 從IRQ handler跟SVC handler返回到user mode會直接進到這個sched
-	//choose a task to run
-	//uart_tx_str(CONSOLE ,"Here #1\r\n" ,9) ;
-	//print_task_id_from_head(HIGHEST_PRIORITY) ;
-	for(;;)
-	{
-		// 從priority 0開始
-		//uart_tx_str(CONSOLE ,"#2\r\n\0" ,5) ;
-		for(int i=0 ; i<MAXNUM_PRIORITY; i++){
-
-			// 如果該prio的ready list不為空時
-			if(task_ready_list[i].head != NULL){
-				prio = i ;
-				
-				//將task 從ready list 的 head 拿出 ,然後執行 TaskRun,切換到user mode跑task
-				if(task_ready_list[prio].head->task_status == TASK_READY){	
-									
-					struct TASK_INFO *_head = task_ready_list[prio].head ;
-
-					//dequeue task ,回傳值目前不需要用到
-					struct TASK_INFO *r = task_dequeue(prio) ;
-
-					//And the put it to back ,and set it to running
-					_head->task_status = TASK_RUNNING ;
-					task_enqueue(_head) ;
-
-					//設定 現在正在 running 的 task結構
-					curr_running_task = _head ;
-					if(_head->task_id != 0){
-					}
-					
-					//Switch to user mode and run the task
-					TaskRun((uint32_t *)_head->task_context) ;
-				}else{
-					printk("Error :The head in ready queue is not READY.\r\n") ;
-				}
-			}
-		}	
-	}
-}
-*/
-
 
 void sched (void)
 {
@@ -77,10 +31,10 @@ void sched (void)
 
 struct TASK_INFO *choose_task(void)
 {
-	for(int i=0 ; i<MAXNUM_PRIORITY; i++){
+	for (int i=0 ; i<MAXNUM_PRIORITY; i++) {
 
 		// 如果該prio的ready list不為空時
-		if((task_ready_list[i].head != NULL) && (task_ready_list[i].head->task_status == TASK_READY)){
+		if ((task_ready_list[i].head != NULL) && (task_ready_list[i].head->task_status == TASK_READY)) {
 								
 			struct TASK_INFO *_head = task_ready_list[i].head ;
 
@@ -90,7 +44,6 @@ struct TASK_INFO *choose_task(void)
 			//And the put it to back ,and set it to running
 			_head->task_status = TASK_RUNNING ;
 			task_enqueue(_head) ;
-
 
 			//設定 現在正在 running 的 task結構
 			return _head ;	
@@ -111,8 +64,7 @@ void schedFuncContextPrepare(void)
 
 void task_init()
 {
-	for(int i=0 ; i<MAXNUM_PRIORITY; i++)
-	{
+	for (int i=0 ; i<MAXNUM_PRIORITY; i++) {
 		task_ready_list[i].head = NULL ;
 	}	
 }
@@ -156,8 +108,7 @@ int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int3
     task->task_status = TASK_READY ;
 
 	//Init open file
-	for(int i=0 ; i<MAX_FD; i++)
-	{
+	for (int i=0 ; i<MAX_FD; i++) {
 		task->openfiles[i] = NULL ;
 	}
 
@@ -189,7 +140,6 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
                 ,DEFAULT_AVAL_BLK_SIZE 
                 ,DEFAULT_TASK_MA_BLKNUM) ;
 
-    //
     open_console_in_out(ntask) ;
 
     //設定路徑
@@ -203,25 +153,27 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 void open_console_in_out(struct TASK_INFO *task)
 {
 // open console_in and console_out
-	if(file_open(FILE_CONSOLE_IN ,(void *)task) < 0) printk("Failed to open 'console_in'\r\n") ;
-	if(file_open(FILE_CONSOLE_OUT ,(void *)task) < 0) printk("Failed to open 'console_out'\r\n") ;
+	if (file_open(FILE_CONSOLE_IN ,(void *)task) < 0) printk("Failed to open 'console_in'\r\n") ;
+	if (file_open(FILE_CONSOLE_OUT ,(void *)task) < 0) printk("Failed to open 'console_out'\r\n") ;
 }
 
 
 
 void task_enqueue(struct TASK_INFO *task)
 {
-	if(task_ready_list[task->priority].head == NULL){
+	if (task_ready_list[task->priority].head == NULL) {
 		//create the first node
 		task->next_ptr = NULL ;
 		task->prev_ptr = NULL ;
 		task_ready_list[task->priority].head = task ;
 		return ;
 	}
+
 	// 不是第一個node
 	// 從head找最後一個node
 	struct TASK_INFO *head = task_ready_list[task->priority].head ;
-	while(head->next_ptr != NULL){
+
+	while (head->next_ptr != NULL) {
 		head = head->next_ptr ;
 	}
 	struct TASK_INFO *end = head ;
@@ -236,12 +188,12 @@ void task_enqueue(struct TASK_INFO *task)
 //從頭部取出返回原來的 struct TASK_INFO
 struct TASK_INFO *task_dequeue(int32_t prio)
 {
-	if(task_ready_list[prio].head == NULL){
+	if (task_ready_list[prio].head == NULL) {
 		printk("Task queue is empty\r\n") ;
 		return NULL;
 	}
 
-	if(task_ready_list[prio].head->next_ptr == NULL){
+	if (task_ready_list[prio].head->next_ptr == NULL) {
 		struct TASK_INFO *head = task_ready_list[prio].head ;
 		task_ready_list[prio].head = NULL ;
 		return head;
@@ -263,18 +215,18 @@ struct TASK_INFO *task_dequeue(int32_t prio)
 // 從尾部取出
 void task_pop(struct TASK_INFO *task)
 {
-	if((task == NULL) || (task->next_ptr != NULL)){
+	if ((task == NULL) || (task->next_ptr != NULL)) {
 		return ;
 	}
 
 	//list沒有node
-	if(task_ready_list[task->priority].head == NULL){
+	if (task_ready_list[task->priority].head == NULL) {
 		printk("Task queue is empty\r\n") ;
 		return;		
 	}
 
 	//list中只有自己
-	if(task_ready_list[task->priority].head->next_ptr == NULL){
+	if (task_ready_list[task->priority].head->next_ptr == NULL) {
 		printk("Only itself\r\n") ;
 		task_ready_list[task->priority].head = NULL ;
 		return ;
@@ -291,13 +243,12 @@ void task_pop(struct TASK_INFO *task)
 /****************************************************************************************/
 void print_task_id_from_head(int32_t prio)
 {
-	if(task_ready_list[prio].head == NULL){
+	if (task_ready_list[prio].head == NULL) {
 		printk("Task queue is empty\r\n") ;
 		return;		
 	}
 	struct TASK_INFO *head = task_ready_list[prio].head ;
-	while(head->next_ptr != NULL)
-	{
+	while (head->next_ptr != NULL) {
 		printk("task id = %d\r\n" ,head->task_id) ;
 		head = head->next_ptr ;
 	}
@@ -307,15 +258,14 @@ void print_task_id_from_head(int32_t prio)
 
 void print_task_addr_from_head(int32_t prio)
 {
-	if(task_ready_list[prio].head == NULL){
+	if (task_ready_list[prio].head == NULL) {
 		printk("Task queue is empty\r\n") ;
 		return;		
 	}
 
 	struct TASK_INFO *head = task_ready_list[prio].head ;
 	printk("task_ready_list[prio].head addr =%p\r\n" ,&task_ready_list[prio].head) ;
-	while(head->next_ptr != NULL)
-	{
+	while (head->next_ptr != NULL) {
 		printk("task addr = %p\r\n" ,head) ;
 		head = head->next_ptr ;
 	}

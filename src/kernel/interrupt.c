@@ -95,9 +95,10 @@ uint32_t getIntVectorAddr(void)
 	uint32_t intvector_addr;
 
 	asm volatile("mrc p15, 0, %0, c1, c0, 0\n" : "=r" (intvector_addr) : : );
-	if (intvector_addr & (1 << 13))
+	if (intvector_addr & (1 << 13)) {
 		return 0xFFFF0000;
-
+	}
+		
 	asm volatile("mrc p15, 0, %0, c12, c0, 0\n" : "=r" (intvector_addr) : : );
 	return intvector_addr;
 }
@@ -107,9 +108,9 @@ static void irq_handler_array_init(void)
 {
 	int i;
 
-	for (i = 0; i < IRQ_NUM; i++)
+	for (i = 0; i < IRQ_NUM; i++) {
 		irq_handler_array[i] = NULL;
-
+	}
 }
 
 
@@ -117,26 +118,19 @@ void interrupt_init(void)
 {
 	irq_handler_array_init();
 	dataSyncBarrier(); 
-
-	//Enable irq
-	//cpsrEnableIRQ() ;
 }
 
 
 void disableIrqThroughCpsr(void)
 {
 	dataSyncBarrier(); 
-
-	//Disable IRQ
 	cpsrDisableIRQ() ;
-
 }
 
 
 void eableINT_NUM(uint8_t irq_num)
 {
-	switch (irq_num >> 5) 
-	{
+	switch (irq_num >> 5) {
 		case 0:
 			*(INTC_BASE_PTR + INTC_MIR_CLEAR0) = 1 << (irq_num & ((1 << 5) - 1)); 
 			break;
@@ -153,8 +147,7 @@ void eableINT_NUM(uint8_t irq_num)
 }
 void disableINT_NUM(uint8_t irq_num)
 {
-	switch (irq_num >> 5)
-	{
+	switch (irq_num >> 5) {
 		case 0:
 			*(INTC_BASE_PTR + INTC_MIR_SET0) = 1 << (irq_num & ((1 << 5) - 1)); 
 			break;
@@ -194,11 +187,10 @@ void __attribute__((interrupt("IRQ"))) irqs_handler(void)
 	uint8_t irq_num = getActivateIrqNum();
 
 	//根據獲得的irq num, 執行陣列中對應的函式
-	if (irq_handler_array[irq_num])
-	{
+	if (irq_handler_array[irq_num]) {
 		(*irq_handler_array[irq_num])();
 		
-	}else{
+	} else {
 		return ;
 	}
 
@@ -213,18 +205,12 @@ void timer0_ISR(uint32_t *usrTaskContextOld)
 	(DMTIMER0_BASE_PTR_t->IRQSTATUS) = (1 << 1);
 	usrLedToggle(3);
 
-
-	
 	// Save old context
 	curr_running_task->task_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
 
 	// Change the task status to ready
 	curr_running_task->task_status = TASK_READY ;
-	
-
 	curr_running_task = NULL ;
-
-
 
 	//prepare sched() context
 	schedFuncContextPrepare();
@@ -249,12 +235,12 @@ void timer2_ISR(void)
 
 /****************************************************************************************/
 #define EXCEPT_NUMS		7 // Not include reset
+
 void set_exception_entry(uint32_t *exept_vec_base)
 {
 	uint32_t *base = exept_vec_base ;
 	base += 1 ;
-	for(int i=0 ; i<EXCEPT_NUMS; i++)
-	{
+	for (int i=0 ; i<EXCEPT_NUMS; i++) {
 		*base = 0xe59ff014 ;
 		base += 1 ;
 	}

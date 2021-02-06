@@ -30,8 +30,7 @@ void mem_areas_list_init()
 {
     free_area_list_head = &areas_list[0] ;
     
-    for(int32_t i=0; i<TOTAL_AREA_NUM ;i++)
-    {
+    for (int32_t i=0; i<TOTAL_AREA_NUM ;i++) {
         areas_list[i].area_status = FREE ; 
         areas_list[i].area_id = i ;
         areas_list[i].m_start = AREAS_START_PADDR_PTR + i*(AREA_SIZE/4) ;
@@ -43,16 +42,15 @@ void mem_areas_list_init()
         areas_list[i].blksize = 0 ; 
         areas_list[i].n_blk = 0 ; 
 
-        if(i == TOTAL_AREA_NUM-1){
+        if (i == TOTAL_AREA_NUM-1) {
             areas_list[i].next_ptr = NULL ;
-        }else{
+        } else {
             areas_list[i].next_ptr = &areas_list[i+1] ;
         }
         
-
-        if(i == 0){
+        if (i == 0) {
             areas_list[i].prev_ptr = NULL ;
-        }else{
+        } else {
             areas_list[i].prev_ptr = &areas_list[i-1] ;
         }
     }   
@@ -84,10 +82,10 @@ struct MEM_AREA_INFO *alloc_mem_area(void)
 
 void free_mem_area(struct MEM_AREA_INFO *area_node)
 {
-    if(area_node->area_status != FREE ){
+    if (area_node->area_status != FREE) {
         delete_from_inuse_list(area_node) ;
         add_to_free_list_end(area_node) ;
-    }else{
+    } else {
         printk("The area info node is already in free list.\r\n") ;
     }
 }
@@ -96,7 +94,7 @@ void free_mem_area(struct MEM_AREA_INFO *area_node)
 void add_to_free_list_end(struct MEM_AREA_INFO *area_node)
 {
     //如果還沒有 head node
-    if(free_area_list_head == NULL){
+    if (free_area_list_head == NULL) {
         free_area_list_head = area_node ;
         area_node->next_ptr = NULL ;
         return ;
@@ -105,7 +103,7 @@ void add_to_free_list_end(struct MEM_AREA_INFO *area_node)
     struct MEM_AREA_INFO *curr_head = free_area_list_head ;
 
     /** Move pointer from head Node to End node */
-    while(curr_head->next_ptr != NULL){
+    while (curr_head->next_ptr != NULL) {
         curr_head = curr_head->next_ptr ;
     }
     struct MEM_AREA_INFO *end_ptr = curr_head ;
@@ -120,7 +118,7 @@ void add_to_free_list_end(struct MEM_AREA_INFO *area_node)
 void insert_to_inuse_list(struct MEM_AREA_INFO *area_node)
 {
     //如果還沒有 head node
-    if(inuse_area_list_head == NULL){
+    if (inuse_area_list_head == NULL) {
         inuse_area_list_head = area_node ;
         area_node->next_ptr = NULL ;
         area_node->prev_ptr = NULL ;
@@ -130,7 +128,7 @@ void insert_to_inuse_list(struct MEM_AREA_INFO *area_node)
     struct MEM_AREA_INFO *curr_head = inuse_area_list_head ;
 
     /** Move pointer from head Node to End node */
-    while(curr_head->next_ptr != NULL){
+    while (curr_head->next_ptr != NULL) {
         curr_head = curr_head->next_ptr ;
     }
     struct MEM_AREA_INFO *end_ptr = curr_head ;
@@ -149,7 +147,7 @@ void delete_from_inuse_list(struct MEM_AREA_INFO *area_node)
     struct MEM_AREA_INFO *next_node = area_node->next_ptr ;
 
     //如果 area_node是head ,next node變成 head
-    if(prev_node == NULL){
+    if (prev_node == NULL) {
         inuse_area_list_head = next_node ;
         next_node->prev_ptr = NULL ;
         area_node->next_ptr = NULL ;
@@ -157,7 +155,7 @@ void delete_from_inuse_list(struct MEM_AREA_INFO *area_node)
     }
 
     // 如果 area_node是end ,prev node變成end
-    if(next_node == NULL){
+    if (next_node == NULL) {
         prev_node->next_ptr = NULL ;
         area_node->prev_ptr = NULL ;
         return ;
@@ -167,7 +165,6 @@ void delete_from_inuse_list(struct MEM_AREA_INFO *area_node)
     next_node->prev_ptr = prev_node ;
     area_node->next_ptr = NULL ;
     area_node->prev_ptr = NULL ;
-
 }
 
 
@@ -175,8 +172,7 @@ void clean_mem_area_content(void *start)
 {
     uint32_t *startPtr = (uint32_t *)start ;
 
-    for(uint32_t i=0 ;i<(AREA_SIZE/4) ;i++)
-    {
+    for (uint32_t i=0 ;i<(AREA_SIZE/4) ;i++) {
         *startPtr = 0 ;
         startPtr += 1 ;
     }
@@ -185,9 +181,9 @@ void clean_mem_area_content(void *start)
 
 uint32_t atleast_a_memarea_alloc(void)
 {
-    if(inuse_area_list_head == NULL){
+    if (inuse_area_list_head == NULL) {
         return FALSE ;
-    }else{
+    } else {
         return TRUE ;
     }
 }
@@ -195,7 +191,7 @@ uint32_t atleast_a_memarea_alloc(void)
 struct MEM_AREA_INFO *find_ma_end(struct MEM_AREA_INFO *headnode)
 {
     struct MEM_AREA_INFO *head =headnode ;
-    while(head != NULL){
+    while (head != NULL) {
         head = head->next_ptr ;
     }
     return head ;
@@ -206,8 +202,8 @@ struct MEM_AREA_INFO *find_aval_inuse_memarea(void)
 {
     struct MEM_AREA_INFO *head = inuse_area_list_head ;
 
-    while(head != NULL){
-        if(head->area_status = INUSE_PARTIALLY_FREE){
+    while (head != NULL) {
+        if (head->area_status = INUSE_PARTIALLY_FREE) {
             return head;
         }
         head = head->next_ptr ;
@@ -235,8 +231,8 @@ struct MEM_AREA_INFO
 *memblks_init(struct MEM_AREA_INFO *ma ,uint32_t blk_aval_size ,uint32_t num_blks)
 {
     //已經初始化過
-    if(ma->blksize >4) return ma ;
-    if(blk_aval_size <= 0) NULL ;
+    if (ma->blksize >4) return ma ;
+    if (blk_aval_size <= 0) NULL ;
 
     uint32_t blk_size = blk_aval_size + 4 ;
 
@@ -247,10 +243,9 @@ struct MEM_AREA_INFO
     uint32_t *head = ma->blk_head_ptr ;
     uint32_t node_addr = (uint32_t)head ;
     
-    for(int32_t i = 1 ; i<=num_blks; i++)
-    {
+    for (int32_t i = 1 ; i<=num_blks; i++) {
         //the last blk
-        if(i == num_blks){
+        if (i == num_blks) {
             *head = 0 ;
             break ;
         }
@@ -264,7 +259,6 @@ struct MEM_AREA_INFO
         //移動指標
         head = (uint32_t *)((uint8_t *)head + blk_size) ;
     }
-
     return ma ;
 }
 
@@ -274,16 +268,14 @@ struct MEM_AREA_INFO
 void *blk_alloc(struct MEM_AREA_INFO *ma)
 {
     // 如果 ma是 task ,且task還有空間為分配, 那就先從task area分配一個blk
-    if( (ma->area_status == TASK_AREA) && (no_blks(ma) == FALSE) )
-    {
+    if ((ma->area_status == TASK_AREA) && (no_blks(ma) == FALSE)) {
         void *ret = (void *)(ma->blk_head_ptr + 1) ;
         ma->blk_head_ptr = (uint32_t *)*ma->blk_head_ptr ;
 
         return ret ;          
     }
 
-    if(ma==NULL)
-    {
+    if (ma==NULL) {
         ma = alloc_mem_area();
         ma = memblks_init(ma
                         ,DEFAULT_AVAL_BLK_SIZE 
@@ -295,8 +287,7 @@ void *blk_alloc(struct MEM_AREA_INFO *ma)
         return ma->blk_head_ptr+1 ;
     }
 
-    if(ma->blksize <= 4)
-    {
+    if (ma->blksize <= 4) {
         ma = memblks_init(ma
                         ,DEFAULT_AVAL_BLK_SIZE 
                         ,DEFAULT_TASK_MA_BLKNUM) ;
@@ -307,7 +298,7 @@ void *blk_alloc(struct MEM_AREA_INFO *ma)
         return ma->blk_head_ptr+1 ;        
     }
 
-    if(ma->blk_head_ptr == NULL){
+    if (ma->blk_head_ptr == NULL) {
         ma->area_status = INUSE_FULL ;
 
         ma = alloc_mem_area();
@@ -336,9 +327,8 @@ struct MEM_AREA_INFO *which_mem_area(void *address)
     //判斷 memarea這個 addr是那個area
     struct MEM_AREA_INFO *area_head = inuse_area_list_head ;
 
-    while(area_head->next_ptr != NULL)
-    {
-        if(area_head->m_start == memarea) break ;
+    while (area_head->next_ptr != NULL) {
+        if (area_head->m_start == memarea) break ;
         area_head = area_head->next_ptr ;
     }
     struct MEM_AREA_INFO *target = area_head ;
@@ -361,7 +351,7 @@ uint32_t *find_prev_blk(struct MEM_AREA_INFO *memarea ,uint32_t *blk_start)
 void put_to_blklist_end(struct MEM_AREA_INFO *ma ,uint32_t *blkstart)
 {
     uint32_t *head = ma->blk_head_ptr ;
-    while(*head != 0){
+    while (*head != 0) {
         head = (uint32_t *)*head ;
     }
 
@@ -383,9 +373,9 @@ void free_blk(void *blk_aval_start)
 
 uint32_t is_blk_init(struct MEM_AREA_INFO *ma)
 {
-    if(ma->blksize <= 4){
+    if (ma->blksize <= 4) {
         return FALSE ;
-    }else{
+    } else {
         return TRUE ;
     }
 }
@@ -393,9 +383,9 @@ uint32_t is_blk_init(struct MEM_AREA_INFO *ma)
 
 uint32_t no_blks(struct MEM_AREA_INFO *ma)
 {
-    if(ma->blk_head_ptr == NULL){
+    if (ma->blk_head_ptr == NULL) {
         return TRUE ;
-    }else{
+    } else {
         return FALSE ;
     }
 }
@@ -413,8 +403,7 @@ void *demand_a_blk()
 {
     struct MEM_AREA_INFO *ma ;
     // 尚未 alloc 一個 mem area
-    if(atleast_a_memarea_alloc() == FALSE)
-    {
+    if (atleast_a_memarea_alloc() == FALSE) {
         ma = alloc_mem_area() ;
         ma = memblks_init(ma
                         ,DEFAULT_AVAL_BLK_SIZE 
@@ -429,7 +418,7 @@ void *demand_a_blk()
 
     //沒有可用的 mem area
     //預設1個block 64bytes(前4個用作blks linklist指標)
-    if(ma == NULL){
+    if (ma == NULL) {
         ma = alloc_mem_area() ;
         ma = memblks_init(ma
                             ,DEFAULT_AVAL_BLK_SIZE 
@@ -441,8 +430,7 @@ void *demand_a_blk()
 
     //有可用的 mem area
     //判斷有無 init blocks
-    if(is_blk_init(ma) == FALSE)
-    {
+    if (is_blk_init(ma) == FALSE) {
         ma = memblks_init(ma
                             ,DEFAULT_AVAL_BLK_SIZE 
                             ,DEFAULT_TASK_MA_BLKNUM) ;

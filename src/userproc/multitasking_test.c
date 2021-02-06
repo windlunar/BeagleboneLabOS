@@ -15,8 +15,7 @@ void usertask0(void){
 
 	int k = 0 ;
 	int tid = -1 ;
-	while(k<LOOP_NUM)
-	{	
+	while (k<LOOP_NUM) {	
 		tid = __gettid() ;	
 		uprintf("tid=%d,#%d\r\n" ,tid ,k);
 		k++ ;
@@ -31,8 +30,7 @@ void usertask1(void){
 
 	int k = 0 ;
 	int tid = -1 ;
-	while(k<LOOP_NUM)
-	{
+	while (k<LOOP_NUM) {
 		tid = __gettid() ;
 		uprintf("tid=%d,#%d\r\n" ,tid ,k);
 		k++ ;
@@ -46,8 +44,7 @@ void usertask2(void){
 
 	int k = 0 ;
 	int tid = -1 ;
-	while(k<LOOP_NUM)
-	{
+	while (k<LOOP_NUM) {
 		tid = __gettid() ;
 		uprintf("tid=%d,#%d\r\n" ,tid ,k);
 		k++ ;
@@ -62,8 +59,7 @@ void usertask3(void){
 	int k = 0 ;
 	int tid = -1 ;
 
-	while(k<LOOP_NUM)
-	{
+	while (k<LOOP_NUM) {
 		tid = __gettid() ;	
 		uprintf("tid=%d,#%d\r\n" ,tid ,k);
 		k++ ;
@@ -78,8 +74,7 @@ void usertask4(void){
 
 	int k = 0 ;
 	int tid = -1 ;
-	while(k<LOOP_NUM)
-	{
+	while (k<LOOP_NUM) {
 		tid = __gettid() ;
 		uprintf("tid=%d,#%d\r\n" ,tid ,k);
 		k++ ;
@@ -94,8 +89,6 @@ int multitasking_test_main(void)
 	uprintf("Now test multitasking.\r\n") ;
 
 	__do_taskCreate(&usertask0 ,HIGHEST_PRIORITY) ;
-
-	for(int i = 0 ; i<200000;i++) ;
 
 	return 0 ;
 }

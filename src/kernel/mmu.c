@@ -39,17 +39,16 @@ void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart)
     vs = ROUNDDOWN(pstart ,PAGE_SIZE) ;
 
     //避免變成 0x1 0000 0000 時 overflow的情況
-    if(pend < 0xfff00000){
+    if (pend < 0xfff00000) {
         ve = ROUNDUP(pend ,PAGE_SIZE) ;
-    }else{
+    } else {
         ve = ROUNDDOWN(pend ,PAGE_SIZE) ;
         //page_num++ ;
     }
     page_num += pstartend2pagenum(pstart ,pend) ;
 
     // 初始化 page table 的 pte
-    for(int i=0 ; i<page_num; i++)
-    { 
+    for (int i=0 ; i<page_num; i++) { 
         pte = gen_pte(vs + (i << 20)) ;
         pte |= NO_CACHE_WRITEBUF << CACHE_WRITEBUF_BIT_SHIFT ;
         pte |= DEFAULT_DOMAIN << DOMAIN_BIT_SHIFT ;
@@ -60,22 +59,19 @@ void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart)
         pte_paddr = gen_pte_addr(L1_PAGE_TABLE_BASE_PADDR ,vstart + (i << 20)) ;
         _memset((void *)(pte_paddr_t *) pte_paddr ,0 ,4) ;
         *(pte_paddr_t *) pte_paddr = pte ;
-
     }
 }
 
 
-// AP bit 要在 paddr映射到不同的vaddr才有效
-//
+
 void mem_map (void)
 {
     pte_init(0x00000000 ,0x80000000 ,AP_USER_PROHIBIT ,0x00000000) ;
     pte_init(0x80000000 ,0x82000000 ,AP_USER_PROHIBIT ,0x80000000) ;
-    pte_init(0x82000000 ,0x82100000 ,AP_USER_RW ,0x82000000) ;
+    pte_init(0x82000000 ,0x82100000 ,AP_USER_R_ONLY ,0x82000000) ;
     pte_init(0x82100000 ,0x90000000 ,AP_USER_RW ,0x82100000) ;
     pte_init(0x90000000 ,0x9df00000 ,AP_USER_RW ,0x90000000) ;
-    pte_init(0x9df00000 ,0xa0000000 ,AP_USER_RW ,0x9df00000) ;
-
+    pte_init(0x9df00000 ,0xa0000000 ,AP_USER_R_ONLY ,0x9df00000) ;
 }
 
 //要先disable mmu再開啟
@@ -86,7 +82,6 @@ void mmu_init (void)
     set_domain() ;
     set_pgt_base() ;
     mmu_enable() ;
-    
 }
 
 

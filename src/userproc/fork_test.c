@@ -8,7 +8,7 @@
 int fork_test()
 {
 	__do_taskCreate(&fork_test_main ,HIGHEST_PRIORITY) ;
-	for(int i = 0 ; i<200000;i++) ;
+
 	return 0 ;
 }
 
@@ -29,9 +29,6 @@ void fork_test_main()
 	__mfree_blk(p1) ;
 	__mfree_blk(p3) ;
 
-	//uprintf("\r\nPrint current memory area block list:\r\n\r\n") ;
-	//__get_mblk_list() ;	//for test and debug
-
 	uprintf("\r\n+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	uprintf("Now test syscall fork function.\r\n") ;
 
@@ -39,16 +36,13 @@ void fork_test_main()
 	int r = __fork() ;
 	uprintf("After fork ,r_=%d\r\n",r);
 
-	if(r != 0)
-	{
+	if (r != 0) {
 		for(int32_t i=0 ;i<100000;i++);
 		int ptid = __gettid() ;
 		uprintf("I'm parrent task ,tid=%d\r\n",ptid);
 		__exit() ;
 
-	}
-	else
-	{
+	} else {
 		int ctid = __gettid() ;
 		uprintf("I'm child task., tid=%d\r\n" ,ctid) ;
 		__exit() ;

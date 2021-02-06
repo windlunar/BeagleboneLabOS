@@ -11,8 +11,7 @@
 int _strlen(char *s)
 {
 	int len=0 ;
-	while(*s != 0)
-	{
+	while (*s != 0) {
 		s++ ;
 		len++ ;
 	}
@@ -22,13 +21,12 @@ int _strlen(char *s)
 
 int _strcmp(char *s ,char *b)
 {
-    while(*s == *b)
-    {
-        if((*s==0) && (*b!=0)){
+    while (*s == *b) {
+        if ((*s==0) && (*b!=0)) {
             break ;
-        }else if((*s!=0) && (*b==0)){
+        } else if ((*s!=0) && (*b==0)) {
             
-        }else if((*s==0) && (*b==0)){
+        } else if ((*s==0) && (*b==0)) {
             return 0 ;
         }
         s++ ;
@@ -47,14 +45,12 @@ int _strcat(char *dest ,char *src)
     char *s = src ;
 
     // 先把pointer移動到 dest的尾部 '\0'
-    while(*d != '\0')
-    {
+    while (*d != '\0') {
         d++ ;
     }
     // 現在 d指向 dest的尾 '\0'
 
-    while(*s != '\0')
-    {
+    while (*s != '\0') {
         *d = *s ;
         d++ ;
         s++ ;
@@ -66,13 +62,11 @@ int _strcat(char *dest ,char *src)
 }
 
 
-// 還未經測試
 void _strcpy(char *dest ,char *src)
 {
     char *s = src ;
     char *d = dest ;
-    while(*s != '\0')
-    {
+    while (*s != '\0') {
         *d = *s ;
         d++ ;
         s++ ;
@@ -85,8 +79,7 @@ void _strncpy(char *dest ,char *src ,int count)
 {
     char *s =src ;
     char *d =dest ;
-    while(count != 0)
-    {
+    while (count != 0) {
         *d = *s ;
         d++ ;
         s++ ;
@@ -112,7 +105,7 @@ char *strtok_fst(char *start ,char *delim ,int delim_sz ,char *token)
     // sbuf = delim + '\0'
     _strncpy(sbuf ,s ,delim_sz) ;
 
-    while(_strcmp(sbuf ,delim)){    //不相等就執行 while迴圈
+    while (_strcmp(sbuf ,delim)) {    //不相等就執行 while迴圈
         s++ ;
         if(*s == '\0') break ;
         _strncpy(sbuf ,s ,delim_sz) ;
@@ -120,10 +113,10 @@ char *strtok_fst(char *start ,char *delim ,int delim_sz ,char *token)
 
     _strncpy(token ,start ,s-start) ;
 
-    if(*s != '\0'){
+    if (*s != '\0') {
         s += delim_sz ;
         return s ;
-    }else{
+    } else {
         return NULL ;
     }
 

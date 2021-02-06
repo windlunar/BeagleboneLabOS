@@ -50,7 +50,7 @@ int kprint(const char *fmt ,__builtin_va_list args){
     int width ;
 
 
-    while(1){
+    while (1) {
         //printf("字串",) : 當字串不為%時, 將字串依序印出
         //先判斷是否不等於, 然後才+1跳入while執行, 或是不執行
         //當遇到%時,不執行該迴圈,and then add the pointer fmt to move to the next char after % (like c,s,d,u,p...)
@@ -70,7 +70,7 @@ int kprint(const char *fmt ,__builtin_va_list args){
         FORMAT_PRINT:
             //判斷the next char after % (like c,s,d,u,p...), 以格式化輸出(like c,s,d,u,p...)
             //然後pointer fmt才+1 , move to the next char after (c,s,d,u,p...), 以繼續印出後面的字元
-            switch(character = *(uint8_t  *)fmt++){
+            switch (character = *(uint8_t  *)fmt++) {
                 case '-':
                     padc = '-';
                     goto FORMAT_PRINT;

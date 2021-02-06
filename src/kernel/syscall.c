@@ -12,8 +12,7 @@
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args)
 {
-    switch (syscall_id)
-    {
+    switch (syscall_id) {
     case SYSCALL_ID_print_hello:
         __print_hello_handler(*(uint32_t *)args) ;
         break;
@@ -187,10 +186,6 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     ntask->taskCallBack = curr_running_task->taskCallBack ;
     ntask->priority = curr_running_task->priority ;
 
-    //
-    //open_console_in_out(ntask) ;
-
-
     // 設定子stack的 task id
 	taskid++ ;
 	ntask->task_id = taskid;
@@ -271,8 +266,7 @@ void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
     struct MEM_AREA_INFO *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
     uint32_t *head = curr_ma->blk_head_ptr ;
 
-    while(*head != 0)
-    {
+    while (*head != 0) {
         printk("blk addr =%p ,content =%x\r\n",head ,*head) ;
         head = (uint32_t *)*head ;
     }
@@ -325,7 +319,7 @@ void __open_handler(uint32_t *usrTaskContextOld ,void *args)
     int fd = -1 ;
 
     fd = file_open(path ,(void *)curr_running_task) ;
-    if(fd < 0) printk("Error :Can't open file.\r\n") ;
+    if (fd < 0) printk("Error :Can't open file.\r\n") ;
 
     // Setting return value
     struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
@@ -338,7 +332,7 @@ void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args)
 {
     struct BUF_AND_SZ_ARG *getcwdarg = (struct BUF_AND_SZ_ARG *)args ;
 
-    if( _strlen(curr_running_task->cwdn->namebuf) > getcwdarg->n_size) getcwdarg->buf = NULL ;
+    if ( _strlen(curr_running_task->cwdn->namebuf) > getcwdarg->n_size) getcwdarg->buf = NULL ;
 
     _strcat(getcwdarg->buf ,curr_running_task->cwdn->name) ;
 }
@@ -359,10 +353,8 @@ void __getsubdir_handler(uint32_t *usrTaskContextOld ,void *args)
 
     char *delim =";;\0" ;
     //串dir下的 entry
-    while(en != NULL)
-    {
-        if( (sz_buf - _strlen(dir_ens_buf)) < _strlen(en->name)+sizeof(delim) )
-        {
+    while (en != NULL){
+        if ((sz_buf - _strlen(dir_ens_buf)) < _strlen(en->name)+sizeof(delim)) {
             dir_ens_buf = NULL ;
             break ;
         }
@@ -389,10 +381,8 @@ void __getfdir_handler(uint32_t *usrTaskContextOld ,void *args)
 
     char *delim =";;\0" ;
     //串dir下 files
-    while(f != NULL)
-    {
-        if( (sz_buf - _strlen(dir_fs_buf)) < _strlen(f->name)+sizeof(delim) )
-        {
+    while (f != NULL) {
+        if ((sz_buf - _strlen(dir_fs_buf)) < _strlen(f->name)+sizeof(delim)) {
             dir_fs_buf = NULL ;
             break ;
         }
@@ -416,11 +406,10 @@ void __chdir_handler(uint32_t *usrTaskContextOld ,void *args)
 
     // Setting return value
     struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
-    if(targetdir != NULL){
+    if (targetdir != NULL) {
         curr_running_task->cwdn = targetdir ;   // changer current dir
         old_context->r0 = 0 ;
-    }else
-    {
+    } else {
         // Keep the current dir.
         old_context->r0 = -1 ;
     }
@@ -436,14 +425,12 @@ void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args)
     struct DIR_NODE *curdir = curr_running_task->cwdn ;
     struct DIR_NODE *dirwk[16] ;   //最多16層 dir
 
-    for(int i=0 ; i<16; i++)
-    {
+    for (int i=0 ; i<16; i++) {
         dirwk[i] = NULL ;
     }
 
     int j = 0 ;
-    while(curdir != NULL)
-    {
+    while (curdir != NULL) {
         dirwk[j] = curdir ;
         curdir = curdir->parent ;
         j++ ;
@@ -452,8 +439,7 @@ void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args)
     j-- ;
 
 
-    while(j >= 0)
-    {
+    while(j >= 0) {
         if( (n_size - _strlen(buf)) < _strlen(dirwk[j]->name)) printk("Buf not enough\r\n");
         _strcat(buf ,dirwk[j]->name) ;
         j-- ;

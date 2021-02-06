@@ -32,8 +32,7 @@ void put_c(char character)
 
 void put_str(char *s)
 {
-    while(*s != '\0')
-    {
+    while (*s != '\0') {
         put_c(*s) ;
         s++ ;
     }
@@ -55,21 +54,22 @@ int32_t uprintf(const char *fmt, ...)
 }
 
 
-int uprint(const char *fmt ,__builtin_va_list args){
+int uprint(const char *fmt ,__builtin_va_list args)
+{
     register int character ;
     uint32_t va_val ,base ;
     char padc ;
     int width ;
 
 
-    while(1){
+    while (1) {
         //printf("字串",) : 當字串不為%時, 將字串依序印出
         //先判斷是否不等於, 然後才+1跳入while執行, 或是不執行
         //當遇到%時,不執行該迴圈,and then add the pointer fmt to move to the next char after % (like c,s,d,u,p...)
         // and then 往下執行label FORMAT_PRINT
-        while((character = *(uint8_t  *)fmt++) != '%'){
+        while ((character = *(uint8_t  *)fmt++) != '%') {
             //如果遇到結束字元則跳出
-            if(character == '\0'){
+            if (character == '\0') {
                 return 0 ;
             }
             //印出字元
@@ -82,7 +82,7 @@ int uprint(const char *fmt ,__builtin_va_list args){
         FORMAT_PRINT:
             //判斷the next char after % (like c,s,d,u,p...), 以格式化輸出(like c,s,d,u,p...)
             //然後pointer fmt才+1 , move to the next char after (c,s,d,u,p...), 以繼續印出後面的字元
-            switch(character = *(uint8_t  *)fmt++){
+            switch (character = *(uint8_t  *)fmt++) {
                 case '-':
                     padc = '-';
                     goto FORMAT_PRINT;
@@ -139,7 +139,8 @@ int uprint(const char *fmt ,__builtin_va_list args){
 }
 
 
-static void put_va(uint32_t va_val, uint32_t base, int32_t width, int32_t padc){
+static void put_va(uint32_t va_val, uint32_t base, int32_t width, int32_t padc)
+{
 	if (va_val >= base) {
 		put_va(va_val / base, base, width - 1, padc);
 	} else {

@@ -23,8 +23,7 @@ void draw_horizental_line(char *input ,int n_h,int h ,int v ,char character ,int
 	char *s = input ;
 	s = s + (n_h*v + h) ;
 
-	while(len != 0)
-	{
+	while (len != 0) {
 		*(s+len-1) = character ;
 		len--;
 	}
@@ -47,8 +46,7 @@ void draw_vertical_line(char *input ,int n_h ,int h ,int v ,char character ,int 
 	char *s = input ;
 	s = s + n_h*v + h ;
 
-	while(len != 0)
-	{
+	while (len != 0) {
 		*(s + n_h*(len-1)) = character ;
 		len--;
 	}
@@ -60,8 +58,7 @@ void draw_whole(char *input ,int n_v ,int n_h ,char character)
 {
 	char *s = input ;
 	int n_total = n_v * n_h ;
-	for(int i=0 ; i<n_total; i++)
-	{
+	for (int i=0 ; i<n_total; i++) {
 		*(s+i) = character ;
 	}
 }

@@ -25,7 +25,9 @@ void queueInit(QUEUE_TASK_INFO_t *qPtr ,int qSize)
 
     qPtr->size = qSize;
 
-    for(int32_t i =0 ;i<qSize ;i++) qPtr->qDataTaskStructPtr[i] = NULL ; 
+    for (int32_t i =0 ;i<qSize ;i++) {
+        qPtr->qDataTaskStructPtr[i] = NULL ; 
+    }
 }
 
 /** 
@@ -33,7 +35,8 @@ void queueInit(QUEUE_TASK_INFO_t *qPtr ,int qSize)
  * 作用 : 釋放 在queueInit()中透過 malloc分配的記憶體空間
  * 回傳值 : 無
 */
-void queueDelete(QUEUE_TASK_INFO_t *qPtr){
+void queueDelete(QUEUE_TASK_INFO_t *qPtr)
+{
     //Not Implement Yet
     //free(qPtr->qDataTaskStructPtr);
 }
@@ -44,10 +47,11 @@ void queueDelete(QUEUE_TASK_INFO_t *qPtr){
  * 作用 : 判斷該queue是否為 empty
  * 回傳值 : 回傳1, 代表 queue為空沒有data, 反之回傳 0
 */
-int32_t queueIsEmpty(QUEUE_TASK_INFO_t *qPtr){
-    if(qPtr->NumDataInQueue == 0){
+int32_t queueIsEmpty(QUEUE_TASK_INFO_t *qPtr)
+{
+    if (qPtr->NumDataInQueue == 0) {
         return 1;
-    }else{
+    } else {
         return 0 ;
     }
 }
@@ -58,10 +62,11 @@ int32_t queueIsEmpty(QUEUE_TASK_INFO_t *qPtr){
  * 作用 : 判斷該queue是否 full
  * 回傳值 : 回傳1, 代表 queue為 full, 反之回傳 0
 */
-int32_t queueIsFull(QUEUE_TASK_INFO_t *qPtr){
-    if(qPtr->NumDataInQueue == qPtr->size){
+int32_t queueIsFull(QUEUE_TASK_INFO_t *qPtr)
+{
+    if (qPtr->NumDataInQueue == qPtr->size) {
         return 1;
-    }else{
+    } else {
         return 0 ;
     }
 }
@@ -75,7 +80,7 @@ int32_t queueIsFull(QUEUE_TASK_INFO_t *qPtr){
 */
 int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, struct TASK_INFO *data)
 {
-    if(queueIsFull(qPtr) == 1){
+    if (queueIsFull(qPtr) == 1) {
         printk("Warning : Can't not put data to queue. Queue is Full. Return -1.\r\n");
         return -1 ;
     }
@@ -94,7 +99,7 @@ int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, struct TASK_INFO *data)
 */
 struct TASK_INFO *deQueue(QUEUE_TASK_INFO_t *qPtr)
 {
-    if(queueIsEmpty(qPtr) == 1){
+    if (queueIsEmpty(qPtr) == 1) {
         printk("Warning : Can't not get data from queue. Queue is Empty. Return -1.\r\n");
         return NULL ;
     }
@@ -120,10 +125,10 @@ void printDataInQueue(QUEUE_TASK_INFO_t *qPtr){
     printk("\n++++++++++++++++++++++++++++++++++\r\n");
     printk("Print data from head.\r\n");
 
-    if(queueIsEmpty(qPtr) == 1){
+    if (queueIsEmpty(qPtr) == 1) {
         printk("No data in queue.\r\n");
-    }else{
-        for(int i = 0 ; i<qPtr->NumDataInQueue ;i++){
+    } else {
+        for (int i = 0 ; i<qPtr->NumDataInQueue ;i++) {
 
             printk("queue[%d] : id=%d ,status=%d\r\n",idx
             ,qPtr->qDataTaskStructPtr[idx]->task_id

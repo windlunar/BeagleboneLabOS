@@ -9,8 +9,7 @@ void test_sys_getsubdir_and_getfdir()
 {
 	char buf[16*5] ;
 	_memset(buf ,0 ,sizeof(buf)) ;
-	if(__getsubdir(buf ,sizeof(buf)) < 0)
-	{
+	if (__getsubdir(buf ,sizeof(buf)) < 0) {
 		printk("buf size not enough.\r\n") ;
 	}
 	put_str(buf) ;
@@ -21,8 +20,7 @@ void test_sys_getsubdir_and_getfdir()
 	char token[16] ;
 	char *start = buf ;
 
-	while(start != NULL)
-	{
+	while (start != NULL) {
 		_memset(token ,0 ,sizeof(token)) ;
 		start = strtok_fst(start ,delim ,_strlen(delim) ,token) ;
 
@@ -33,8 +31,7 @@ void test_sys_getsubdir_and_getfdir()
 
 	//
 	_memset(buf ,0 ,sizeof(buf)) ;
-	if(__getfdir(buf ,sizeof(buf)) < 0)
-	{
+	if (__getfdir(buf ,sizeof(buf)) < 0) {
 		printk("buf size not enough.\r\n") ;
 	}
 	put_str(buf) ;
@@ -43,8 +40,7 @@ void test_sys_getsubdir_and_getfdir()
 
 	start = buf ;
 
-	while(start != NULL)
-	{
+	while (start != NULL) {
 		_memset(token ,0 ,sizeof(token)) ;
 		start = strtok_fst(start ,delim ,_strlen(delim) ,token) ;
 
@@ -61,15 +57,15 @@ void test_sys_chdir()
 	lsdir() ;
 
 	put_str("\r\n\r\nChange dir test.") ;
-	if(__chdir("/dev\0") < 0) put_str("\r\nDir not found\r\n") ;
+	if (__chdir("/dev\0") < 0) put_str("\r\nDir not found\r\n") ;
 	lsdir();
 
 	put_str("\r\n\r\nChange dir test.") ;
-	if(__chdir("..\0") < 0) put_str("\r\nDir not found\r\n") ;
+	if (__chdir("..\0") < 0) put_str("\r\nDir not found\r\n") ;
 	lsdir();
 
 	put_str("\r\n\r\nChange dir test.") ;
-	if(__chdir("..\0") < 0) put_str("\r\nDir not found\r\n") ;
+	if (__chdir("..\0") < 0) put_str("\r\nDir not found\r\n") ;
 	put_str("\r\nList subdirs and files") ;
 	lsdir();
 

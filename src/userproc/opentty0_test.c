@@ -12,8 +12,7 @@ void tty0_test(void){
 
 	int fd = __open(TTY0) ; 
 
-	if(fd < 0)
-	{
+	if (fd < 0) {
 		uprintf("Error ,fd =%d ,halt\r\n" ,fd) ;
 		for(;;) ;
 	}
@@ -33,7 +32,6 @@ int tty0_test_main(void)
 	uprintf("Now test open tty0.\r\n") ;
 
 	__do_taskCreate(&tty0_test ,HIGHEST_PRIORITY) ;
-
 
 	return 0 ;
 }

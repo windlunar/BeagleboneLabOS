@@ -13,8 +13,7 @@ void prio_test1(void){
 	int k = 1 ;
 	int tid = -1 ;
 	int prio = -1 ;
-	while(k<LOOP_NUM)
-	{	
+	while (k<LOOP_NUM) {	
 		tid = __gettid() ;	
 		prio = __get_task_priority() ;
 		uprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
@@ -29,8 +28,7 @@ void prio_test2(void){
 	int k = 1 ;
 	int tid = -1 ;
 	int prio = -1 ;
-	while(k<LOOP_NUM)
-	{	
+	while (k<LOOP_NUM) {	
 		tid = __gettid() ;	
 		prio = __get_task_priority() ;
 		uprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
@@ -45,8 +43,7 @@ void prio_test3(void){
 	int k = 1 ;
 	int tid = -1 ;
 	int prio = -1 ;
-	while(k<LOOP_NUM)
-	{	
+	while (k<LOOP_NUM) {	
 		tid = __gettid() ;	
 		prio = __get_task_priority() ;
 		uprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
@@ -59,8 +56,7 @@ void prio_test4(void){
 	int k = 1 ;
 	int tid = -1 ;
 	int prio = -1 ;
-	while(k<LOOP_NUM)
-	{	
+	while (k<LOOP_NUM) {	
 		tid = __gettid() ;	
 		prio = __get_task_priority() ;
 		uprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
@@ -76,8 +72,7 @@ void prio_test5(void){
 	int k = 1 ;
 	int tid = -1 ;
 	int prio = -1 ;
-	while(k<LOOP_NUM)
-	{	
+	while (k<LOOP_NUM) {	
 		tid = __gettid() ;	
 		prio = __get_task_priority() ;
 		uprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
@@ -92,8 +87,7 @@ void prio_test6(void){
 	int k = 1 ;
 	int tid = -1 ;
 	int prio = -1 ;
-	while(k<LOOP_NUM)
-	{	
+	while (k<LOOP_NUM) {	
 		tid = __gettid() ;	
 		prio = __get_task_priority() ;
 		uprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
@@ -108,8 +102,7 @@ void prio_test7(void){
 	int k = 1 ;
 	int tid = -1 ;
 	int prio = -1 ;
-	while(k<LOOP_NUM)
-	{	
+	while (k<LOOP_NUM) {	
 		tid = __gettid() ;	
 		prio = __get_task_priority() ;
 		uprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
@@ -124,8 +117,7 @@ void prio_test8(void){
 	int k = 1 ;
 	int tid = -1 ;
 	int prio = -1 ;
-	while(k<LOOP_NUM)
-	{	
+	while (k<LOOP_NUM) {	
 		tid = __gettid() ;	
 		prio = __get_task_priority() ;
 		uprintf("tid=%d-prio=%d,#%d\r\n" ,tid ,prio ,k);
@@ -143,6 +135,5 @@ int priority_test_main(void)
 
 	__do_taskCreate(&prio_test1 ,3) ;
 	
-	for(int i = 0 ; i<100000;i++) ;
 	return 0 ;
 }

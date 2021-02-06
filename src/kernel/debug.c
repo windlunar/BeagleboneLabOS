@@ -102,12 +102,12 @@ void print_inuse_area_list_from_head()
 
     //Just print first 10 nodes for test
     printk("Print inuse list\r\n");
-    for(int i =0 ;i<10;i++){
+    for (int i =0 ;i<10;i++) {
         printk("%p  ",head->m_start) ;
         printk("mem area id:%d  ",head->area_id) ;
         printk("mem area status:%d\r\n",head->area_status) ;
 
-        if(head->next_ptr == NULL) break ;
+        if (head->next_ptr == NULL) break ;
         head = head->next_ptr ;
     }
 }
@@ -161,8 +161,7 @@ void mem_area_blk_init_test()
     printk("Area's blk_head_ptr addr =%p\r\n",mem_area->blk_head_ptr) ;
 
     uint32_t *head = mem_area->blk_head_ptr ;
-    while(head != NULL)
-    {
+    while (head != NULL) {
         printk("Area's blks link addr =%p ,%x\r\n",head ,*head) ;
         head = (uint32_t *)*head ;
     }
@@ -188,8 +187,7 @@ void print_from_blk_head(struct MEM_AREA_INFO *mem_area)
 {
     uint32_t *blkstart = mem_area->blk_head_ptr ;
 
-    while(*blkstart != 0)
-    {
+    while (*blkstart != 0) {
         printk("addr=%p ,content=%x\r\n",blkstart ,*blkstart) ;
         blkstart = (uint32_t *)*blkstart ;
     }
