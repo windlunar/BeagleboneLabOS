@@ -4,15 +4,17 @@
 
 
 
-SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)KSTACK_SCHED_CONTEXT_SP ; 
+struct SCHED_CONTEXT *schedFuncContextSPtr = (struct SCHED_CONTEXT *)KSTACK_SCHED_CONTEXT_SP ; 
 
 // 沒有static會出錯
-typedef struct{
-	TASK_INFO_t *head ;
-}TASK_READY_LIST_HEAD_t ;
+struct TASK_READY_LIST_HEAD{
 
-TASK_READY_LIST_HEAD_t task_ready_list[MAXNUM_PRIORITY] ;
-TASK_INFO_t *curr_running_task = NULL ;
+	struct TASK_INFO *head ;
+
+} ;
+
+struct TASK_READY_LIST_HEAD task_ready_list[MAXNUM_PRIORITY] ;
+struct TASK_INFO *curr_running_task = NULL ;
 
 int32_t taskid = -1 ;
 int32_t prio = -1 ;
@@ -39,10 +41,10 @@ void sched(void)
 				//將task 從ready list 的 head 拿出 ,然後執行 TaskRun,切換到user mode跑task
 				if(task_ready_list[prio].head->task_status == TASK_READY){	
 									
-					TASK_INFO_t *_head = task_ready_list[prio].head ;
+					struct TASK_INFO *_head = task_ready_list[prio].head ;
 
 					//dequeue task ,回傳值目前不需要用到
-					TASK_INFO_t *r = task_dequeue(prio) ;
+					struct TASK_INFO *r = task_dequeue(prio) ;
 
 					//And the put it to back ,and set it to running
 					_head->task_status = TASK_RUNNING ;
@@ -73,17 +75,17 @@ void sched (void)
 }
 
 
-TASK_INFO_t *choose_task(void)
+struct TASK_INFO *choose_task(void)
 {
 	for(int i=0 ; i<MAXNUM_PRIORITY; i++){
 
 		// 如果該prio的ready list不為空時
 		if((task_ready_list[i].head != NULL) && (task_ready_list[i].head->task_status == TASK_READY)){
 								
-			TASK_INFO_t *_head = task_ready_list[i].head ;
+			struct TASK_INFO *_head = task_ready_list[i].head ;
 
 			//dequeue task ,回傳值目前不需要用到
-			TASK_INFO_t *r = task_dequeue(i) ;
+			struct TASK_INFO *r = task_dequeue(i) ;
 
 			//And the put it to back ,and set it to running
 			_head->task_status = TASK_RUNNING ;
@@ -122,14 +124,14 @@ void task_init()
 // arg3 : user task的 stack起始位址(low addr開始)
 // return : task id
 //
-// task的context結構體(USR_TASK_CONTEXT_t)如下
+// task的context結構體(struct TASK_CONTEXT)如下
 // r0 ,r1 ,r2 ,r3 ,r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr 
 // 將 sp指向 該結構起始位址 r0 ,那麼在pop的時候, 就會將其內容依序pop回暫存器中
 // 預設 r9 存放 user task 返回位址
 // lr 存放該 user自己本身的 lr值(如返回其他函數用)
-// 所以要把 task 的 entry位址放在 USR_TASK_CONTEXT_t 的 r9_return_lr上
+// 所以要把 task 的 entry位址放在 struct TASK_CONTEXT 的 r9_return_lr上
 //
-int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t prio)
+int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int32_t prio)
 {
 	uint32_t *task_stack = (uint32_t *)stack ;
 
@@ -144,7 +146,7 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t p
 	task->stk_top = stkbottom2top(task->stk_bottom) ;
 
 	//設定sp
-	task->task_context = (USR_TASK_CONTEXT_t *)(task->stk_top - 15);
+	task->task_context = (struct TASK_CONTEXT *)(task->stk_top - 15);
 
 	//設定task的跳轉address
 	task->task_context->r9_return_lr = (uint32_t) taskFunc;
@@ -170,12 +172,12 @@ int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t p
 // Create user task by kernel
 int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 {
-    MEM_AREA_INFO_t *n_ma = alloc_mem_area();
+    struct MEM_AREA_INFO *n_ma = alloc_mem_area();
     n_ma->area_status = TASK_AREA ; 
 	_memset((void *)n_ma->m_start, 0, AREA_SIZE) ;
 
-    TASK_INFO_t *ntask = (TASK_INFO_t *)(n_ma->m_start) ;
-    n_ma->m_aval_start = (uint32_t *)((uint32_t)n_ma->m_start + sizeof(TASK_INFO_t)) ;  
+    struct TASK_INFO *ntask = (struct TASK_INFO *)(n_ma->m_start) ;
+    n_ma->m_aval_start = (uint32_t *)((uint32_t)n_ma->m_start + sizeof(struct TASK_INFO)) ;  
     n_ma->blk_head_ptr = n_ma->m_aval_start ;
 
 
@@ -198,7 +200,7 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 
 
 
-void open_console_in_out(TASK_INFO_t *task)
+void open_console_in_out(struct TASK_INFO *task)
 {
 // open console_in and console_out
 	if(file_open(FILE_CONSOLE_IN ,(void *)task) < 0) printk("Failed to open 'console_in'\r\n") ;
@@ -207,7 +209,7 @@ void open_console_in_out(TASK_INFO_t *task)
 
 
 
-void task_enqueue(TASK_INFO_t *task)
+void task_enqueue(struct TASK_INFO *task)
 {
 	if(task_ready_list[task->priority].head == NULL){
 		//create the first node
@@ -218,11 +220,11 @@ void task_enqueue(TASK_INFO_t *task)
 	}
 	// 不是第一個node
 	// 從head找最後一個node
-	TASK_INFO_t *head = task_ready_list[task->priority].head ;
+	struct TASK_INFO *head = task_ready_list[task->priority].head ;
 	while(head->next_ptr != NULL){
 		head = head->next_ptr ;
 	}
-	TASK_INFO_t *end = head ;
+	struct TASK_INFO *end = head ;
 
 	end->next_ptr = task ;
 	task->prev_ptr = end ;
@@ -231,8 +233,8 @@ void task_enqueue(TASK_INFO_t *task)
 	
 }
 
-//從頭部取出返回原來的 TASK_INFO_t
-TASK_INFO_t *task_dequeue(int32_t prio)
+//從頭部取出返回原來的 struct TASK_INFO
+struct TASK_INFO *task_dequeue(int32_t prio)
 {
 	if(task_ready_list[prio].head == NULL){
 		printk("Task queue is empty\r\n") ;
@@ -240,14 +242,14 @@ TASK_INFO_t *task_dequeue(int32_t prio)
 	}
 
 	if(task_ready_list[prio].head->next_ptr == NULL){
-		TASK_INFO_t *head = task_ready_list[prio].head ;
+		struct TASK_INFO *head = task_ready_list[prio].head ;
 		task_ready_list[prio].head = NULL ;
 		return head;
 	}
-	TASK_INFO_t *origin_head = task_ready_list[prio].head ;
+	struct TASK_INFO *origin_head = task_ready_list[prio].head ;
 
 	//next node becoome the new node
-	TASK_INFO_t *next = origin_head->next_ptr ;
+	struct TASK_INFO *next = origin_head->next_ptr ;
 	
 	next->prev_ptr = NULL ;
 	task_ready_list[prio].head = next ;
@@ -259,7 +261,7 @@ TASK_INFO_t *task_dequeue(int32_t prio)
 
 
 // 從尾部取出
-void task_pop(TASK_INFO_t *task)
+void task_pop(struct TASK_INFO *task)
 {
 	if((task == NULL) || (task->next_ptr != NULL)){
 		return ;
@@ -278,7 +280,7 @@ void task_pop(TASK_INFO_t *task)
 		return ;
 	}
 
-	TASK_INFO_t *prev = task->prev_ptr ;
+	struct TASK_INFO *prev = task->prev_ptr ;
 
 	prev->next_ptr = NULL ;
 
@@ -293,7 +295,7 @@ void print_task_id_from_head(int32_t prio)
 		printk("Task queue is empty\r\n") ;
 		return;		
 	}
-	TASK_INFO_t *head = task_ready_list[prio].head ;
+	struct TASK_INFO *head = task_ready_list[prio].head ;
 	while(head->next_ptr != NULL)
 	{
 		printk("task id = %d\r\n" ,head->task_id) ;
@@ -310,7 +312,7 @@ void print_task_addr_from_head(int32_t prio)
 		return;		
 	}
 
-	TASK_INFO_t *head = task_ready_list[prio].head ;
+	struct TASK_INFO *head = task_ready_list[prio].head ;
 	printk("task_ready_list[prio].head addr =%p\r\n" ,&task_ready_list[prio].head) ;
 	while(head->next_ptr != NULL)
 	{

@@ -73,7 +73,7 @@ int32_t queueIsFull(QUEUE_TASK_INFO_t *qPtr){
  * 作用 : 將data從尾部放入queue
  * 回傳值 : 0代表成功, -1代表失敗(因為queue已經滿了)
 */
-int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, TASK_INFO_t *data)
+int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, struct TASK_INFO *data)
 {
     if(queueIsFull(qPtr) == 1){
         printk("Warning : Can't not put data to queue. Queue is Full. Return -1.\r\n");
@@ -92,14 +92,14 @@ int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, TASK_INFO_t *data)
  * 作用 : 將data從頭部取出
  * 回傳值 : 0代表成功, -1代表失敗(因為queue為空)
 */
-TASK_INFO_t *deQueue(QUEUE_TASK_INFO_t *qPtr)
+struct TASK_INFO *deQueue(QUEUE_TASK_INFO_t *qPtr)
 {
     if(queueIsEmpty(qPtr) == 1){
         printk("Warning : Can't not get data from queue. Queue is Empty. Return -1.\r\n");
         return NULL ;
     }
 
-    TASK_INFO_t *data = qPtr->qDataTaskStructPtr[qPtr->idxHead] ;
+    struct TASK_INFO *data = qPtr->qDataTaskStructPtr[qPtr->idxHead] ;
     qPtr->qDataTaskStructPtr[qPtr->idxHead] = NULL ;
     qPtr->NumDataInQueue--;
 

@@ -101,7 +101,7 @@ void  __print_hello_handler(uint32_t input)
 void __yield_handler(uint32_t *usrTaskContextOld)
 {
 	// Save old context
-	curr_running_task->task_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+	curr_running_task->task_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
 
 	// Change the task status to ready
 	curr_running_task->task_status = TASK_READY ;
@@ -115,7 +115,7 @@ void __yield_handler(uint32_t *usrTaskContextOld)
 
 void __get_tid_handler(uint32_t *usrTaskContextOld)
 {
-    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = curr_running_task->task_id ;
 }
 
@@ -127,7 +127,7 @@ void __exit_handler(uint32_t *usrTaskContextOld)
     printk("task id=%d exit\r\n" ,curr_running_task->task_id) ;
     curr_running_task->task_status = TASK_TERMINATE ;
 
-    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
+    struct MEM_AREA_INFO *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
 
     //從queue中移除
     task_pop(curr_running_task) ;
@@ -142,24 +142,24 @@ void __exit_handler(uint32_t *usrTaskContextOld)
 
 
 
-// 複製一份相同的stack ,跟 TASK_INFO_t 結構體
+// 複製一份相同的stack ,跟 struct TASK_INFO 結構體
 void __fork_handler(uint32_t *usrTaskContextOld)
 {    
-    // Alloc 一個 Memory Area,並回傳描述該area的結構體 MEM_AREA_INFO_t
+    // Alloc 一個 Memory Area,並回傳描述該area的結構體 struct MEM_AREA_INFO
     // 並將該 area使用狀況設為 INUSE_FULL ,只屬於這個task使用
-    MEM_AREA_INFO_t *n_ma = alloc_mem_area();
+    struct MEM_AREA_INFO *n_ma = alloc_mem_area();
     n_ma->area_status = TASK_AREA ;
     _memset((void *)n_ma->m_start, 0, AREA_SIZE) ;
 
 
     // 分配 描述 task的TASK_INFO_t結構體, 其起始位置設定為 stack bottom
     // 這樣就能空出前面 4096 -512 bytes的連續空間
-    //TASK_INFO_t *ntask = (TASK_INFO_t *)stktop2bottom(n_memarea->m_top) ;
-    TASK_INFO_t *ntask = (TASK_INFO_t *)(n_ma->m_start) ;
+    //struct TASK_INFO *ntask = (struct TASK_INFO *)stktop2bottom(n_memarea->m_top) ;
+    struct TASK_INFO *ntask = (struct TASK_INFO *)(n_ma->m_start) ;
 
 
     // 找目前正在執行的task(父task)的stack空間屬於那一個 memory area
-    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
+    struct MEM_AREA_INFO *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
 
 
     // 複製父task使用的記憶體區段內的data給子task的記憶體區段, 包含stack空間內所有內容
@@ -169,7 +169,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 
 
     // 複製描述 task的TASK_INFO_t結構體
-    _memcpy((void *)ntask ,(void *)curr_running_task ,sizeof(TASK_INFO_t));
+    _memcpy((void *)ntask ,(void *)curr_running_task ,sizeof(struct TASK_INFO));
 
 
     // Stack pointer要指向stack中相同的相對位址上
@@ -177,7 +177,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     //  = old context相對於stack top 的offset
     ntask->stk_bottom = stktop2bottom(n_ma->m_top) ;
     ntask->stk_top = n_ma->m_top ;
-    ntask->task_context = (USR_TASK_CONTEXT_t *)(ntask->stk_top - (curr_running_task->stk_top - usrTaskContextOld) ) ;
+    ntask->task_context = (struct TASK_CONTEXT *)(ntask->stk_top - (curr_running_task->stk_top - usrTaskContextOld) ) ;
     
 
     // 設定TASK_INFO_t結構體的其他內容
@@ -208,29 +208,29 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 
     //設定回傳值
     ntask->task_context->r0 = 0 ;
-    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = ntask->task_id ;
     
 }
 /************************************************************************************************/
 void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
 {
-    TASK_CONFIG *config = (TASK_CONFIG *)arg ;
+    struct TASK_ARGS *config = (struct TASK_ARGS *)arg ;
 
-    MEM_AREA_INFO_t *n_ma = alloc_mem_area();
+    struct MEM_AREA_INFO *n_ma = alloc_mem_area();
     n_ma->area_status = TASK_AREA ; 
     _memset((void *)n_ma->m_start, 0, AREA_SIZE) ;
 
     // 把 TASK_INFO 結構放在該 memo區域的起始位址
-    TASK_INFO_t *ntask = (TASK_INFO_t *)(n_ma->m_start) ;
-    n_ma->m_aval_start = (uint32_t *)((uint32_t)n_ma->m_start + sizeof(TASK_INFO_t)) ;  
+    struct TASK_INFO *ntask = (struct TASK_INFO *)(n_ma->m_start) ;
+    n_ma->m_aval_start = (uint32_t *)((uint32_t)n_ma->m_start + sizeof(struct TASK_INFO)) ;  
     n_ma->blk_head_ptr = n_ma->m_aval_start ;
 
 
     taskCreate(ntask ,config->taskCallBack ,stktop2bottom(n_ma->m_top) ,config->prio);
 
 
-    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = ntask->task_id ;
 
     // init blocks
@@ -252,9 +252,9 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
 
 void __malloc_blk_handler(uint32_t *usrTaskContextOld)
 {
-    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
 
-    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
+    struct MEM_AREA_INFO *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
     old_context->r0 = (uint32_t)blk_alloc(curr_ma) ;
 }
 
@@ -268,7 +268,7 @@ void __malloc_mfree_blk_handler(uint32_t *usrTaskContextOld ,void *blk_aval_star
 
 void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
 {
-    MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
+    struct MEM_AREA_INFO *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
     uint32_t *head = curr_ma->blk_head_ptr ;
 
     while(*head != 0)
@@ -283,7 +283,7 @@ void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
 
 void __get_task_priority_handler(uint32_t *usrTaskContextOld)
 {
-    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = curr_running_task->priority ;    
 }
 
@@ -291,14 +291,14 @@ void __get_task_priority_handler(uint32_t *usrTaskContextOld)
 // 之後再implement讓該task staus轉為block ,等寫完在ready
 void __write_handler(uint32_t *usrTaskContextOld ,void *args)
 {
-    FILE_RDWR_ARGS_t *write_args = (FILE_RDWR_ARGS_t *)args ;
+    struct FILE_RDWR_ARGS *write_args = (struct FILE_RDWR_ARGS *)args ;
     int fd = write_args->fd ;
     uint8_t *wrbuf = write_args->buf ;
     uint32_t n_bytes = write_args->n_bytes ;
 
     int ret = curr_running_task->openfiles[fd]->file_write(wrbuf ,n_bytes) ;
 
-    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = ret ;  
 }
 
@@ -306,14 +306,14 @@ void __write_handler(uint32_t *usrTaskContextOld ,void *args)
 
 void __read_handler(uint32_t *usrTaskContextOld ,void *args)
 {
-    FILE_RDWR_ARGS_t *write_args = (FILE_RDWR_ARGS_t *)args ;
+    struct FILE_RDWR_ARGS *write_args = (struct FILE_RDWR_ARGS *)args ;
     int fd = write_args->fd ;
     uint8_t *rdbuf = write_args->buf ;
     uint32_t n_bytes = write_args->n_bytes ;
 
     int ret = curr_running_task->openfiles[fd]->file_read(rdbuf ,n_bytes) ; 
 
-    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = ret ;    
 }
 
@@ -328,7 +328,7 @@ void __open_handler(uint32_t *usrTaskContextOld ,void *args)
     if(fd < 0) printk("Error :Can't open file.\r\n") ;
 
     // Setting return value
-    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = fd ;  
 }
 
@@ -336,7 +336,7 @@ void __open_handler(uint32_t *usrTaskContextOld ,void *args)
 
 void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args)
 {
-    BUFSZ_ARG_t *getcwdarg = (BUFSZ_ARG_t *)args ;
+    struct BUF_AND_SZ_ARG *getcwdarg = (struct BUF_AND_SZ_ARG *)args ;
 
     if( _strlen(curr_running_task->cwdn->namebuf) > getcwdarg->n_size) getcwdarg->buf = NULL ;
 
@@ -347,15 +347,15 @@ void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args)
 
 void __getsubdir_handler(uint32_t *usrTaskContextOld ,void *args)
 {
-    BUFSZ_ARG_t *bufsz = (BUFSZ_ARG_t *)args ;
+    struct BUF_AND_SZ_ARG *bufsz = (struct BUF_AND_SZ_ARG *)args ;
 
     char *dir_ens_buf = bufsz->buf ;
     int sz_buf = bufsz->n_size ;
 
     _memset(dir_ens_buf ,0 ,sz_buf) ;
 
-    DIR_NODE *curr_dir_n = curr_running_task->cwdn ;
-    DIR_NODE *en = curr_dir_n->firstchild ;
+    struct DIR_NODE *curr_dir_n = curr_running_task->cwdn ;
+    struct DIR_NODE *en = curr_dir_n->firstchild ;
 
     char *delim =";;\0" ;
     //串dir下的 entry
@@ -377,15 +377,15 @@ void __getsubdir_handler(uint32_t *usrTaskContextOld ,void *args)
 
 void __getfdir_handler(uint32_t *usrTaskContextOld ,void *args)
 {
-    BUFSZ_ARG_t *bufsz = (BUFSZ_ARG_t *)args ;
+    struct BUF_AND_SZ_ARG *bufsz = (struct BUF_AND_SZ_ARG *)args ;
 
     char *dir_fs_buf = bufsz->buf ;
     int sz_buf = bufsz->n_size ;
 
     _memset(dir_fs_buf ,0 ,sz_buf) ;
 
-    DIR_NODE *curr_dir_n = curr_running_task->cwdn ;
-    FILE *f = curr_dir_n->firstfile ;
+    struct DIR_NODE *curr_dir_n = curr_running_task->cwdn ;
+    struct FILE *f = curr_dir_n->firstfile ;
 
     char *delim =";;\0" ;
     //串dir下 files
@@ -411,11 +411,11 @@ void __chdir_handler(uint32_t *usrTaskContextOld ,void *args)
 {
     char *subdir_name = (char *)args ;
 
-    DIR_NODE *curdir = curr_running_task->cwdn ;
-    DIR_NODE *targetdir = find_target_subdir(curdir ,subdir_name) ;
+    struct DIR_NODE *curdir = curr_running_task->cwdn ;
+    struct DIR_NODE *targetdir = find_target_subdir(curdir ,subdir_name) ;
 
     // Setting return value
-    USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+    struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     if(targetdir != NULL){
         curr_running_task->cwdn = targetdir ;   // changer current dir
         old_context->r0 = 0 ;
@@ -429,12 +429,12 @@ void __chdir_handler(uint32_t *usrTaskContextOld ,void *args)
 
 void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args)
 {
-    BUFSZ_ARG_t *arg = (BUFSZ_ARG_t *)args ;
+    struct BUF_AND_SZ_ARG *arg = (struct BUF_AND_SZ_ARG *)args ;
     char *buf = arg->buf ;
     int n_size = arg->n_size ;
 
-    DIR_NODE *curdir = curr_running_task->cwdn ;
-    DIR_NODE *dirwk[16] ;   //最多16層 dir
+    struct DIR_NODE *curdir = curr_running_task->cwdn ;
+    struct DIR_NODE *dirwk[16] ;   //最多16層 dir
 
     for(int i=0 ; i<16; i++)
     {

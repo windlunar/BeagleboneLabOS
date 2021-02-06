@@ -34,7 +34,7 @@ int __fork(void)
 
 int __do_taskCreate(void (*taskFunc)() ,int32_t prio)
 {
-    TASK_CONFIG config ;
+    struct TASK_ARGS config ;
     config.taskCallBack = taskFunc ;
     config.prio = prio ;
     uprintf("Here #1\r\n") ;
@@ -71,7 +71,7 @@ int __get_task_priority()
 
 int __write(int fd ,char *buf ,uint32_t n_bytes)
 {
-    FILE_RDWR_ARGS_t args ;
+    struct FILE_RDWR_ARGS args ;
     args.fd = fd ;
     args.buf =buf ;
     args.n_bytes = n_bytes ;
@@ -82,7 +82,7 @@ int __write(int fd ,char *buf ,uint32_t n_bytes)
 
 int __read(int fd ,char *buf ,uint32_t n_bytes)
 {
-    FILE_RDWR_ARGS_t args ;
+    struct FILE_RDWR_ARGS args ;
     args.fd = fd ;
     args.buf =buf ;
     args.n_bytes = n_bytes ;
@@ -101,7 +101,7 @@ void __getcwd(char *buf ,int n_bytes)
 {
     _memset(buf ,0 ,n_bytes) ;
 
-    BUFSZ_ARG_t args ;
+    struct BUF_AND_SZ_ARG args ;
     args.buf = buf ;
     args.n_size = n_bytes ;
 
@@ -113,7 +113,7 @@ int __getsubdir(char *buf ,int n_bytes)
 {
     _memset(buf ,0 ,n_bytes) ;
 
-    BUFSZ_ARG_t args ;
+    struct BUF_AND_SZ_ARG args ;
     args.buf = buf ;
     args.n_size = n_bytes ;
 
@@ -129,7 +129,7 @@ int __getfdir(char *buf ,int n_bytes)
 {
     _memset(buf ,0 ,n_bytes) ;
 
-    BUFSZ_ARG_t args ;
+    struct BUF_AND_SZ_ARG args ;
     args.buf = buf ;
     args.n_size = n_bytes ;
 
@@ -151,7 +151,7 @@ int __chdir(char *subdirname)
 
 void __getfullpath(char *buf ,int n_bytes)
 {
-    BUFSZ_ARG_t args ;
+    struct BUF_AND_SZ_ARG args ;
     args.buf = buf ;
     args.n_size = n_bytes ;
     

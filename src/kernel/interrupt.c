@@ -216,7 +216,7 @@ void timer0_ISR(uint32_t *usrTaskContextOld)
 
 	
 	// Save old context
-	curr_running_task->task_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
+	curr_running_task->task_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
 
 	// Change the task status to ready
 	curr_running_task->task_status = TASK_READY ;

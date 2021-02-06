@@ -63,7 +63,7 @@ void print_R0_R1_R2_R3(uint32_t r0 ,uint32_t r1 ,uint32_t r2 ,uint32_t r3){
 
 void print_free_area_list_from_head()
 {
-    MEM_AREA_INFO_t *head = free_area_list_head ;
+    struct MEM_AREA_INFO *head = free_area_list_head ;
 
     //Just print first 10 nodes for test
     printk("Print free list from head\r\n");
@@ -78,12 +78,12 @@ void print_free_area_list_from_head()
 
 void print_free_area_list_from_end()
 {
-    MEM_AREA_INFO_t *head = free_area_list_head ;
+    struct MEM_AREA_INFO *head = free_area_list_head ;
 
     while(head->next_ptr != NULL){
         head = head->next_ptr ;
     }
-    MEM_AREA_INFO_t *end = head ;
+    struct MEM_AREA_INFO *end = head ;
 
     //Just print first 10 nodes for test
     printk("Print free list from end\r\n");
@@ -98,7 +98,7 @@ void print_free_area_list_from_end()
 
 void print_inuse_area_list_from_head()
 {
-    MEM_AREA_INFO_t *head = inuse_area_list_head ;
+    struct MEM_AREA_INFO *head = inuse_area_list_head ;
 
     //Just print first 10 nodes for test
     printk("Print inuse list\r\n");
@@ -118,9 +118,9 @@ void mem_area_alloc_free_test()
 
 	printk("Test alloc\r\n") ;
 
-	MEM_AREA_INFO_t *mem_area0 = alloc_mem_area() ;
-	MEM_AREA_INFO_t *mem_area1 = alloc_mem_area() ;
-	MEM_AREA_INFO_t *mem_area2 = alloc_mem_area() ;
+	struct MEM_AREA_INFO *mem_area0 = alloc_mem_area() ;
+	struct MEM_AREA_INFO *mem_area1 = alloc_mem_area() ;
+	struct MEM_AREA_INFO *mem_area2 = alloc_mem_area() ;
 
 	print_free_area_list_from_head();
 	print_inuse_area_list_from_head();
@@ -149,7 +149,7 @@ void mem_area_blk_init_test()
 
 	printk("Test alloc\r\n") ;
 
-	MEM_AREA_INFO_t *mem_area = alloc_mem_area() ;
+	struct MEM_AREA_INFO *mem_area = alloc_mem_area() ;
 
 	print_free_area_list_from_head();
 	print_inuse_area_list_from_head();
@@ -184,7 +184,7 @@ void mem_area_blk_init_test()
 }
 
 
-void print_from_blk_head(MEM_AREA_INFO_t *mem_area)
+void print_from_blk_head(struct MEM_AREA_INFO *mem_area)
 {
     uint32_t *blkstart = mem_area->blk_head_ptr ;
 

@@ -3,9 +3,9 @@
 #include "task.h"
 #include "../klib/string.h"
 /***************************************************************************************/
-DIRTREE_INFO path_tree ;
-DIR_NODE *root = NULL ;
-FILE *file_list_head = NULL;
+struct DIRTREE_INFO path_tree ;
+struct DIR_NODE *root = NULL ;
+struct FILE *file_list_head = NULL;
 /***************************************************************************************/
 
 int file_in_ram_init()
@@ -13,10 +13,10 @@ int file_in_ram_init()
     if(path_tree_init() < 0) return -1 ;
     if(create_root_path() < 0) return -1 ;
 
-    DIR_NODE *dev = create_path_node(root ,PATH_dev) ;
+    struct DIR_NODE *dev = create_path_node(root ,PATH_dev) ;
     if(dev == NULL) return -1 ;
 
-    DIR_NODE *fifo = create_path_node(root ,PATH_fifo) ;
+    struct DIR_NODE *fifo = create_path_node(root ,PATH_fifo) ;
     if(fifo == NULL) return -1 ;
 
     create_file_under_node(dev ,FILE_CONSOLE_IN ,CONSOLE_IN_TYPE) ;
@@ -54,8 +54,8 @@ int create_root_path()
         return -1 ;
     }
 
-    root = (DIR_NODE *)path_tree.ma_aval_start ;
-    path_tree.ma_aval_start += sizeof(DIR_NODE) ;
+    root = (struct DIR_NODE *)path_tree.ma_aval_start ;
+    path_tree.ma_aval_start += sizeof(struct DIR_NODE) ;
 
     root->firstchild = NULL ;
     root->parent = NULL ;
@@ -67,12 +67,12 @@ int create_root_path()
 }
 
 
-DIR_NODE *create_path_node(DIR_NODE *parent ,char *name)
+struct DIR_NODE *create_path_node(struct DIR_NODE *parent ,char *name)
 {
     if( (root == NULL) || (parent == NULL) ) return NULL ;
 
-    DIR_NODE *node = (DIR_NODE *)path_tree.ma_aval_start ;
-    path_tree.ma_aval_start += sizeof(DIR_NODE) ;
+    struct DIR_NODE *node = (struct DIR_NODE *)path_tree.ma_aval_start ;
+    path_tree.ma_aval_start += sizeof(struct DIR_NODE) ;
 
     node->firstchild = NULL ;
     node->parent = parent ;
@@ -95,7 +95,7 @@ DIR_NODE *create_path_node(DIR_NODE *parent ,char *name)
     // Should be link list
     if(node->parent->firstchild != NULL){
 
-        DIR_NODE *end = find_end_sibling(node->parent->firstchild) ;
+        struct DIR_NODE *end = find_end_sibling(node->parent->firstchild) ;
         end->next_sibling = node ;
 
     }else{
@@ -109,9 +109,9 @@ DIR_NODE *create_path_node(DIR_NODE *parent ,char *name)
 }
 
 
-DIR_NODE *find_end_sibling(DIR_NODE *node)
+struct DIR_NODE *find_end_sibling(struct DIR_NODE *node)
 {
-    DIR_NODE *start = node ;
+    struct DIR_NODE *start = node ;
     while(start->next_sibling != NULL)
     {
         start = start->next_sibling ;
@@ -123,12 +123,12 @@ DIR_NODE *find_end_sibling(DIR_NODE *node)
 
 
 // 目前只能印出root下第一階
-void print_under_node(DIR_NODE *node)
+void print_under_node(struct DIR_NODE *node)
 {
     if(node == NULL) return ;
 
-    DIR_NODE *node_head = node->firstchild ;
-    FILE *file_head = node->firstfile ;
+    struct DIR_NODE *node_head = node->firstchild ;
+    struct FILE *file_head = node->firstfile ;
 
     while(node_head != NULL)
     {
@@ -152,9 +152,9 @@ void print_under_node(DIR_NODE *node)
 
 /***************************************************************************************/
 
-FILE *find_end_filesibling(FILE *f)
+struct FILE *find_end_filesibling(struct FILE *f)
 {
-    FILE *start = f ;
+    struct FILE *start = f ;
     while(start->next_sibling != NULL)
     {
         start = start->next_sibling ;
@@ -164,13 +164,13 @@ FILE *find_end_filesibling(FILE *f)
 
 
 
-FILE *create_file_under_node(DIR_NODE *node ,char * filename ,int type)
+struct FILE *create_file_under_node(struct DIR_NODE *node ,char * filename ,int type)
 {
     if( (root == NULL) || (node == NULL) ) return NULL ;
 
     //分配記憶體空間
-    FILE *file = (FILE *)path_tree.ma_aval_start ;
-    path_tree.ma_aval_start += sizeof(FILE) ;
+    struct FILE *file = (struct FILE *)path_tree.ma_aval_start ;
+    path_tree.ma_aval_start += sizeof(struct FILE) ;
 
     file->parent = node ;
 
@@ -219,7 +219,7 @@ FILE *create_file_under_node(DIR_NODE *node ,char * filename ,int type)
         node->firstfile = file ;
         
     }else{
-        FILE *end = find_end_filesibling(node->firstfile) ;
+        struct FILE *end = find_end_filesibling(node->firstfile) ;
         end->next_sibling = file ;
 
     }
@@ -230,7 +230,7 @@ FILE *create_file_under_node(DIR_NODE *node ,char * filename ,int type)
 }
 
 
-void file_list_push(FILE *file)
+void file_list_push(struct FILE *file)
 {
     // list內還沒有資料
     if(file_list_head == NULL)
@@ -250,12 +250,12 @@ void file_list_push(FILE *file)
         return ;
     }
     //移動到end
-    FILE *head = file_list_head ;
+    struct FILE *head = file_list_head ;
     while(head->list_next != NULL)
     {
         head = head->list_next ;
     }
-    FILE *end = head ;
+    struct FILE *end = head ;
 
     end->list_next = file ;
     file->list_prev = end ;
@@ -265,7 +265,7 @@ void file_list_push(FILE *file)
 
 void print_file_list()
 {
-    FILE *head = file_list_head ;
+    struct FILE *head = file_list_head ;
     while(head != NULL)
     {
         uart_tx_str(CONSOLE ,head->name ,_strlen(head->name)) ;
@@ -308,10 +308,10 @@ int console_write_func(uint8_t *wrbuf ,uint32_t n_bytes)
 }
 
 
-FILE *find_file(char *filename)
+struct FILE *find_file(char *filename)
 {
     //print_file_list() ;
-    FILE *head = file_list_head ;
+    struct FILE *head = file_list_head ;
     while(head->list_next != NULL)
     {
         if(_strcmp(filename ,head->name) == 0) return head ;
@@ -326,10 +326,10 @@ FILE *find_file(char *filename)
 
 FILE_DESCRIPTOR_t file_open(char *filename ,void *_task)
 {
-    TASK_INFO_t *task = (TASK_INFO_t *)_task ;
+    struct TASK_INFO *task = (struct TASK_INFO *)_task ;
 
     int fd = -1;
-    FILE *file = find_file(filename) ;
+    struct FILE *file = find_file(filename) ;
 
     if(file == NULL) return -1 ;
 
@@ -350,9 +350,9 @@ FILE_DESCRIPTOR_t file_open(char *filename ,void *_task)
 }
 
 
-DIR_NODE *find_target_subdir(DIR_NODE *curdir ,char *subdir_name)
+struct DIR_NODE *find_target_subdir(struct DIR_NODE *curdir ,char *subdir_name)
 {
-    DIR_NODE *en = curdir->firstchild ;
+    struct DIR_NODE *en = curdir->firstchild ;
 
     int neq = _strcmp(subdir_name ,"..\0") ;
 

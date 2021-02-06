@@ -29,6 +29,6 @@ void print_free_area_list_from_end();
 void print_inuse_area_list_from_head();
 void mem_area_alloc_free_test();
 void mem_area_blk_init_test();
-void print_from_blk_head(MEM_AREA_INFO_t *mem_area);
+void print_from_blk_head(struct MEM_AREA_INFO *mem_area);
 
 #endif

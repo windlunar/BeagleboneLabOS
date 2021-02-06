@@ -47,8 +47,8 @@ extern int32_t taskid;
 // r2
 // r1 -----------------0x9df31000 + 4*1
 // r0 -----------------kernel init stack top = 0x9df31000 (set up in start.s)
-//                      sched sp (start addr of SCHED_CONTEXT_t schedFuncContextSPtr)
-typedef struct
+//                      sched sp (start addr of struct struct SCHED_CONTEXT schedFuncContextSPtr)
+struct SCHED_CONTEXT
 {
     uint32_t r0;
     uint32_t r1;
@@ -65,8 +65,8 @@ typedef struct
     uint32_t r12;
     uint32_t lr;
 
-}SCHED_CONTEXT_t;
-extern SCHED_CONTEXT_t *schedFuncContextSPtr ; 
+};
+extern struct SCHED_CONTEXT *schedFuncContextSPtr ; 
 
 
 
@@ -89,7 +89,7 @@ extern SCHED_CONTEXT_t *schedFuncContextSPtr ;
 //                          r0 <------SP
 //
 // *******************************************************
-typedef struct
+struct TASK_CONTEXT
 {
     uint32_t r0;
     uint32_t r1;
@@ -106,29 +106,28 @@ typedef struct
     uint32_t r12;
     uint32_t lr;
 
-}USR_TASK_CONTEXT_t;
+};
 
 
 
-struct _TASK
+struct TASK_INFO
 {
-    struct _TASK *next_ptr ;
-    struct _TASK *prev_ptr ;   
+    struct TASK_INFO *next_ptr ;
+    struct TASK_INFO *prev_ptr ;   
     uint32_t *stk_bottom ;              // task 的 stack空間 的pointer
     uint32_t *stk_top ;
     void (*taskCallBack)() ;            // task function pointer
     int32_t task_id;
     int32_t task_status ;
-    USR_TASK_CONTEXT_t *task_context ; // task context ,存放在stack中
+    struct TASK_CONTEXT *task_context ; // task context ,存放在stack中
     int32_t priority ; 
-    FILE *openfiles[MAX_FD] ;   // 打開的檔案
-    DIR_NODE *cwdn ;            // current working dir node structure
+    struct FILE *openfiles[MAX_FD] ;   // 打開的檔案
+    struct DIR_NODE *cwdn ;            // current working dir node structure
 };
-typedef struct _TASK TASK_INFO_t ;
 
 
 
-struct _CONFIG
+struct TASK_ARGS
 {
     // task function pointer
     void (*taskCallBack)() ;
@@ -136,27 +135,26 @@ struct _CONFIG
     int32_t prio ; //
 
 };
-typedef struct _CONFIG TASK_CONFIG ;
 
 
 
 /***********************************************************************************************/
-//extern TASK_INFO_t *task_ready_list_head[MAXNUM_PRIORITY] ;
-extern TASK_INFO_t *curr_running_task ;
+//extern struct TASK_INFO *task_ready_list_head[MAXNUM_PRIORITY] ;
+extern struct TASK_INFO *curr_running_task ;
 /***********************************************************************************************/
 void sched(void);
 void schedFuncContextPrepare(void);
 extern void _call_sched(uint32_t schedContext) ;    //定義在task_asm.s
 void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
-TASK_INFO_t *choose_task(void) ;
+struct TASK_INFO *choose_task(void) ;
 
 void task_init() ;
-int32_t taskCreate(TASK_INFO_t *task ,void (*taskFunc)() ,void *stack ,int32_t prio);
+int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int32_t prio);
 int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)());
-void open_console_in_out(TASK_INFO_t *task) ;
-void task_enqueue(TASK_INFO_t *task) ;
-TASK_INFO_t *task_dequeue(int32_t prio) ;
-void task_pop(TASK_INFO_t *task);
+void open_console_in_out(struct TASK_INFO *task) ;
+void task_enqueue(struct TASK_INFO *task) ;
+struct TASK_INFO *task_dequeue(int32_t prio) ;
+void task_pop(struct TASK_INFO *task);
 /***********************************************************************************************/
 void print_task_id_from_head(int32_t prio) ;
 void print_task_addr_from_head(int32_t prio) ;
