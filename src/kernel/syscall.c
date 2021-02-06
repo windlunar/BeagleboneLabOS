@@ -94,7 +94,7 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
 
 void  __print_hello_handler(uint32_t input)
 {
-    kprintf("Hello! This is my first system call,Input value =%d\r\n" ,input) ;
+    printk("Hello! This is my first system call,Input value =%d\r\n" ,input) ;
 }
 
 
@@ -124,7 +124,7 @@ void __get_tid_handler(uint32_t *usrTaskContextOld)
 // 將task設定為 terminate
 void __exit_handler(uint32_t *usrTaskContextOld)
 {
-    kprintf("task id=%d exit\r\n" ,curr_running_task->task_id) ;
+    printk("task id=%d exit\r\n" ,curr_running_task->task_id) ;
     curr_running_task->task_status = TASK_TERMINATE ;
 
     MEM_AREA_INFO_t *curr_ma = which_mem_area(curr_running_task->stk_bottom) ;
@@ -273,10 +273,10 @@ void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
 
     while(*head != 0)
     {
-        kprintf("blk addr =%p ,content =%x\r\n",head ,*head) ;
+        printk("blk addr =%p ,content =%x\r\n",head ,*head) ;
         head = (uint32_t *)*head ;
     }
-    kprintf("blk addr =%p ,content =%x\r\n",head ,*head) ;    
+    printk("blk addr =%p ,content =%x\r\n",head ,*head) ;    
 }
 
 
@@ -325,7 +325,7 @@ void __open_handler(uint32_t *usrTaskContextOld ,void *args)
     int fd = -1 ;
 
     fd = file_open(path ,(void *)curr_running_task) ;
-    if(fd < 0) kprintf("Error :Can't open file.\r\n") ;
+    if(fd < 0) printk("Error :Can't open file.\r\n") ;
 
     // Setting return value
     USR_TASK_CONTEXT_t *old_context = (USR_TASK_CONTEXT_t *)usrTaskContextOld ;
@@ -454,7 +454,7 @@ void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args)
 
     while(j >= 0)
     {
-        if( (n_size - _strlen(buf)) < _strlen(dirwk[j]->name)) kprintf("Buf not enough\r\n");
+        if( (n_size - _strlen(buf)) < _strlen(dirwk[j]->name)) printk("Buf not enough\r\n");
         _strcat(buf ,dirwk[j]->name) ;
         j-- ;
     }

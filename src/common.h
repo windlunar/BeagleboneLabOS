@@ -5,10 +5,7 @@
 
 #define FALSE	0
 #define TRUE	1
-/************************************************************************************************/
-
-
-
+/***************************************************************************************/
 typedef unsigned char uint8  ;
 typedef unsigned short uint16 ;
 typedef unsigned int uint32 ;
@@ -28,20 +25,20 @@ typedef char int8_t ;
 typedef short int16_t ;
 typedef int int32_t ;
 
-/************************************************************************************************/
+/***************************************************************************************/
 
 //extern uint32_t _estack;
 extern void WRITE_REG32 (unsigned int address, unsigned int value);
 extern unsigned int READ_REG32 (unsigned int address);
 extern void __attribute__((optimize("O0"))) delay(uint32_t nr_of_nops);
 
-/************************************************************************************************/
+/***************************************************************************************/
 static inline void dataSyncBarrier(void)
 {
 	asm volatile("dsb\n");
 }
 
-/************************************************************************************************/
+/***************************************************************************************/
 
 #define NULL ((void *)(0))
 
@@ -55,7 +52,7 @@ static inline void dataSyncBarrier(void)
 #define UND_MODE    0x1b
 #define SYS_MODE    0x1f
 
-/************************************************************************************************/
+/***************************************************************************************/
 
 // Rounding operations (efficient when n is a power of 2)
 // Round down to the nearest multiple of n
@@ -78,6 +75,9 @@ static inline void dataSyncBarrier(void)
 	uint32_t __n = (uint32_t) (n);				\
 	(typeof(a)) (ROUNDDOWN((uint32_t) (a) + __n - 1, __n));	\
 })
-/************************************************************************************************/
+/***************************************************************************************/
+#define kpa2va(pa)  ((uint32_t)pa + 0x30000000)
+#define kva2pa(va)	((uint32_t)va - 0x30000000)
+
 
 #endif

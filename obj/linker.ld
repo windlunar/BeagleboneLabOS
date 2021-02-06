@@ -2,7 +2,7 @@ ENTRY(_start)
 
 MEMORY
 {
-    ram : ORIGIN = 0x82000000, LENGTH = 0xE000000
+    ram : ORIGIN = 0x82000000, LENGTH = 0x1bf40000
 }
 
 SECTIONS

@@ -2,171 +2,8 @@
 #include "memory.h"
 #include "task.h"
 
-uint32_t *kernal_end = &_end ;
+uint32_t *kernal_end = (&_end) ;
 
-/****************************************************************************************/
-// MMU
-/****************************************************************************************/
-
-
-// 獲得pte內容 ,PTE:
-//  -----------------------------------------------------------
-//  || base   |   0   |   AP | 0 | Domain | 1 | C | B | 1 | 0 |        Content
-//  -----------------------------------------------------------
-//   31  ~ 20 |19 ~ 12| 11 10| 9 | 8 ~ 5  | 4 | 3 | 2 | 1 | 0 |        bit
-//
-pte_t gen_pte (paddr_t paddr)
-{
-    return (paddr & L1_PAGE_PTE_BASE_MASK) | L1_PAGE_PTE_BITS ;
-}
-
-
-pte_paddr_t gen_pte_addr (pgt_paddr_t pgt_base ,vaddr_t vaddr)
-{
-    return (pgt_base & L1_PAGE_TABLE_BASE_MASK) | vaddr2L1pteidx(vaddr ,MAP_START_VADDR) ;
-}
-
-
-// AP_USER_RW          (0x03)  // privilege R/W
-// AP_USER_R_ONLY      (0x02)  // privilege R/W
-// AP_USER_PROHIBIT    (0x01)  // privilege R/W
-void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart)
-{
-    pte_t pte ;
-    pte_paddr_t pte_paddr ;
-    paddr_t vs ;
-    paddr_t ve ;
-    int page_num = 0 ;
-
-    vs = ROUNDDOWN(pstart ,PAGE_SIZE) ;
-
-    //避免變成 0x1 0000 0000 時 overflow的情況
-    if(pend < 0xfff00000){
-        ve = ROUNDUP(pend ,PAGE_SIZE) ;
-    }else{
-        ve = ROUNDDOWN(pend ,PAGE_SIZE) ;
-        //page_num++ ;
-    }
-    page_num += pstartend2pagenum(pstart ,pend) ;
-
-    // 初始化 page table 的 pte
-    for(int i=0 ; i<page_num; i++)
-    { 
-        pte = gen_pte(vs + (i << 20)) ;
-        pte |= NO_CACHE_WRITEBUF << CACHE_WRITEBUF_BIT_SHIFT ;
-        pte |= DEFAULT_DOMAIN << DOMAIN_BIT_SHIFT ;
-        pte |= permision << AP_BIT_SHIFT ;
-        pte |= XN_DEFAULT << XN_SHIFT ;
-
-        pte_paddr = gen_pte_addr(L1_PAGE_TABLE_BASE ,vstart + (i << 20)) ;
-        _memset((void *)(pte_paddr_t *) pte_paddr ,0 ,4) ;
-        *(pte_paddr_t *) pte_paddr = pte ;
-        //kprintf("pte addr =%p------pte content =%x\r\n",(pte_paddr_t *) pte_paddr,*(pte_paddr_t *) pte_paddr) ;
-
-    }
-}
-
-
-void mmu_init (void)
-{
-    // Map 0x00000000 ~ 0x82000000
-    pte_init(PADDR_MAP_START ,KUSE_START_PADDR ,AP_USER_PROHIBIT ,MAP_START_VADDR) ;
-
-    // Map 0x82000000 ~ 0x82100000
-    // 目前還沒有調整 mem area alloc的區域大小 ,user tasks的 stack空間目前還在這個區域內
-    // 所以先暫時讓user space可以讀寫
-    pte_init(KUSE_START_PADDR ,UMEM_START_PADDR ,AP_USER_RW ,KUSE_START_VADDR) ;
-
-    // Map 0x82100000 ~ 0x9df00000
-    pte_init(UMEM_START_PADDR ,KSTACK_BOTTOM_PADDR ,AP_USER_RW ,UMEM_START_VADDR) ;
-
-    // Map 0x9df00000 ~ 0xffffffff
-    pte_init(KSTACK_BOTTOM_PADDR ,MEM_END_PADDR ,AP_USER_PROHIBIT ,KSTACK_BOTTOM_PADDR) ;
-}
-
-
-
-void enable_mmu(void)
-{
-
-    set_domain() ;
-    //kprintf("Domain :%x\r\n" ,get_domain()) ;
-    set_pgt_base() ;
-
-    asm volatile(
-        "stmfd sp! ,{r0}\n\t"
-        "mov r0 ,#0x01\n"
-        "mcr p15 ,0 ,r0 ,c1 ,c0 ,0\n\t"       // enable mmu
-        "mov r0 ,r0\n\t"
-        "mov r0 ,r0\n\t"
-        "mov r0 ,r0\n\t"
-        "ldmfd sp! ,{r0}\n\t"
-        :
-        :
-        :
-    ) ;
-}
-
-
-void set_pgt_base(void)
-{
-    pgt_paddr_t pgtb = (pgt_paddr_t)L1_PAGE_TABLE_BASE ;
-    asm volatile(
-        "stmfd sp! ,{r0}\n\t"
-        "mov r0 ,%0\n\t"
-        "mcr p15 ,0 ,%0 ,c2 ,c0 ,0\n\t"       // 設定 page table base, CP15的c2 register保存
-        "ldmfd sp! ,{r0}\n\t"
-        :
-        :"r" (pgtb)
-        :
-    ) ;
-}
-
-uint32_t get_pgt_base(void)
-{
-	uint32_t pgtb;
-	asm volatile(
-        "mrc p15, 0, %0, c2, c0, 0\n\t" 
-        : "=r" (pgtb) 
-        : 
-        : 
-    );
-	
-	return pgtb;
-}
-
-// C3 保存16個domain ,一個domain佔用2bits
-// 00 :記憶體區域不能訪問 ,會引起domain fault
-// 01 :記憶體訪問須配合pte中的AP bits
-// 10 :保留
-// 11 :都不進行permission檢查
-void set_domain(void)
-{
-    uint32_t domain = 0x55555555 ;
-    asm volatile(
-        "stmfd sp! ,{r0}\n\t"
-        "mov r0 ,%0\n"
-        "mcr p15 ,0 ,%0 ,c3 ,c0 ,0\n\t"
-        "ldmfd sp! ,{r0}\n\t"
-        :
-        :"r" (domain)
-        :
-    );
-}
-
-
-uint32_t get_domain(void)
-{
-	uint32_t domain;
-	asm volatile(
-        "mrc p15, 0, %0, c3, c0, 0\n\t" 
-        : "=r" (domain) 
-        : 
-        : 
-    );
-	
-	return domain;
-}
 
 /****************************************************************************************/
 MEM_AREA_INFO_t *free_area_list_head = NULL;
@@ -197,7 +34,7 @@ void mem_areas_list_init()
     {
         areas_list[i].area_status = FREE ; 
         areas_list[i].area_id = i ;
-        areas_list[i].m_start = FIRST_AREA_PTR + i*(AREA_SIZE/4) ;
+        areas_list[i].m_start = FIRST_AREA_PADDR_PTR + i*(AREA_SIZE/4) ;
         areas_list[i].m_top = areas_list[i].m_start + (AREA_SIZE/4) -1 ;
         areas_list[i].blk_head_ptr = (uint32_t *)areas_list[i].m_start ;
         areas_list[i].m_aval_start = areas_list[i].m_start ;
@@ -251,7 +88,7 @@ void free_mem_area(MEM_AREA_INFO_t *area_node)
         delete_from_inuse_list(area_node) ;
         add_to_free_list_end(area_node) ;
     }else{
-        kprintf("The area info node is already in free list.\r\n") ;
+        printk("The area info node is already in free list.\r\n") ;
     }
 }
 

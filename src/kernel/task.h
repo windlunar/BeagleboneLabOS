@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "memory.h"
 #include "file.h"
+#include "mmu.h"
 
 extern int32_t taskid;
 /***********************************************************************************************/
@@ -29,7 +30,7 @@ extern int32_t taskid;
 #define MAX_FD   8
 #define MAX_DIR_LENGTH  64
 /***********************************************************************************************/
-#define KSTACK_SCHED_CONTEXT_SP	( KSTACK_TOP_PADDR-(4*13) )
+#define KSTACK_SCHED_CONTEXT_SP	( (KSTACK_TOP_PADDR)-(4*13) )
 // -----------------
 // ......
 // lr

@@ -239,7 +239,7 @@ void timer0_ISR(uint32_t *usrTaskContextOld)
 // 2021/1/15--Not work 
 void timer2_ISR(void)
 {
-	kprintf("Here\r\n") ;
+	printk("Here\r\n") ;
 	
 	usrLedToggle(2);
 	usrLedToggle(1);
@@ -262,13 +262,15 @@ void set_exception_entry(uint32_t *exept_vec_base)
 
 /****************************************************************************************/
 
-void __attribute__((interrupt("ABORT"))) prefetch_abort_handler(void)
+void __attribute__((interrupt("PABT"))) prefetch_abort_handler(void)
 {
-	kprintf("In prefetch_abort_handler\r\n");
+	printk("In prefetch_abort_handler\r\n");
+	for(;;) ;
 }
 
 
-void __attribute__((interrupt("ABORT"))) data_abort_handler(void)
+void __attribute__((interrupt("DABT"))) data_abort_handler(void)
 {
-	kprintf("In data_abort_handler\r\n");
+	printk("In data_abort_handler\r\n");
+	for(;;) ;
 }

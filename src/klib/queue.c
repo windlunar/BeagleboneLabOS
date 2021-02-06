@@ -76,7 +76,7 @@ int32_t queueIsFull(QUEUE_TASK_INFO_t *qPtr){
 int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, TASK_INFO_t *data)
 {
     if(queueIsFull(qPtr) == 1){
-        kprintf("Warning : Can't not put data to queue. Queue is Full. Return -1.\r\n");
+        printk("Warning : Can't not put data to queue. Queue is Full. Return -1.\r\n");
         return -1 ;
     }
 
@@ -95,7 +95,7 @@ int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, TASK_INFO_t *data)
 TASK_INFO_t *deQueue(QUEUE_TASK_INFO_t *qPtr)
 {
     if(queueIsEmpty(qPtr) == 1){
-        kprintf("Warning : Can't not get data from queue. Queue is Empty. Return -1.\r\n");
+        printk("Warning : Can't not get data from queue. Queue is Empty. Return -1.\r\n");
         return NULL ;
     }
 
@@ -117,26 +117,26 @@ TASK_INFO_t *deQueue(QUEUE_TASK_INFO_t *qPtr)
 void printDataInQueue(QUEUE_TASK_INFO_t *qPtr){
     int idx = qPtr->idxHead ;
 
-    kprintf("\n++++++++++++++++++++++++++++++++++\r\n");
-    kprintf("Print data from head.\r\n");
+    printk("\n++++++++++++++++++++++++++++++++++\r\n");
+    printk("Print data from head.\r\n");
 
     if(queueIsEmpty(qPtr) == 1){
-        kprintf("No data in queue.\r\n");
+        printk("No data in queue.\r\n");
     }else{
         for(int i = 0 ; i<qPtr->NumDataInQueue ;i++){
 
-            kprintf("queue[%d] : id=%d ,status=%d\r\n",idx
+            printk("queue[%d] : id=%d ,status=%d\r\n",idx
             ,qPtr->qDataTaskStructPtr[idx]->task_id
             ,qPtr->qDataTaskStructPtr[idx]->task_status);
 
             idx = (idx+1) % (qPtr->size);
         }
 
-        kprintf("queue[%d] is the back ,id=%d ,status=%d\r\n" 
+        printk("queue[%d] is the back ,id=%d ,status=%d\r\n" 
         ,qPtr->idxBack
         ,qPtr->qDataTaskStructPtr[qPtr->idxBack]->task_id
         ,qPtr->qDataTaskStructPtr[idx]->task_status);
         
     }
-    kprintf("++++++++++++++++++++++++++++++++++\r\n\r\n");
+    printk("++++++++++++++++++++++++++++++++++\r\n\r\n");
 }

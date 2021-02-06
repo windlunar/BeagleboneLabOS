@@ -9,7 +9,7 @@
 
 //Control module base address is 0x44E10000
 //And the pffset of pin config registers are 0x800
-#define CM_CONF_BASE    0x44E10800
+#define CM_CONF_BASE    (0x44E10800)
 
 #define CONF_GPMC_PTR           ((volatile CONF_GPMC_T *)CM_CONF_BASE)
 #define CONF_LCD_PTR            ((volatile CONF_LCD_T *)CM_CONF_BASE + 0x8A0)

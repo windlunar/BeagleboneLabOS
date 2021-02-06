@@ -18,16 +18,16 @@ void _showmm(void *start ,uint32_t SizeofBytes)
 {
     uint8_t *startPtr = (uint8_t *)start ;
 
-    kprintf("\r\nShow memory content:");
+    printk("\r\nShow memory content:");
     for(uint32_t i=0 ;i<SizeofBytes ;i++)
     {   
         if(i % 4 == 0)
         {
-            kprintf("\r\n") ;
-            kprintf("%x : ",startPtr) ;
+            printk("\r\n") ;
+            printk("%x : ",startPtr) ;
         }
         
-        kprintf("%x  ",*startPtr) ;
+        printk("%x  ",*startPtr) ;
         startPtr += 1 ;
     }    
 }

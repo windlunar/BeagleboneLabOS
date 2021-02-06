@@ -8,12 +8,12 @@
 #include "../common.h"
 #include "cm_conf.h"
 
-#define UART0_BASE      0x44E09000
-#define UART1_BASE      0x48022000
-#define UART2_BASE      0x48024000
-#define UART3_BASE      0x481A6000
-#define UART4_BASE      0x481A8000
-#define UART5_BASE      0x481AA000
+#define UART0_BASE      (0x44E09000)
+#define UART1_BASE      (0x48022000)
+#define UART2_BASE      (0x48024000)
+#define UART3_BASE      (0x481A6000)
+#define UART4_BASE      (0x481A8000)
+#define UART5_BASE      (0x481AA000)
 
 #define UART0_PTR       ((UART_REG_T *)UART0_BASE)
 #define UART1_PTR       ((UART_REG_T *)UART1_BASE)

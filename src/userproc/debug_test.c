@@ -11,11 +11,11 @@ void test_sys_getsubdir_and_getfdir()
 	_memset(buf ,0 ,sizeof(buf)) ;
 	if(__getsubdir(buf ,sizeof(buf)) < 0)
 	{
-		kprintf("buf size not enough.\r\n") ;
+		printk("buf size not enough.\r\n") ;
 	}
 	put_str(buf) ;
 	put_str("\r\n") ;
-	kprintf("Split subdir list string.") ;
+	printk("Split subdir list string.") ;
 
 	char *delim = ";;\0" ;
 	char token[16] ;
@@ -29,17 +29,17 @@ void test_sys_getsubdir_and_getfdir()
 		put_str("\r\n\0") ;
 		put_str(token) ;
 	}
-	kprintf("__getsubdir Test end\r\n\r\n") ;
+	printk("__getsubdir Test end\r\n\r\n") ;
 
 	//
 	_memset(buf ,0 ,sizeof(buf)) ;
 	if(__getfdir(buf ,sizeof(buf)) < 0)
 	{
-		kprintf("buf size not enough.\r\n") ;
+		printk("buf size not enough.\r\n") ;
 	}
 	put_str(buf) ;
 	put_str("\r\n") ;
-	kprintf("Split file list string.") ;
+	printk("Split file list string.") ;
 
 	start = buf ;
 
@@ -51,7 +51,7 @@ void test_sys_getsubdir_and_getfdir()
 		put_str("\r\n\0") ;
 		put_str(token) ;		
 	}
-	kprintf("__getfdir Test end\r\n") ;
+	printk("__getfdir Test end\r\n") ;
 }
 
 

@@ -20,6 +20,7 @@
 #include "../driver/cm_per.h"
 #include "../driver/gpio_reg.h"
 #include "memory.h"
+#include "mmu.h"
 #include "file.h"
 #include "../klib/mem.h"
 
@@ -27,34 +28,38 @@
 
 int kernal_entry(void)
 {
+
+/***************************************************************************************/
+// mmu	
+/***************************************************************************************/
+	_memset((void *)FIRST_AREA_PADDR_PTR, 0, AREA_SIZE) ;
+	mmu_init() ;
+
+	printk("Enable MMU.\r\n") ;
+
 /***************************************************************************************/
 // Init Task First thread :Shell
 /***************************************************************************************/
-	kprintf("\r\nKernel Init start...\r\n") ;
+	printk("\r\nKernel Init start...\r\n") ;
 
-	kprintf("sp : %x ---CP15_c1 : %x\r\n" ,READ_SP() ,READ_CP15_c1());
-	kprintf("CPSR register %x\r\n", READ_CPSR());
-	kprintf("Exception Vector Base = %x\r\n",getIntVectorAddr());
-	kprintf("kernel_end address :%p\r\n" ,kernal_end) ;
-	kprintf("First area of memeory address start at :%p\r\n" ,FIRST_AREA_PTR) ;
+	printk("sp : %x ---CP15_c1 : %x\r\n" ,READ_SP() ,READ_CP15_c1());
+	printk("CPSR register %x\r\n", READ_CPSR());
+	printk("Exception Vector Base = %x\r\n",getIntVectorAddr());
+	printk("kernel_end address :%x\r\n" ,KERNEL_END_VADDR) ;
+	printk("First area of memeory address start at :%p\r\n" ,FIRST_AREA_VADDR_PTR) ;
 
 	usrLedInit();
-	kprintf("\nInitialize user leds...\r\n") ;
+	printk("\nInitialize user leds...\r\n") ;
 
 	interrupt_init();
-	kprintf("Init interrupt.\r\n");
+	printk("Init interrupt.\r\n");
 
 	OsTickInit(DMTIMER0_BASE_PTR_t);
 	enableOsTick(IRQ_NUM_TIMER0) ;
-	kprintf("Init Timer0 to switch tasks.\r\n");
-/***************************************************************************************/
-// Test	
-/***************************************************************************************/
-	_memset(FIRST_AREA_PTR, 0, AREA_SIZE) ;
-	mmu_init() ;
-	enable_mmu();
+	printk("Init Timer0 to switch tasks.\r\n");
 
-	kprintf("Enable MMU.\r\n") ;
+
+
 /***************************************************************************************/
 // Init memory-area lists and files
 /***************************************************************************************/
@@ -65,7 +70,7 @@ int kernal_entry(void)
 /***************************************************************************************/
 // Init Task First thread :Shell
 /***************************************************************************************/
-	kprintf("Init Tasks Shell...\r\n");
+	printk("Init Tasks Shell...\r\n");
 
 	task_init() ;
 	
@@ -75,7 +80,7 @@ int kernal_entry(void)
 /***************************************************************************************/
 // Start Sched
 /***************************************************************************************/
-	kprintf("Sched Starting...\r\n");
+	printk("Sched Starting...\r\n");
 
 	//設定要跳進去sched()的context
 	schedFuncContextPrepare();

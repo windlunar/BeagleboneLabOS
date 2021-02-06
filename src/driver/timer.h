@@ -52,10 +52,10 @@ typedef struct{
 
 
 
-#define DMTIMER0_BASE    0x44E05000
+#define DMTIMER0_BASE    (0x44E05000)
 #define DMTIMER0_BASE_PTR_t           ((volatile DMTIMER_T *)DMTIMER0_BASE)
 
-#define DMTIMER2_BASE    0x48040000
+#define DMTIMER2_BASE    (0x48040000)
 #define DMTIMER2_BASE_PTR_t           ((volatile DMTIMER_T *)DMTIMER2_BASE)
 /*****************************************************************************************/
 

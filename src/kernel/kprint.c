@@ -27,7 +27,7 @@ void print_char(int32_t character)
 }
 
 
-int32_t kprintf(const char *fmt, ...)
+int32_t printk(const char *fmt, ...)
 {
     /** __builtin_va_start初始化args, fmt指向輸入字串*/
     __builtin_va_list args ;

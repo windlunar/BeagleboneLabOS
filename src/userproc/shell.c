@@ -11,21 +11,20 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////
- //#include "../kernel/task.h"
- #include "../driver/uart.h"
- #include "../kernel/debug.h"
+ #include "../kernel/task.h"
+ #include "../kernel/kprint.h"
 ////////////////////////////////////////////////////////////////////////////////////
 
 void main_shell()
 {
+
+	draw_console();
+	uprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
 /***********************************************************************************/
 // Test
 /***********************************************************************************/
-	readCpsrMode();
-	kprintf("%x" ,*(uint32_t *)0x9ff52000) ;
+
 /***********************************************************************************/
-	draw_console();
-	uprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
 	uprintf("\r\nThe command line is the first process\r\n") ;
 
 	uprintf("\r\nThe task id :%d\r\n",__gettid()) ;

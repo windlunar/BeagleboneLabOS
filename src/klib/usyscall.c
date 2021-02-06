@@ -1,6 +1,6 @@
 
 #include "../klib/usyscall.h"
-
+#include "../klib/std_io.h"
 
 void __print_hello(uint32_t *input)
 {
@@ -37,6 +37,7 @@ int __do_taskCreate(void (*taskFunc)() ,int32_t prio)
     TASK_CONFIG config ;
     config.taskCallBack = taskFunc ;
     config.prio = prio ;
+    uprintf("Here #1\r\n") ;
     return syscall_do_taskCreate(&config) ;
 }
 

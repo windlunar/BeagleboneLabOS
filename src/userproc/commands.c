@@ -11,7 +11,7 @@ void lsdir()
 	_memset(buf ,0 ,sizeof(buf)) ;
 	if(__getsubdir(buf ,sizeof(buf)) < 0)
 	{
-		kprintf("buf size not enough.\r\n") ;
+		printk("buf size not enough.\r\n") ;
 	}
 
 	char *delim = ";;\0" ;
@@ -31,7 +31,7 @@ void lsdir()
 	_memset(buf ,0 ,sizeof(buf)) ;
 	if(__getfdir(buf ,sizeof(buf)) < 0)
 	{
-		kprintf("buf size not enough.\r\n") ;
+		printk("buf size not enough.\r\n") ;
 	}
 
 	start = buf ;

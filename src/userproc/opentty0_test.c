@@ -14,11 +14,11 @@ void tty0_test(void){
 
 	if(fd < 0)
 	{
-		kprintf("Error ,fd =%d ,halt\r\n" ,fd) ;
+		uprintf("Error ,fd =%d ,halt\r\n" ,fd) ;
 		for(;;) ;
 	}
 
-	kprintf("Successfully open tty0 ,fd =%d\r\n",fd) ;
+	uprintf("Successfully open tty0 ,fd =%d\r\n",fd) ;
 	__write(fd ,"Write tty0 test\r\n\0",18) ;
 
 	__exit();

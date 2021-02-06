@@ -8,11 +8,10 @@ SCHED_CONTEXT_t *schedFuncContextSPtr = (SCHED_CONTEXT_t *)KSTACK_SCHED_CONTEXT_
 
 // 沒有static會出錯
 typedef struct{
-	TASK_INFO_t *head
+	TASK_INFO_t *head ;
 }TASK_READY_LIST_HEAD_t ;
 
 TASK_READY_LIST_HEAD_t task_ready_list[MAXNUM_PRIORITY] ;
-//static TASK_INFO_t *task_ready_list_head[MAXNUM_PRIORITY] ;
 TASK_INFO_t *curr_running_task = NULL ;
 
 int32_t taskid = -1 ;
@@ -57,7 +56,7 @@ void sched(void)
 					//Switch to user mode and run the task
 					TaskRun((uint32_t *)_head->task_context) ;
 				}else{
-					kprintf("Error :The head in ready queue is not READY.\r\n") ;
+					printk("Error :The head in ready queue is not READY.\r\n") ;
 				}
 			}
 		}	
@@ -202,8 +201,8 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 void open_console_in_out(TASK_INFO_t *task)
 {
 // open console_in and console_out
-	if(file_open(FILE_CONSOLE_IN ,(void *)task) < 0) kprintf("Failed to open 'console_in'\r\n") ;
-	if(file_open(FILE_CONSOLE_OUT ,(void *)task) < 0) kprintf("Failed to open 'console_out'\r\n") ;
+	if(file_open(FILE_CONSOLE_IN ,(void *)task) < 0) printk("Failed to open 'console_in'\r\n") ;
+	if(file_open(FILE_CONSOLE_OUT ,(void *)task) < 0) printk("Failed to open 'console_out'\r\n") ;
 }
 
 
@@ -236,7 +235,7 @@ void task_enqueue(TASK_INFO_t *task)
 TASK_INFO_t *task_dequeue(int32_t prio)
 {
 	if(task_ready_list[prio].head == NULL){
-		kprintf("Task queue is empty\r\n") ;
+		printk("Task queue is empty\r\n") ;
 		return NULL;
 	}
 
@@ -268,13 +267,13 @@ void task_pop(TASK_INFO_t *task)
 
 	//list沒有node
 	if(task_ready_list[task->priority].head == NULL){
-		kprintf("Task queue is empty\r\n") ;
+		printk("Task queue is empty\r\n") ;
 		return;		
 	}
 
 	//list中只有自己
 	if(task_ready_list[task->priority].head->next_ptr == NULL){
-		kprintf("Only itself\r\n") ;
+		printk("Only itself\r\n") ;
 		task_ready_list[task->priority].head = NULL ;
 		return ;
 	}
@@ -291,32 +290,32 @@ void task_pop(TASK_INFO_t *task)
 void print_task_id_from_head(int32_t prio)
 {
 	if(task_ready_list[prio].head == NULL){
-		kprintf("Task queue is empty\r\n") ;
+		printk("Task queue is empty\r\n") ;
 		return;		
 	}
 	TASK_INFO_t *head = task_ready_list[prio].head ;
 	while(head->next_ptr != NULL)
 	{
-		kprintf("task id = %d\r\n" ,head->task_id) ;
+		printk("task id = %d\r\n" ,head->task_id) ;
 		head = head->next_ptr ;
 	}
-	kprintf("task id = %d\r\n\r\n" ,head->task_id) ;
+	printk("task id = %d\r\n\r\n" ,head->task_id) ;
 }
 
 
 void print_task_addr_from_head(int32_t prio)
 {
 	if(task_ready_list[prio].head == NULL){
-		kprintf("Task queue is empty\r\n") ;
+		printk("Task queue is empty\r\n") ;
 		return;		
 	}
 
 	TASK_INFO_t *head = task_ready_list[prio].head ;
-	kprintf("task_ready_list[prio].head addr =%p\r\n" ,&task_ready_list[prio].head) ;
+	printk("task_ready_list[prio].head addr =%p\r\n" ,&task_ready_list[prio].head) ;
 	while(head->next_ptr != NULL)
 	{
-		kprintf("task addr = %p\r\n" ,head) ;
+		printk("task addr = %p\r\n" ,head) ;
 		head = head->next_ptr ;
 	}
-	kprintf("task addr = %p\r\n\r\n" ,head) ;
+	printk("task addr = %p\r\n\r\n" ,head) ;
 }
