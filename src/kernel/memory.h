@@ -22,6 +22,8 @@ extern uint32_t *kernal_end ;
 #define BLK_SIZE	        (4096)	
 #define BLK_NUM_PER_PAGE    ((PAGE_SIZE)/(BLK_SIZE))    //256 blks
 
+#define KBLK_SIZE	        (16384)	
+#define KBLK_NUM_PER_PAGE    ((PAGE_SIZE)/(KBLK_SIZE))    //64 blks
 
 // 如果第一個area的adde = 0x82004000
 // 那128MB就是到 0x8a000000
@@ -55,7 +57,7 @@ struct PAGE_INFO{
     uint32_t *top ;
     uint32_t *free_start ;
 
-    void *blk_list_head ;    //在 page 中可用的起始位址 head
+    struct BLK_INFO *blk_list_head ;    //在 page 中可用的起始位址 head
     uint32_t no_free_blks ;
     uint32_t blk_not_init ;
 };
@@ -122,6 +124,9 @@ extern struct PAGE_INFO kpage;
 
 void kpage_struct_init() ;
 void kpage_blks_init();
+void *kblk_alloc() ;
+void kblk_free(void *address) ;
+void free_pgt (void *pgtbase) ;
 /****************************************************************************************/
 // alloc 小塊記憶體相關function
 /****************************************************************************************/

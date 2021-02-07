@@ -123,6 +123,7 @@ struct TASK_INFO
     int32_t priority ; 
     struct FILE *openfiles[MAX_FD] ;   // 打開的檔案
     struct DIR_NODE *cwdn ;            // current working dir node structure
+    uint32_t *pgtbase ;
 };
 
 

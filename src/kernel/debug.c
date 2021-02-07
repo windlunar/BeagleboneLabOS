@@ -143,42 +143,6 @@ void mem_area_alloc_free_test()
 }
 
 
-void mem_area_blk_init_test()
-{
-	print_free_area_list_from_head();
-
-	printk("Test alloc\r\n") ;
-
-	struct PAGE_INFO *mem_area = page_alloc() ;
-
-	print_free_area_list_from_head();
-	print_inuse_area_list_from_head();
-
-    blks_init(mem_area) ;
-
-    printk("Page's blk_list_head addr =%p\r\n",mem_area->blk_list_head) ;
-
-    uint32_t *head = mem_area->blk_list_head ;
-    while (head != NULL) {
-        printk("Page's blks link addr =%p ,%x\r\n",head ,*head) ;
-        head = (uint32_t *)*head ;
-    }
-    printk("Page's blks link addr =%p\r\n",head) ;
-
-    uint32_t *p1 = blk_alloc(mem_area) ;
-    printk("return ptr =%p\r\n" ,p1) ;
-    printk("blk head =%p\r\n",mem_area->blk_list_head) ;
-
-    uint32_t *p2 = blk_alloc(mem_area) ;
-    printk("return ptr =%p\r\n" ,p2) ;
-    printk("blk head =%p\r\n",mem_area->blk_list_head) ;
-
-
-    printk("Test free_blk\r\n") ;
-    free_blk(p2) ;
-    print_from_blk_head(mem_area) ;
-
-}
 
 
 void print_from_blk_head(struct PAGE_INFO *pg)

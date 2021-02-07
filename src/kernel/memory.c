@@ -7,6 +7,7 @@ uint32_t *kernal_end = (&_end) ;
 
 /****************************************************************************************/
 struct PAGE_INFO kpage;
+struct BLK_INFO *kblk_list_base = NULL ;
 struct PAGE_INFO *free_page_head = NULL;
 struct PAGE_INFO *inuse_page_head = NULL;
 struct PAGE_INFO *page_list[PAGE_NUM] ;   //存放在 kernel binary的bss segment中
@@ -243,7 +244,7 @@ struct PAGE_INFO
 
     int32_t n_blk = BLK_NUM_PER_PAGE ;
 
-    pg->blk_list_head = pg->pgstart + (BLK_SIZE / 4) ;
+    pg->blk_list_head = (struct BLK_INFO *)(pg->pgstart + (BLK_SIZE / 4)) ;
     n_blk = BLK_NUM_PER_PAGE ;
     
 
@@ -298,7 +299,7 @@ void *blk_alloc(struct PAGE_INFO *pg)
     pg->blk_list_head = ret->next ;
     ret->next->prev = NULL ;
 
-    return (void *)ret->start ;
+    return (void *)(ret->start) ;
 }
 
 
@@ -344,7 +345,6 @@ void put_to_blklist_end(struct PAGE_INFO *pg ,struct BLK_INFO *blk)
         pg->blk_list_head = (void *)blk ;
         return ;
     }
-    
     struct BLK_INFO *end = find_blk_list_end(pg) ;
 
     end->next = blk ;
@@ -359,6 +359,7 @@ struct BLK_INFO *which_blk(void *address)
     uint32_t page_start = ROUNDDOWN((uint32_t)address ,PAGE_SIZE) ;
 
     uint32_t index = ((blk_start - page_start) / BLK_SIZE) ;
+
     struct BLK_INFO *ret = ((struct BLK_INFO *)(page_start + BLK_SIZE) + index) ;
 
     return ret ;
@@ -417,21 +418,21 @@ void kpage_struct_init()
 void kpage_blks_init()
 {
     kpage.blk_list_head = (void *)(kpage.free_start) ;
-    struct BLK_INFO * head = (struct BLK_INFO *)(kpage.blk_list_head) ;
+    struct BLK_INFO *head = (struct BLK_INFO *)(kpage.blk_list_head) ;
 
-    kpage.free_start = (uint32_t *)(head + BLK_NUM_PER_PAGE) ;
+    kpage.free_start = (uint32_t *)(head + KBLK_NUM_PER_PAGE) ;
 
-    for ( int i = 0 ; i < BLK_NUM_PER_PAGE ;i++) {
+    for ( int i = 0 ; i < KBLK_NUM_PER_PAGE ;i++) {
         head[i].id = i ;
         head[i].status = FREE ;
-        head[i].start = kpage.pgstart + i * (BLK_SIZE / 4) ;
-        head[i].top = head[i].start + (BLK_SIZE - 4) ;
+        head[i].start = kpage.pgstart + i * (KBLK_SIZE / 4) ;
+        head[i].top = head[i].start + (KBLK_SIZE - 4) ;
         head[i].owner = &kpage ;
     
         if (i == 0) {
             head[i].prev = NULL ;
             head[i].next = &head[i+1] ;
-        } else if (i == BLK_NUM_PER_PAGE - 1){
+        } else if (i == KBLK_NUM_PER_PAGE - 1){
             head[i].prev = &head[i-1] ;
             head[i].next = NULL ;   
         } else {
@@ -440,20 +441,75 @@ void kpage_blks_init()
         }
     }
     kpage.blk_not_init == FALSE ;
+    kblk_list_base = &head[0] ;
 
     // cal usage
-    uint32_t end = ROUNDDOWN((uint32_t)kpage.free_start ,BLK_SIZE) ;
-    uint32_t index = (end - 0x82000000) / BLK_SIZE ;
+    uint32_t end = ROUNDUP((uint32_t)kpage.free_start ,KBLK_SIZE) ;
+    uint32_t index = (end - 0x82000000) >> 12 ;
 
-    for (int j ; j<=index; j++) {
+    for (int j ; j<index; j++) {
         head[j].status = FULL ;
     }
     
-    kpage.blk_list_head = (void *)&head[index+1] ;
+    kpage.blk_list_head = (void *)&head[index] ;
 
-    kpage.free_start = (uint32_t *)ROUNDUP((uint32_t)kpage.free_start ,BLK_SIZE) ;
+    kpage.free_start = (uint32_t *)ROUNDUP((uint32_t)kpage.free_start ,KBLK_SIZE) ;
 }
 
+
+
+void kblk_free(void *address)
+{
+    uint32_t blk_start = ROUNDDOWN((uint32_t)address ,BLK_SIZE) ;
+    struct BLK_INFO *target = NULL ;
+
+    for ( int i = 0 ; i < BLK_NUM_PER_PAGE ;i++) {
+        if (kblk_list_base[i].start == (uint32_t *)blk_start) {
+            target = &kblk_list_base[i] ;
+            break ;
+        }
+    }
+    
+    struct BLK_INFO *head = (struct BLK_INFO *)kpage.blk_list_head ;
+    struct BLK_INFO *end = NULL ;
+
+    while (head->next != NULL) {
+        head = head->next ;
+    }
+    end = head ;
+
+    end->next = target ;
+    target->prev = end ;
+    target->next = NULL ;
+}
+
+
+void *kblk_alloc()
+{
+    if (kpage.blk_list_head == NULL) {
+        printk("blk_list_head is empty.\r\n") ;
+    }
+
+    if (kpage.blk_list_head->next == NULL) {
+        printk("Last blk.\r\n") ;
+    }
+    struct BLK_INFO *ret = kpage.blk_list_head ;
+    kpage.blk_list_head = kpage.blk_list_head->next ;
+    kpage.blk_list_head->prev = NULL ;
+
+    ret->next = NULL ;
+    ret->prev = NULL ;
+
+    return (void *)(ret->start) ;
+
+}
+
+// free 16K (4 blks)
+void free_pgt (void *pgtbase)
+{
+    kblk_free(pgtbase) ;
+    
+}
 /****************************************************************************************/
 // alloc 小塊記憶體相關function
 // 都沒空間的話,要先呼叫 

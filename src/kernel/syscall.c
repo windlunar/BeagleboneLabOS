@@ -7,6 +7,7 @@
 #include "../klib/mem.h"
 #include "memory.h"
 #include "file.h"
+#include "mmu.h"
 
 
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
@@ -133,9 +134,19 @@ void __exit_handler(uint32_t *usrTaskContextOld)
 
     //釋放空間
     page_free(curr_ma) ;
+
+    //回收 pgt
+    free_pgt(curr_running_task->pgtbase) ;
   
     //curr_running_task->stk_bottom = NULL ;
     curr_running_task = choose_task() ;
+
+/************************************************************************/
+// Test
+/************************************************************************/
+	switch_mm(curr_running_task->pgtbase) ;
+/************************************************************************/
+
     set_context_sp((uint32_t *)curr_running_task->task_context) ;
 }
 
@@ -190,7 +201,6 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 	taskid++ ;
 	ntask->task_id = taskid;
 
-    //set_page_free_start(TASK_STACK_SIZE ,n_pg) ;
     blks_init(n_pg) ;
 
     // 將子task放入 ready list中
@@ -201,8 +211,17 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     ntask->task_context->r0 = 0 ;
     struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = ntask->task_id ;
-    
+
+/************************************************************************/
+// Test
+/************************************************************************/
+	ntask->pgtbase = (uint32_t *)task_pgt_setup(n_pg->pgstart ,n_pg->top) ;
+    set_pte(curr_pg->pgstart ,curr_pg->top ,ntask->pgtbase) ;
+/************************************************************************/
+
 }
+
+
 /************************************************************************************************/
 void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
 {
@@ -222,7 +241,6 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
     old_context->r0 = ntask->task_id ;
 
     // init blocks
-    // 總共應該會有56個blks = (4096-512)/64
     blks_init(pg) ;
 
     open_console_in_out(ntask) ;
@@ -231,6 +249,12 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
     ntask->cwdn = curr_running_task->cwdn ;
 
     task_enqueue(ntask) ; 
+
+/************************************************************************/
+// Test
+/************************************************************************/
+	ntask->pgtbase = (uint32_t *)task_pgt_setup(pg->pgstart ,pg->top) ;
+/************************************************************************/
 }
 
 

@@ -1,6 +1,7 @@
 
 #include "task.h"
 #include "../klib/mem.h"
+#include "mmu.h"
 
 
 
@@ -25,6 +26,14 @@ void sched (void)
 {
 	//choose a task to run
 	curr_running_task = choose_task() ;
+
+/************************************************************************/
+// Test
+/************************************************************************/
+	switch_mm(curr_running_task->pgtbase) ;
+	
+/************************************************************************/
+
 	TaskRun((uint32_t *)curr_running_task->task_context) ;
 }
 
@@ -137,7 +146,6 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 
     struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->pgstart) ;
 
-
     taskCreate(ntask ,taskFunc ,(void *)pg->pgstart ,prio);
 
     blks_init(pg) ;
@@ -148,13 +156,19 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
     ntask->cwdn = root ;
 
     task_enqueue(ntask) ; 
+
+/************************************************************************/
+// Test
+/************************************************************************/
+	ntask->pgtbase = (uint32_t *)task_pgt_setup(pg->pgstart ,pg->top) ;
+/************************************************************************/
 }
 
 
 void set_page_free_start(uint32_t mv_bytes ,struct PAGE_INFO *pg)
 {
     pg->free_start = (uint32_t *)((uint32_t)pg->free_start + mv_bytes) ;  
-    pg->blk_list_head = pg->free_start ;	
+    pg->blk_list_head = (struct BLK_INFO *)pg->free_start ;	
 }
 
 void open_console_in_out(struct TASK_INFO *task)

@@ -28,7 +28,7 @@ pte_paddr_t gen_pte_addr (pgt_paddr_t pgt_base ,vaddr_t vaddr)
 // AP_USER_RW          (0x03)  // privilege R/W
 // AP_USER_R_ONLY      (0x02)  // privilege R/W
 // AP_USER_PROHIBIT    (0x01)  // privilege R/W
-void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart)
+void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart ,uint32_t pgt_base)
 {
     pte_t pte ;
     pte_paddr_t pte_paddr ;
@@ -56,22 +56,25 @@ void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart)
         pte |= XN_DEFAULT << XN_SHIFT ;
         pte |= S_BIT << S_SHIFT ;
 
-        pte_paddr = gen_pte_addr(L1_PAGE_TABLE_BASE_PADDR ,vstart + (i << 20)) ;
+        pte_paddr = gen_pte_addr(pgt_base ,vstart + (i << 20)) ;
         _memset((void *)(pte_paddr_t *) pte_paddr ,0 ,4) ;
         *(pte_paddr_t *) pte_paddr = pte ;
+        //printk("pte addr =%p ,pte content =%x\r\n" ,(pte_paddr_t *) pte_paddr ,*(pte_paddr_t *) pte_paddr) ;
     }
+    
 }
 
 
 
 void mem_map (void)
 {
-    pte_init(0x00000000 ,0x80000000 ,AP_USER_PROHIBIT ,0x00000000) ;
-    pte_init(0x80000000 ,0x82000000 ,AP_USER_PROHIBIT ,0x80000000) ;
-    pte_init(0x82000000 ,0x82100000 ,AP_USER_R_ONLY ,0x82000000) ;
-    pte_init(0x82100000 ,0x90000000 ,AP_USER_RW ,0x82100000) ;
-    pte_init(0x90000000 ,0x9df00000 ,AP_USER_RW ,0x90000000) ;
-    pte_init(0x9df00000 ,0xa0000000 ,AP_USER_R_ONLY ,0x9df00000) ;
+    uint32_t pgt_base = L1_PAGE_TABLE_BASE_PADDR ;
+    pte_init(0x00000000 ,0x80000000 ,AP_USER_PROHIBIT ,0x00000000 ,pgt_base) ;
+    pte_init(0x80000000 ,0x82000000 ,AP_USER_PROHIBIT ,0x80000000 ,pgt_base) ;
+    pte_init(0x82000000 ,0x82100000 ,AP_USER_R_ONLY ,0x82000000 ,pgt_base) ;
+    pte_init(0x82100000 ,0x90000000 ,AP_USER_RW ,0x82100000 ,pgt_base) ;
+    pte_init(0x90000000 ,0x9df00000 ,AP_USER_RW ,0x90000000 ,pgt_base) ;
+    pte_init(0x9df00000 ,0xa0000000 ,AP_USER_R_ONLY ,0x9df00000 ,pgt_base) ;
 }
 
 //要先disable mmu再開啟
@@ -188,4 +191,57 @@ uint32_t get_domain(void)
     );
 	
 	return domain;
+}
+
+
+void pgt_base_setup(uint32_t *base)
+{
+    pgt_paddr_t pgtb = (pgt_paddr_t)base ;
+    asm volatile(
+        "stmfd sp! ,{r0}\n\t"
+        "mov r0 ,%0\n\t"
+        "mcr p15 ,0 ,%0 ,c2 ,c0 ,0\n\t"       // 設定 page table base, CP15的c2 register保存
+        "ldmfd sp! ,{r0}\n\t"
+        :
+        :"r" (pgtb)
+        :
+    ) ;
+}
+
+
+// page table要align 16K ,所以分配4個block(4K)
+void *task_pgt_setup (void *pgstart ,void *pgtop)
+{
+    int pgt_size = 4 * page_num_cal(0x00000000 ,0xa0000000) ;
+
+    void *pgt_base = kblk_alloc() ;
+
+    pte_init(0x00000000 ,0x82000000 ,AP_USER_R_ONLY ,0x00000000 ,(uint32_t)pgt_base) ;
+    pte_init(0x82000000 ,0xa0000000 ,AP_USER_R_ONLY ,0x82000000 ,(uint32_t)pgt_base) ;
+
+    pte_init((paddr_t)pgstart 
+            ,(paddr_t)pgtop 
+            ,AP_USER_RW 
+            ,(vaddr_t)pgstart
+            ,(uint32_t)pgt_base) ;
+
+    return pgt_base ;
+}
+
+
+void set_pte (void *pgstart ,void *pgtop ,void *pgt_base)
+{
+    pte_init((paddr_t)pgstart 
+            ,(paddr_t)pgtop 
+            ,AP_USER_RW 
+            ,(vaddr_t)pgstart
+            ,(uint32_t)pgt_base) ;    
+}
+
+
+void switch_mm (uint32_t *base)
+{
+    invalidate_tlb() ;
+
+    pgt_base_setup(base) ;
 }

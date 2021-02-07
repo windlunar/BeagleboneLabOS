@@ -67,8 +67,7 @@ int kernal_entry(void)
 	page_list_init();
 
 	kpage_blks_init() ;
-
-	//for(;;) ;
+	
 	file_in_ram_init() ;
 
 /***************************************************************************************/

@@ -131,7 +131,7 @@ typedef unsigned int pgt_paddr_t ;  // page table addr
 /****************************************************************************************/
 pte_t gen_pte (paddr_t paddr) ;
 pte_paddr_t gen_pte_addr (pgt_paddr_t pgt_base ,vaddr_t vaddr) ;
-void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart) ;
+void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart ,uint32_t pgt_base) ;
 void mem_map (void);
 void mmu_init (void) ;
 void mmu_enable (void) ;
@@ -142,5 +142,9 @@ uint32_t get_pgt_base(void);
 void set_domain(void) ;
 uint32_t get_domain(void);
 
+void pgt_base_setup(uint32_t *base) ;
+void *task_pgt_setup (void *pgstart ,void *pgtop) ;
+void switch_mm (uint32_t *base);
+void set_pte (void *pgstart ,void *pgtop ,void *pgt_base) ;
 
 #endif
