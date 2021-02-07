@@ -32,7 +32,7 @@ int kernal_entry(void)
 /***************************************************************************************/
 // mmu	
 /***************************************************************************************/
-	_memset((void *)KERN_PADDR_PTR, 0, AREA_SIZE) ;
+	_memset((void *)KERN_PADDR_PTR, 0, BLK_SIZE) ;
 	mmu_init() ;
 
 	printk("Enable MMU.\r\n") ;

@@ -13,18 +13,15 @@ extern uint32_t *kernal_end ;
 #define KERNEL_END_PADDR    (uint32_t)kernal_end
 #define KERNEL_END_VADDR    (KERNEL_END_PADDR)
 
-
-
-//#define AREA_SIZE	        (65536)	// 4096 * 16 = 65536(0x10000) bytes(64KB) 
-//#define AREA_SIZE	        (0x100000)	
-#define AREA_SIZE	        (8192)	
 #define PAGE_SIZE           (0x100000) // 1M
 #define PAGE_NUM            (446) //0x82100000 ~ 0x9df00000
 
-#define KB_SIZE             (1024)
-#define MB_SIZE             (1024 * 1024)
-#define VALUABLE_MEM_SIZE   (128 * 1024 * 1024)  //128 MB
-#define AREA_NUM            (VALUABLE_MEM_SIZE/(AREA_SIZE))  //2*1024個areas
+//#define BLK_SIZE	        (65536)	// 4096 * 16 = 65536(0x10000) bytes(64KB) 
+//#define BLK_SIZE	        (0x100000)	
+#define TASK_STACK_SIZE     (4096)
+#define BLK_SIZE	        (4096)	
+#define BLK_NUM_PER_PAGE    ((PAGE_SIZE)/(BLK_SIZE))    //256 blks
+
 
 // 如果第一個area的adde = 0x82004000
 // 那128MB就是到 0x8a000000
@@ -41,8 +38,8 @@ extern uint32_t *kernal_end ;
 /****************************************************************************************/
 // Define page_status
 #define FREE    0
-#define INUSE_PARTIALLY_FREE    1
-#define INUSE_FULL  2
+#define INUSE    1
+#define FULL  2
 #define PAGE_FOR_TASK  3
 
 // 如果是last node ,則 next = NULL
@@ -52,13 +49,14 @@ struct PAGE_INFO{
     struct PAGE_INFO *prev ;
     uint32_t page_status;
     uint32_t page_id ;
-    uint32_t *m_start ;
+    uint32_t *pgstart ;
     uint32_t *task_stk_top ;    //指向可用的stack top
     uint32_t *top ;
-    uint32_t *m_free_start ;
-    uint32_t *this_info_location ;
+    uint32_t *free_start ;
 
-    uint32_t *blk_head_ptr ;    //在 page 中可用的起始位址 head
+    void *blk_list_head ;    //在 page 中可用的起始位址 head
+    uint32_t no_free_blks ;
+    uint32_t blk_not_init ;
     uint32_t blksize ;
     uint32_t n_blk ;
 };
@@ -71,6 +69,18 @@ extern struct PAGE_INFO *page_list[PAGE_NUM] ;
 /****************************************************************************************/
 // Memory page Allocate Functions
 /****************************************************************************************/
+
+struct BLK_INFO
+{
+    struct PAGE_INFO *owner ;
+    struct BLK_INFO *next ;
+    struct BLK_INFO *prev ;
+    uint32_t *start ;
+    uint32_t *top ; //可用的最後四個bytes(指向四個bytes中位址最小的)
+    uint32_t status ;
+    uint32_t id ;
+};
+
 
 //主要
 void page_list_init();
@@ -93,17 +103,18 @@ struct PAGE_INFO *find_aval_inuse_page(void);
 #define DEFAULT_AVAL_BLK_SIZE   DEFAULT_BLK_SIZE-4
 
 //主要
-struct PAGE_INFO *memblks_init(struct PAGE_INFO *ma ,uint32_t blk_aval_size ,uint32_t num_blks);
-void *blk_alloc(struct PAGE_INFO *ma);
+struct PAGE_INFO *blks_init(struct PAGE_INFO *pg);
+void *blk_alloc(struct PAGE_INFO *pg);
 void *demand_a_blk();
-void free_blk(void *blk_aval_start);
+void free_blk(void *address);
 
 //次要
 struct PAGE_INFO *which_page(void *address);
-uint32_t *find_prev_blk(struct PAGE_INFO *memarea ,uint32_t *blk_start);
-void put_to_blklist_end(struct PAGE_INFO *ma ,uint32_t *blkstart);
-uint32_t is_blk_init(struct PAGE_INFO *ma) ;
-uint32_t no_blks(struct PAGE_INFO *ma);
+struct BLK_INFO *find_blk_list_end(struct PAGE_INFO *pg) ;
+struct BLK_INFO *which_blk(void *address) ;
+void put_to_blklist_end(struct PAGE_INFO *pg ,struct BLK_INFO *blk);
+uint32_t is_blk_init(struct PAGE_INFO *pg) ;
+uint32_t no_blks(struct PAGE_INFO *pg);
 /****************************************************************************************/
 // alloc 小塊記憶體相關function
 /****************************************************************************************/

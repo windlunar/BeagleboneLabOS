@@ -133,19 +133,16 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 {
     struct PAGE_INFO *pg = page_alloc();
     pg->page_status = PAGE_FOR_TASK ; 
-	_memset((void *)pg->m_start, 0, TASK_STACK_SIZE) ;
+	_memset((void *)pg->pgstart, 0, TASK_STACK_SIZE) ;
 
-    struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->m_start) ;
-	set_page_free_start(TASK_STACK_SIZE ,pg) ;
+    struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->pgstart) ;
 
 
-    taskCreate(ntask ,taskFunc ,(void *)pg->m_start ,prio);
+    taskCreate(ntask ,taskFunc ,(void *)pg->pgstart ,prio);
 
     // init blocks
     // 總共應該會有56個blks = (4096-512)/64
-    memblks_init(pg 
-                ,DEFAULT_AVAL_BLK_SIZE 
-                ,DEFAULT_TASK_MA_BLKNUM) ;
+    blks_init(pg) ;
 
     open_console_in_out(ntask) ;
 
@@ -158,8 +155,8 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 
 void set_page_free_start(uint32_t mv_bytes ,struct PAGE_INFO *pg)
 {
-    pg->m_free_start = (uint32_t *)((uint32_t)pg->m_free_start + mv_bytes) ;  
-    pg->blk_head_ptr = pg->m_free_start ;	
+    pg->free_start = (uint32_t *)((uint32_t)pg->free_start + mv_bytes) ;  
+    pg->blk_list_head = pg->free_start ;	
 }
 
 void open_console_in_out(struct TASK_INFO *task)

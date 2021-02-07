@@ -20,11 +20,11 @@ extern int32_t taskid;
 #define LOWEST_PRIORITY    MAXNUM_PRIORITY-1 
 #define HIGHEST_PRIORITY   0 
 /***********************************************************************************************/
-#define TASK_STACK_SIZE 4096
+
 #define TASK_NUM_MAX 32
 #define stktop2bottom(x)   (x)-(TASK_STACK_SIZE/4)+1
 #define stkbottom2top(x)   (x)+(TASK_STACK_SIZE/4)-1
-#define DEFAULT_TASK_MA_BLKNUM    (AREA_SIZE - TASK_STACK_SIZE)/(DEFAULT_AVAL_BLK_SIZE+4)
+
 
 /***********************************************************************************************/
 #define MAX_FD   8

@@ -783,7 +783,7 @@ b2000b80:	ebffff90 	bl	b20009c8 <print_inuse_area_list_from_head>
 b2000b84:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b2000b88:	e3a0103c 	mov	r1, #60	; 0x3c
 b2000b8c:	e51b000c 	ldr	r0, [fp, #-12]
-b2000b90:	eb000a4f 	bl	b20034d4 <memblks_init>
+b2000b90:	eb000a4f 	bl	b20034d4 <blks_init>
 b2000b94:	e51b300c 	ldr	r3, [fp, #-12]
 b2000b98:	e593301c 	ldr	r3, [r3, #28]
 b2000b9c:	e1a01003 	mov	r1, r3
@@ -3563,7 +3563,7 @@ b20034c8:	e28bd000 	add	sp, fp, #0
 b20034cc:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
 b20034d0:	e12fff1e 	bx	lr
 
-b20034d4 <memblks_init>:
+b20034d4 <blks_init>:
 b20034d4:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
 b20034d8:	e28db000 	add	fp, sp, #0
 b20034dc:	e24dd024 	sub	sp, sp, #36	; 0x24
@@ -3573,9 +3573,9 @@ b20034e8:	e50b2020 	str	r2, [fp, #-32]	; 0xffffffe0
 b20034ec:	e51b3018 	ldr	r3, [fp, #-24]	; 0xffffffe8
 b20034f0:	e5933020 	ldr	r3, [r3, #32]
 b20034f4:	e3530004 	cmp	r3, #4
-b20034f8:	9a000001 	bls	b2003504 <memblks_init+0x30>
+b20034f8:	9a000001 	bls	b2003504 <blks_init+0x30>
 b20034fc:	e51b3018 	ldr	r3, [fp, #-24]	; 0xffffffe8
-b2003500:	ea00002b 	b	b20035b4 <memblks_init+0xe0>
+b2003500:	ea00002b 	b	b20035b4 <blks_init+0xe0>
 b2003504:	e51b301c 	ldr	r3, [fp, #-28]	; 0xffffffe4
 b2003508:	e2833004 	add	r3, r3, #4
 b200350c:	e50b3014 	str	r3, [fp, #-20]	; 0xffffffec
@@ -3592,15 +3592,15 @@ b2003534:	e51b3008 	ldr	r3, [fp, #-8]
 b2003538:	e50b300c 	str	r3, [fp, #-12]
 b200353c:	e3a03001 	mov	r3, #1
 b2003540:	e50b3010 	str	r3, [fp, #-16]
-b2003544:	ea000015 	b	b20035a0 <memblks_init+0xcc>
+b2003544:	ea000015 	b	b20035a0 <blks_init+0xcc>
 b2003548:	e51b3010 	ldr	r3, [fp, #-16]
 b200354c:	e51b2020 	ldr	r2, [fp, #-32]	; 0xffffffe0
 b2003550:	e1520003 	cmp	r2, r3
-b2003554:	1a000003 	bne	b2003568 <memblks_init+0x94>
+b2003554:	1a000003 	bne	b2003568 <blks_init+0x94>
 b2003558:	e51b3008 	ldr	r3, [fp, #-8]
 b200355c:	e3a02000 	mov	r2, #0
 b2003560:	e5832000 	str	r2, [r3]
-b2003564:	ea000011 	b	b20035b0 <memblks_init+0xdc>
+b2003564:	ea000011 	b	b20035b0 <blks_init+0xdc>
 b2003568:	e51b200c 	ldr	r2, [fp, #-12]
 b200356c:	e51b3014 	ldr	r3, [fp, #-20]	; 0xffffffec
 b2003570:	e0823003 	add	r3, r2, r3
@@ -3618,7 +3618,7 @@ b200359c:	e50b3010 	str	r3, [fp, #-16]
 b20035a0:	e51b3010 	ldr	r3, [fp, #-16]
 b20035a4:	e51b2020 	ldr	r2, [fp, #-32]	; 0xffffffe0
 b20035a8:	e1520003 	cmp	r2, r3
-b20035ac:	2affffe5 	bcs	b2003548 <memblks_init+0x74>
+b20035ac:	2affffe5 	bcs	b2003548 <blks_init+0x74>
 b20035b0:	e51b3018 	ldr	r3, [fp, #-24]	; 0xffffffe8
 b20035b4:	e1a00003 	mov	r0, r3
 b20035b8:	e28bd000 	add	sp, fp, #0
@@ -3659,7 +3659,7 @@ b2003638:	e50b0020 	str	r0, [fp, #-32]	; 0xffffffe0
 b200363c:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b2003640:	e3a0103c 	mov	r1, #60	; 0x3c
 b2003644:	e51b0020 	ldr	r0, [fp, #-32]	; 0xffffffe0
-b2003648:	ebffffa1 	bl	b20034d4 <memblks_init>
+b2003648:	ebffffa1 	bl	b20034d4 <blks_init>
 b200364c:	e50b0020 	str	r0, [fp, #-32]	; 0xffffffe0
 b2003650:	e51b3020 	ldr	r3, [fp, #-32]	; 0xffffffe0
 b2003654:	e593301c 	ldr	r3, [r3, #28]
@@ -3682,7 +3682,7 @@ b2003694:	8a000012 	bhi	b20036e4 <blk_alloc+0x120>
 b2003698:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b200369c:	e3a0103c 	mov	r1, #60	; 0x3c
 b20036a0:	e51b0020 	ldr	r0, [fp, #-32]	; 0xffffffe0
-b20036a4:	ebffff8a 	bl	b20034d4 <memblks_init>
+b20036a4:	ebffff8a 	bl	b20034d4 <blks_init>
 b20036a8:	e50b0020 	str	r0, [fp, #-32]	; 0xffffffe0
 b20036ac:	e51b3020 	ldr	r3, [fp, #-32]	; 0xffffffe0
 b20036b0:	e593301c 	ldr	r3, [r3, #28]
@@ -3710,7 +3710,7 @@ b2003704:	e50b0020 	str	r0, [fp, #-32]	; 0xffffffe0
 b2003708:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b200370c:	e3a0103c 	mov	r1, #60	; 0x3c
 b2003710:	e51b0020 	ldr	r0, [fp, #-32]	; 0xffffffe0
-b2003714:	ebffff6e 	bl	b20034d4 <memblks_init>
+b2003714:	ebffff6e 	bl	b20034d4 <blks_init>
 b2003718:	e50b0020 	str	r0, [fp, #-32]	; 0xffffffe0
 b200371c:	e51b3020 	ldr	r3, [fp, #-32]	; 0xffffffe0
 b2003720:	e593301c 	ldr	r3, [r3, #28]
@@ -3892,7 +3892,7 @@ b20039a4:	e50b0008 	str	r0, [fp, #-8]
 b20039a8:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b20039ac:	e3a0103c 	mov	r1, #60	; 0x3c
 b20039b0:	e51b0008 	ldr	r0, [fp, #-8]
-b20039b4:	ebfffec6 	bl	b20034d4 <memblks_init>
+b20039b4:	ebfffec6 	bl	b20034d4 <blks_init>
 b20039b8:	e50b0008 	str	r0, [fp, #-8]
 b20039bc:	e51b0008 	ldr	r0, [fp, #-8]
 b20039c0:	ebfffeff 	bl	b20035c4 <blk_alloc>
@@ -3909,7 +3909,7 @@ b20039e8:	e50b0008 	str	r0, [fp, #-8]
 b20039ec:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b20039f0:	e3a0103c 	mov	r1, #60	; 0x3c
 b20039f4:	e51b0008 	ldr	r0, [fp, #-8]
-b20039f8:	ebfffeb5 	bl	b20034d4 <memblks_init>
+b20039f8:	ebfffeb5 	bl	b20034d4 <blks_init>
 b20039fc:	e50b0008 	str	r0, [fp, #-8]
 b2003a00:	e51b0008 	ldr	r0, [fp, #-8]
 b2003a04:	ebfffeee 	bl	b20035c4 <blk_alloc>
@@ -3924,7 +3924,7 @@ b2003a24:	1a000009 	bne	b2003a50 <demand_a_blk+0xcc>
 b2003a28:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b2003a2c:	e3a0103c 	mov	r1, #60	; 0x3c
 b2003a30:	e51b0008 	ldr	r0, [fp, #-8]
-b2003a34:	ebfffea6 	bl	b20034d4 <memblks_init>
+b2003a34:	ebfffea6 	bl	b20034d4 <blks_init>
 b2003a38:	e50b0008 	str	r0, [fp, #-8]
 b2003a3c:	e51b0008 	ldr	r0, [fp, #-8]
 b2003a40:	ebfffedf 	bl	b20035c4 <blk_alloc>
@@ -6484,7 +6484,7 @@ b2005fa4:	e5832014 	str	r2, [r3, #20]
 b2005fa8:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b2005fac:	e3a0103c 	mov	r1, #60	; 0x3c
 b2005fb0:	e51b0008 	ldr	r0, [fp, #-8]
-b2005fb4:	ebfff546 	bl	b20034d4 <memblks_init>
+b2005fb4:	ebfff546 	bl	b20034d4 <blks_init>
 b2005fb8:	e51b000c 	ldr	r0, [fp, #-12]
 b2005fbc:	eb0003c6 	bl	b2006edc <task_enqueue>
 b2005fc0:	e51b300c 	ldr	r3, [fp, #-12]
@@ -6554,7 +6554,7 @@ b20060b4:	e5832000 	str	r2, [r3]
 b20060b8:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b20060bc:	e3a0103c 	mov	r1, #60	; 0x3c
 b20060c0:	e51b000c 	ldr	r0, [fp, #-12]
-b20060c4:	ebfff502 	bl	b20034d4 <memblks_init>
+b20060c4:	ebfff502 	bl	b20034d4 <blks_init>
 b20060c8:	e51b0010 	ldr	r0, [fp, #-16]
 b20060cc:	eb000367 	bl	b2006e70 <open_console_in_out>
 b20060d0:	e30930e4 	movw	r3, #37092	; 0x90e4
@@ -7487,7 +7487,7 @@ b2006e28:	ebffff91 	bl	b2006c74 <taskCreate>
 b2006e2c:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b2006e30:	e3a0103c 	mov	r1, #60	; 0x3c
 b2006e34:	e51b0008 	ldr	r0, [fp, #-8]
-b2006e38:	ebfff1a5 	bl	b20034d4 <memblks_init>
+b2006e38:	ebfff1a5 	bl	b20034d4 <blks_init>
 b2006e3c:	e51b000c 	ldr	r0, [fp, #-12]
 b2006e40:	eb00000a 	bl	b2006e70 <open_console_in_out>
 b2006e44:	e3083ed4 	movw	r3, #36564	; 0x8ed4

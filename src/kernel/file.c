@@ -38,8 +38,8 @@ int path_tree_init()
 
     if (path_tree.ma == NULL) return -1 ;
 
-    path_tree.ma_aval_start = path_tree.ma->m_start ;
-    path_tree.ma->page_status = INUSE_FULL ;
+    path_tree.ma_aval_start = path_tree.ma->pgstart ;
+    path_tree.ma->page_status = FULL ;
 
     path_tree.n_nodes = 0 ;
     path_tree.root = NULL ;

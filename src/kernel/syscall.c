@@ -145,14 +145,14 @@ void __exit_handler(uint32_t *usrTaskContextOld)
 void __fork_handler(uint32_t *usrTaskContextOld)
 {    
     // Alloc 一個 Memory Page,並回傳描述該area的結構體 struct PAGE_INFO
-    // 並將該 area使用狀況設為 INUSE_FULL ,只屬於這個task使用
+    // 並將該 area使用狀況設為 FULL ,只屬於這個task使用
     struct PAGE_INFO *n_pg = page_alloc();
     n_pg->page_status = PAGE_FOR_TASK ;
-    _memset((void *)n_pg->m_start, 0, TASK_STACK_SIZE) ;
+    _memset((void *)n_pg->pgstart, 0, TASK_STACK_SIZE) ;
 
 
     // 分配 描述 task的TASK_INFO 結構體, 其起始位置設定為 stack bottom
-    struct TASK_INFO *ntask = (struct TASK_INFO *)(n_pg->m_start) ;
+    struct TASK_INFO *ntask = (struct TASK_INFO *)(n_pg->pgstart) ;
 
 
     // 找目前正在執行的task(父task)的stack空間屬於那一個 memory page
@@ -160,8 +160,8 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 
 
     // 複製父task使用的記憶體區段內的data給子task的記憶體區段, 包含stack空間內所有內容
-    _memcpy((void *)(n_pg->m_start)
-            ,(void *)(curr_pg->m_start)
+    _memcpy((void *)(n_pg->pgstart)
+            ,(void *)(curr_pg->pgstart)
             ,TASK_STACK_SIZE) ;
 
 
@@ -190,10 +190,8 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 	taskid++ ;
 	ntask->task_id = taskid;
 
-    set_page_free_start(TASK_STACK_SIZE ,n_pg) ;
-    memblks_init(n_pg 
-                ,DEFAULT_AVAL_BLK_SIZE 
-                ,DEFAULT_TASK_MA_BLKNUM) ;
+    //set_page_free_start(TASK_STACK_SIZE ,n_pg) ;
+    blks_init(n_pg) ;
 
     // 將子task放入 ready list中
     task_enqueue(ntask) ;
@@ -212,12 +210,10 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
 
     struct PAGE_INFO *pg = page_alloc();
     pg->page_status = PAGE_FOR_TASK ; 
-    _memset((void *)pg->m_start, 0, TASK_STACK_SIZE) ;
+    _memset((void *)pg->pgstart, 0, TASK_STACK_SIZE) ;
 
     // 把 TASK_INFO 結構放在該 memo區域的起始位址
-    struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->m_start) ;
-    set_page_free_start(TASK_STACK_SIZE ,pg) ;
-
+    struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->pgstart) ;
 
     taskCreate(ntask ,config->taskCallBack ,stktop2bottom(pg->task_stk_top) ,config->prio);
 
@@ -227,9 +223,7 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
 
     // init blocks
     // 總共應該會有56個blks = (4096-512)/64
-    memblks_init(pg 
-                ,DEFAULT_AVAL_BLK_SIZE 
-                ,DEFAULT_TASK_MA_BLKNUM) ;
+    blks_init(pg) ;
 
     open_console_in_out(ntask) ;
 
@@ -246,6 +240,7 @@ void __malloc_blk_handler(uint32_t *usrTaskContextOld)
     struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
 
     struct PAGE_INFO *curr_pg = which_page(curr_running_task->stk_bottom) ;
+
     old_context->r0 = (uint32_t)blk_alloc(curr_pg) ;
 }
 
@@ -260,7 +255,7 @@ void __malloc_mfree_blk_handler(uint32_t *usrTaskContextOld ,void *blk_aval_star
 void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
 {
     struct PAGE_INFO *curr_pg = which_page(curr_running_task->stk_bottom) ;
-    uint32_t *head = curr_pg->blk_head_ptr ;
+    uint32_t *head = curr_pg->blk_list_head ;
 
     while (*head != 0) {
         printk("blk addr =%p ,content =%x\r\n",head ,*head) ;
