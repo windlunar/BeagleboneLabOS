@@ -121,22 +121,29 @@ int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int3
 }
 
 // Create user task by kernel
+// ----------------------- offset = 0x100000 (1M)
+//	Free area for task
+// 
+// ----------------------- offset = task stack size
+//	task stack
+// ----------------------- offset = sizeof(struct TASK_INFO)
+// struct TASK_INFO
+// ----------------------- offset = 0
 int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 {
-    struct MEM_AREA_INFO *n_ma = alloc_mem_area();
-    n_ma->area_status = TASK_AREA ; 
-	_memset((void *)n_ma->m_start, 0, AREA_SIZE) ;
+    struct PAGE_INFO *pg = page_alloc();
+    pg->page_status = PAGE_FOR_TASK ; 
+	_memset((void *)pg->m_start, 0, TASK_STACK_SIZE) ;
 
-    struct TASK_INFO *ntask = (struct TASK_INFO *)(n_ma->m_start) ;
-    n_ma->m_aval_start = (uint32_t *)((uint32_t)n_ma->m_start + sizeof(struct TASK_INFO)) ;  
-    n_ma->blk_head_ptr = n_ma->m_aval_start ;
+    struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->m_start) ;
+	set_page_free_start(TASK_STACK_SIZE ,pg) ;
 
 
-    taskCreate(ntask ,taskFunc ,stktop2bottom(n_ma->m_top) ,prio);
+    taskCreate(ntask ,taskFunc ,(void *)pg->m_start ,prio);
 
     // init blocks
     // 總共應該會有56個blks = (4096-512)/64
-    memblks_init(n_ma 
+    memblks_init(pg 
                 ,DEFAULT_AVAL_BLK_SIZE 
                 ,DEFAULT_TASK_MA_BLKNUM) ;
 
@@ -149,6 +156,11 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 }
 
 
+void set_page_free_start(uint32_t mv_bytes ,struct PAGE_INFO *pg)
+{
+    pg->m_free_start = (uint32_t *)((uint32_t)pg->m_free_start + mv_bytes) ;  
+    pg->blk_head_ptr = pg->m_free_start ;	
+}
 
 void open_console_in_out(struct TASK_INFO *task)
 {

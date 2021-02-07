@@ -19,7 +19,7 @@ typedef unsigned int pgt_paddr_t ;  // page table addr
 /****************************************************************************************/
 #define L1_PAGE_PTE_BASE_MASK       (0xfff00000)
 #define L1_PAGE_PTE_BITS            (0x02)      //代表 1M page(section) ,只有一個level的轉換
-#define L1_PAGE_TABLE_BASE_PADDR          AFTER_KEND_PADDR
+#define L1_PAGE_TABLE_BASE_PADDR          KERN_PADDR
 #define L1_PAGE_TABLE_BASE_VADDR          (L1_PAGE_TABLE_BASE_PADDR)
 #define L1_PAGE_TABLE_BASE_MASK     (0xffffc000)
 
@@ -60,13 +60,13 @@ typedef unsigned int pgt_paddr_t ;  // page table addr
  * Kernel stack
  * ------------------------- 0x9df00000
  * 
- * Aval Space
+ * Free Space for tasks
  * 
  * ------------------------- 0x82100000
  * 放置 task_info ,page_info
  * 結構體
  * ------------------------- 0x820x0000 (目前是 0x82020000)
- * Kernel code and un-used
+ * Kernel code
  * ------------------------- 0x82000000
  * Un-used
  * ------------------------- 0x80000000
@@ -87,7 +87,7 @@ typedef unsigned int pgt_paddr_t ;  // page table addr
 #define DRAM_SPACE_START_VADDR      (0x80000000)
 #define MAP_START_VADDR             (0x00000000)   //vaddr從此處開始映射
 
-#define pstartend2pagenum(vstart ,vend)   ((ROUNDUP(vend ,PAGE_SIZE)-ROUNDDOWN(vstart ,PAGE_SIZE)) >> 20)   
+#define page_num_cal(vstart ,vend)   ((ROUNDUP(vend ,PAGE_SIZE)-ROUNDDOWN(vstart ,PAGE_SIZE)) >> 20)   
 /****************************************************************************************/
 // 獲得pte內容 ,PTE:
 //  -----------------------------------------------------------
@@ -135,11 +135,12 @@ void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart) ;
 void mem_map (void);
 void mmu_init (void) ;
 void mmu_enable (void) ;
+void invalidate_tlb(void) ;
 void mmu_disable(void) ;
 void set_pgt_base(void) ;
 uint32_t get_pgt_base(void);
 void set_domain(void) ;
 uint32_t get_domain(void);
-/****************************************************************************************/
+
 
 #endif

@@ -723,11 +723,11 @@ b2000a98:	ebffff68 	bl	b2000840 <print_free_area_list_from_head>
 b2000a9c:	e30801bc 	movw	r0, #33212	; 0x81bc
 b2000aa0:	e34b0200 	movt	r0, #45568	; 0xb200
 b2000aa4:	eb000724 	bl	b200273c <printk>
-b2000aa8:	eb000981 	bl	b20030b4 <alloc_mem_area>
+b2000aa8:	eb000981 	bl	b20030b4 <page_alloc>
 b2000aac:	e50b0008 	str	r0, [fp, #-8]
-b2000ab0:	eb00097f 	bl	b20030b4 <alloc_mem_area>
+b2000ab0:	eb00097f 	bl	b20030b4 <page_alloc>
 b2000ab4:	e50b000c 	str	r0, [fp, #-12]
-b2000ab8:	eb00097d 	bl	b20030b4 <alloc_mem_area>
+b2000ab8:	eb00097d 	bl	b20030b4 <page_alloc>
 b2000abc:	e50b0010 	str	r0, [fp, #-16]
 b2000ac0:	ebffff5e 	bl	b2000840 <print_free_area_list_from_head>
 b2000ac4:	ebffffbf 	bl	b20009c8 <print_inuse_area_list_from_head>
@@ -735,9 +735,9 @@ b2000ac8:	e30801cc 	movw	r0, #33228	; 0x81cc
 b2000acc:	e34b0200 	movt	r0, #45568	; 0xb200
 b2000ad0:	eb000719 	bl	b200273c <printk>
 b2000ad4:	e51b0008 	ldr	r0, [fp, #-8]
-b2000ad8:	eb000992 	bl	b2003128 <free_mem_area>
+b2000ad8:	eb000992 	bl	b2003128 <page_free>
 b2000adc:	e51b000c 	ldr	r0, [fp, #-12]
-b2000ae0:	eb000990 	bl	b2003128 <free_mem_area>
+b2000ae0:	eb000990 	bl	b2003128 <page_free>
 b2000ae4:	ebffff81 	bl	b20008f0 <print_free_area_list_from_end>
 b2000ae8:	ebffffb6 	bl	b20009c8 <print_inuse_area_list_from_head>
 b2000aec:	e51b3010 	ldr	r3, [fp, #-16]
@@ -776,7 +776,7 @@ b2000b64:	ebffff35 	bl	b2000840 <print_free_area_list_from_head>
 b2000b68:	e30801bc 	movw	r0, #33212	; 0x81bc
 b2000b6c:	e34b0200 	movt	r0, #45568	; 0xb200
 b2000b70:	eb0006f1 	bl	b200273c <printk>
-b2000b74:	eb00094e 	bl	b20030b4 <alloc_mem_area>
+b2000b74:	eb00094e 	bl	b20030b4 <page_alloc>
 b2000b78:	e50b000c 	str	r0, [fp, #-12]
 b2000b7c:	ebffff2f 	bl	b2000840 <print_free_area_list_from_head>
 b2000b80:	ebffff90 	bl	b20009c8 <print_inuse_area_list_from_head>
@@ -1217,7 +1217,7 @@ b20011fc:	e8bd8800 	pop	{fp, pc}
 b2001200 <path_tree_init>:
 b2001200:	e92d4800 	push	{fp, lr}
 b2001204:	e28db004 	add	fp, sp, #4
-b2001208:	eb0007a9 	bl	b20030b4 <alloc_mem_area>
+b2001208:	eb0007a9 	bl	b20030b4 <page_alloc>
 b200120c:	e1a02000 	mov	r2, r0
 b2001210:	e30930e8 	movw	r3, #37096	; 0x90e8
 b2001214:	e34b3200 	movt	r3, #45568	; 0xb200
@@ -2950,7 +2950,7 @@ b2002b9c:	eb00126a 	bl	b200754c <enableOsTick>
 b2002ba0:	e30806a0 	movw	r0, #34464	; 0x86a0
 b2002ba4:	e34b0200 	movt	r0, #45568	; 0xb200
 b2002ba8:	ebfffee3 	bl	b200273c <printk>
-b2002bac:	eb00007c 	bl	b2002da4 <mem_areas_list_init>
+b2002bac:	eb00007c 	bl	b2002da4 <page_list_init>
 b2002bb0:	ebfff92f 	bl	b2001074 <file_in_ram_init>
 b2002bb4:	e30806c0 	movw	r0, #34496	; 0x86c0
 b2002bb8:	e34b0200 	movt	r0, #45568	; 0xb200
@@ -3083,7 +3083,7 @@ b2002d98:	e28bd000 	add	sp, fp, #0
 b2002d9c:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
 b2002da0:	e12fff1e 	bx	lr
 
-b2002da4 <mem_areas_list_init>:
+b2002da4 <page_list_init>:
 b2002da4:	e92d4810 	push	{r4, fp, lr}
 b2002da8:	e28db008 	add	fp, sp, #8
 b2002dac:	e24dd014 	sub	sp, sp, #20
@@ -3094,7 +3094,7 @@ b2002dbc:	e34b2200 	movt	r2, #45568	; 0xb200
 b2002dc0:	e5832000 	str	r2, [r3]
 b2002dc4:	e3a03000 	mov	r3, #0
 b2002dc8:	e50b3010 	str	r3, [fp, #-16]
-b2002dcc:	ea0000ad 	b	b2003088 <mem_areas_list_init+0x2e4>
+b2002dcc:	ea0000ad 	b	b2003088 <page_list_init+0x2e4>
 b2002dd0:	e30930f8 	movw	r3, #37112	; 0x90f8
 b2002dd4:	e34b3200 	movt	r3, #45568	; 0xb200
 b2002dd8:	e51b2010 	ldr	r2, [fp, #-16]
@@ -3214,7 +3214,7 @@ b2002f9c:	e5832000 	str	r2, [r3]
 b2002fa0:	e51b3010 	ldr	r3, [fp, #-16]
 b2002fa4:	e30027ff 	movw	r2, #2047	; 0x7ff
 b2002fa8:	e1530002 	cmp	r3, r2
-b2002fac:	1a000008 	bne	b2002fd4 <mem_areas_list_init+0x230>
+b2002fac:	1a000008 	bne	b2002fd4 <page_list_init+0x230>
 b2002fb0:	e30930f8 	movw	r3, #37112	; 0x90f8
 b2002fb4:	e34b3200 	movt	r3, #45568	; 0xb200
 b2002fb8:	e51b2010 	ldr	r2, [fp, #-16]
@@ -3223,7 +3223,7 @@ b2002fc0:	e0020291 	mul	r2, r1, r2
 b2002fc4:	e0833002 	add	r3, r3, r2
 b2002fc8:	e3a02000 	mov	r2, #0
 b2002fcc:	e5832000 	str	r2, [r3]
-b2002fd0:	ea00000d 	b	b200300c <mem_areas_list_init+0x268>
+b2002fd0:	ea00000d 	b	b200300c <page_list_init+0x268>
 b2002fd4:	e51b3010 	ldr	r3, [fp, #-16]
 b2002fd8:	e2833001 	add	r3, r3, #1
 b2002fdc:	e3a02028 	mov	r2, #40	; 0x28
@@ -3240,7 +3240,7 @@ b2003004:	e0833001 	add	r3, r3, r1
 b2003008:	e5832000 	str	r2, [r3]
 b200300c:	e51b3010 	ldr	r3, [fp, #-16]
 b2003010:	e3530000 	cmp	r3, #0
-b2003014:	1a000009 	bne	b2003040 <mem_areas_list_init+0x29c>
+b2003014:	1a000009 	bne	b2003040 <page_list_init+0x29c>
 b2003018:	e30930f8 	movw	r3, #37112	; 0x90f8
 b200301c:	e34b3200 	movt	r3, #45568	; 0xb200
 b2003020:	e51b2010 	ldr	r2, [fp, #-16]
@@ -3250,7 +3250,7 @@ b200302c:	e0833002 	add	r3, r3, r2
 b2003030:	e2833004 	add	r3, r3, #4
 b2003034:	e3a02000 	mov	r2, #0
 b2003038:	e5832000 	str	r2, [r3]
-b200303c:	ea00000e 	b	b200307c <mem_areas_list_init+0x2d8>
+b200303c:	ea00000e 	b	b200307c <page_list_init+0x2d8>
 b2003040:	e51b3010 	ldr	r3, [fp, #-16]
 b2003044:	e2433001 	sub	r3, r3, #1
 b2003048:	e3a02028 	mov	r2, #40	; 0x28
@@ -3271,8 +3271,8 @@ b2003080:	e2833001 	add	r3, r3, #1
 b2003084:	e50b3010 	str	r3, [fp, #-16]
 b2003088:	e51b3010 	ldr	r3, [fp, #-16]
 b200308c:	e3530b02 	cmp	r3, #2048	; 0x800
-b2003090:	baffff4e 	blt	b2002dd0 <mem_areas_list_init+0x2c>
-b2003094:	eb000006 	bl	b20030b4 <alloc_mem_area>
+b2003090:	baffff4e 	blt	b2002dd0 <page_list_init+0x2c>
+b2003094:	eb000006 	bl	b20030b4 <page_alloc>
 b2003098:	e50b0014 	str	r0, [fp, #-20]	; 0xffffffec
 b200309c:	e51b3014 	ldr	r3, [fp, #-20]	; 0xffffffec
 b20030a0:	e3a02002 	mov	r2, #2
@@ -3281,7 +3281,7 @@ b20030a8:	e320f000 	nop	{0}
 b20030ac:	e24bd008 	sub	sp, fp, #8
 b20030b0:	e8bd8810 	pop	{r4, fp, pc}
 
-b20030b4 <alloc_mem_area>:
+b20030b4 <page_alloc>:
 b20030b4:	e92d4800 	push	{fp, lr}
 b20030b8:	e28db004 	add	fp, sp, #4
 b20030bc:	e24dd008 	sub	sp, sp, #8
@@ -3312,7 +3312,7 @@ b200311c:	e1a00003 	mov	r0, r3
 b2003120:	e24bd004 	sub	sp, fp, #4
 b2003124:	e8bd8800 	pop	{fp, pc}
 
-b2003128 <free_mem_area>:
+b2003128 <page_free>:
 b2003128:	e92d4800 	push	{fp, lr}
 b200312c:	e28db004 	add	fp, sp, #4
 b2003130:	e24dd008 	sub	sp, sp, #8
@@ -3320,12 +3320,12 @@ b2003134:	e50b0008 	str	r0, [fp, #-8]
 b2003138:	e51b3008 	ldr	r3, [fp, #-8]
 b200313c:	e5933008 	ldr	r3, [r3, #8]
 b2003140:	e3530000 	cmp	r3, #0
-b2003144:	0a000004 	beq	b200315c <free_mem_area+0x34>
+b2003144:	0a000004 	beq	b200315c <page_free+0x34>
 b2003148:	e51b0008 	ldr	r0, [fp, #-8]
 b200314c:	eb000061 	bl	b20032d8 <delete_from_inuse_list>
 b2003150:	e51b0008 	ldr	r0, [fp, #-8]
 b2003154:	eb000006 	bl	b2003174 <add_to_free_list_end>
-b2003158:	ea000002 	b	b2003168 <free_mem_area+0x40>
+b2003158:	ea000002 	b	b2003168 <page_free+0x40>
 b200315c:	e3080718 	movw	r0, #34584	; 0x8718
 b2003160:	e34b0200 	movt	r0, #45568	; 0xb200
 b2003164:	ebfffd74 	bl	b200273c <printk>
@@ -3477,7 +3477,7 @@ b2003390:	e28bd000 	add	sp, fp, #0
 b2003394:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
 b2003398:	e12fff1e 	bx	lr
 
-b200339c <clean_mem_area_content>:
+b200339c <clean_area_content>:
 b200339c:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
 b20033a0:	e28db000 	add	fp, sp, #0
 b20033a4:	e24dd014 	sub	sp, sp, #20
@@ -3486,7 +3486,7 @@ b20033ac:	e51b3010 	ldr	r3, [fp, #-16]
 b20033b0:	e50b3008 	str	r3, [fp, #-8]
 b20033b4:	e3a03000 	mov	r3, #0
 b20033b8:	e50b300c 	str	r3, [fp, #-12]
-b20033bc:	ea000008 	b	b20033e4 <clean_mem_area_content+0x48>
+b20033bc:	ea000008 	b	b20033e4 <clean_area_content+0x48>
 b20033c0:	e51b3008 	ldr	r3, [fp, #-8]
 b20033c4:	e3a02000 	mov	r2, #0
 b20033c8:	e5832000 	str	r2, [r3]
@@ -3498,50 +3498,50 @@ b20033dc:	e2833001 	add	r3, r3, #1
 b20033e0:	e50b300c 	str	r3, [fp, #-12]
 b20033e4:	e51b300c 	ldr	r3, [fp, #-12]
 b20033e8:	e3530901 	cmp	r3, #16384	; 0x4000
-b20033ec:	3afffff3 	bcc	b20033c0 <clean_mem_area_content+0x24>
+b20033ec:	3afffff3 	bcc	b20033c0 <clean_area_content+0x24>
 b20033f0:	e320f000 	nop	{0}
 b20033f4:	e320f000 	nop	{0}
 b20033f8:	e28bd000 	add	sp, fp, #0
 b20033fc:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
 b2003400:	e12fff1e 	bx	lr
 
-b2003404 <atleast_a_memarea_alloc>:
+b2003404 <atleast_a_page_alloc>:
 b2003404:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
 b2003408:	e28db000 	add	fp, sp, #0
 b200340c:	e30930e0 	movw	r3, #37088	; 0x90e0
 b2003410:	e34b3200 	movt	r3, #45568	; 0xb200
 b2003414:	e5933000 	ldr	r3, [r3]
 b2003418:	e3530000 	cmp	r3, #0
-b200341c:	1a000001 	bne	b2003428 <atleast_a_memarea_alloc+0x24>
+b200341c:	1a000001 	bne	b2003428 <atleast_a_page_alloc+0x24>
 b2003420:	e3a03000 	mov	r3, #0
-b2003424:	ea000000 	b	b200342c <atleast_a_memarea_alloc+0x28>
+b2003424:	ea000000 	b	b200342c <atleast_a_page_alloc+0x28>
 b2003428:	e3a03001 	mov	r3, #1
 b200342c:	e1a00003 	mov	r0, r3
 b2003430:	e28bd000 	add	sp, fp, #0
 b2003434:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
 b2003438:	e12fff1e 	bx	lr
 
-b200343c <find_ma_end>:
+b200343c <find_page_list_end>:
 b200343c:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
 b2003440:	e28db000 	add	fp, sp, #0
 b2003444:	e24dd014 	sub	sp, sp, #20
 b2003448:	e50b0010 	str	r0, [fp, #-16]
 b200344c:	e51b3010 	ldr	r3, [fp, #-16]
 b2003450:	e50b3008 	str	r3, [fp, #-8]
-b2003454:	ea000002 	b	b2003464 <find_ma_end+0x28>
+b2003454:	ea000002 	b	b2003464 <find_page_list_end+0x28>
 b2003458:	e51b3008 	ldr	r3, [fp, #-8]
 b200345c:	e5933000 	ldr	r3, [r3]
 b2003460:	e50b3008 	str	r3, [fp, #-8]
 b2003464:	e51b3008 	ldr	r3, [fp, #-8]
 b2003468:	e3530000 	cmp	r3, #0
-b200346c:	1afffff9 	bne	b2003458 <find_ma_end+0x1c>
+b200346c:	1afffff9 	bne	b2003458 <find_page_list_end+0x1c>
 b2003470:	e51b3008 	ldr	r3, [fp, #-8]
 b2003474:	e1a00003 	mov	r0, r3
 b2003478:	e28bd000 	add	sp, fp, #0
 b200347c:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
 b2003480:	e12fff1e 	bx	lr
 
-b2003484 <find_aval_inuse_memarea>:
+b2003484 <find_aval_inuse_page>:
 b2003484:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
 b2003488:	e28db000 	add	fp, sp, #0
 b200348c:	e24dd00c 	sub	sp, sp, #12
@@ -3551,12 +3551,12 @@ b2003498:	e5933000 	ldr	r3, [r3]
 b200349c:	e50b3008 	str	r3, [fp, #-8]
 b20034a0:	e51b3008 	ldr	r3, [fp, #-8]
 b20034a4:	e3530000 	cmp	r3, #0
-b20034a8:	0a000004 	beq	b20034c0 <find_aval_inuse_memarea+0x3c>
+b20034a8:	0a000004 	beq	b20034c0 <find_aval_inuse_page+0x3c>
 b20034ac:	e51b3008 	ldr	r3, [fp, #-8]
 b20034b0:	e3a02001 	mov	r2, #1
 b20034b4:	e5832008 	str	r2, [r3, #8]
 b20034b8:	e51b3008 	ldr	r3, [fp, #-8]
-b20034bc:	ea000000 	b	b20034c4 <find_aval_inuse_memarea+0x40>
+b20034bc:	ea000000 	b	b20034c4 <find_aval_inuse_page+0x40>
 b20034c0:	e3a03000 	mov	r3, #0
 b20034c4:	e1a00003 	mov	r0, r3
 b20034c8:	e28bd000 	add	sp, fp, #0
@@ -3654,7 +3654,7 @@ b2003624:	ea000055 	b	b2003780 <blk_alloc+0x1bc>
 b2003628:	e51b3020 	ldr	r3, [fp, #-32]	; 0xffffffe0
 b200362c:	e3530000 	cmp	r3, #0
 b2003630:	1a000014 	bne	b2003688 <blk_alloc+0xc4>
-b2003634:	ebfffe9e 	bl	b20030b4 <alloc_mem_area>
+b2003634:	ebfffe9e 	bl	b20030b4 <page_alloc>
 b2003638:	e50b0020 	str	r0, [fp, #-32]	; 0xffffffe0
 b200363c:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b2003640:	e3a0103c 	mov	r1, #60	; 0x3c
@@ -3705,7 +3705,7 @@ b20036f0:	1a000017 	bne	b2003754 <blk_alloc+0x190>
 b20036f4:	e51b3020 	ldr	r3, [fp, #-32]	; 0xffffffe0
 b20036f8:	e3a02002 	mov	r2, #2
 b20036fc:	e5832008 	str	r2, [r3, #8]
-b2003700:	ebfffe6b 	bl	b20030b4 <alloc_mem_area>
+b2003700:	ebfffe6b 	bl	b20030b4 <page_alloc>
 b2003704:	e50b0020 	str	r0, [fp, #-32]	; 0xffffffe0
 b2003708:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b200370c:	e3a0103c 	mov	r1, #60	; 0x3c
@@ -3741,7 +3741,7 @@ b2003780:	e1a00003 	mov	r0, r3
 b2003784:	e24bd004 	sub	sp, fp, #4
 b2003788:	e8bd8800 	pop	{fp, pc}
 
-b200378c <which_mem_area>:
+b200378c <which_page>:
 b200378c:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
 b2003790:	e28db000 	add	fp, sp, #0
 b2003794:	e24dd01c 	sub	sp, sp, #28
@@ -3756,20 +3756,20 @@ b20037b4:	e30930e0 	movw	r3, #37088	; 0x90e0
 b20037b8:	e34b3200 	movt	r3, #45568	; 0xb200
 b20037bc:	e5933000 	ldr	r3, [r3]
 b20037c0:	e50b3008 	str	r3, [fp, #-8]
-b20037c4:	ea000007 	b	b20037e8 <which_mem_area+0x5c>
+b20037c4:	ea000007 	b	b20037e8 <which_page+0x5c>
 b20037c8:	e51b3008 	ldr	r3, [fp, #-8]
 b20037cc:	e5933010 	ldr	r3, [r3, #16]
 b20037d0:	e51b2010 	ldr	r2, [fp, #-16]
 b20037d4:	e1520003 	cmp	r2, r3
-b20037d8:	0a000007 	beq	b20037fc <which_mem_area+0x70>
+b20037d8:	0a000007 	beq	b20037fc <which_page+0x70>
 b20037dc:	e51b3008 	ldr	r3, [fp, #-8]
 b20037e0:	e5933000 	ldr	r3, [r3]
 b20037e4:	e50b3008 	str	r3, [fp, #-8]
 b20037e8:	e51b3008 	ldr	r3, [fp, #-8]
 b20037ec:	e5933000 	ldr	r3, [r3]
 b20037f0:	e3530000 	cmp	r3, #0
-b20037f4:	1afffff3 	bne	b20037c8 <which_mem_area+0x3c>
-b20037f8:	ea000000 	b	b2003800 <which_mem_area+0x74>
+b20037f4:	1afffff3 	bne	b20037c8 <which_page+0x3c>
+b20037f8:	ea000000 	b	b2003800 <which_page+0x74>
 b20037fc:	e320f000 	nop	{0}
 b2003800:	e51b3008 	ldr	r3, [fp, #-8]
 b2003804:	e50b3014 	str	r3, [fp, #-20]	; 0xffffffec
@@ -3836,7 +3836,7 @@ b20038dc:	e51b3010 	ldr	r3, [fp, #-16]
 b20038e0:	e2433004 	sub	r3, r3, #4
 b20038e4:	e50b3008 	str	r3, [fp, #-8]
 b20038e8:	e51b0008 	ldr	r0, [fp, #-8]
-b20038ec:	ebffffa6 	bl	b200378c <which_mem_area>
+b20038ec:	ebffffa6 	bl	b200378c <which_page>
 b20038f0:	e50b000c 	str	r0, [fp, #-12]
 b20038f4:	e51b1008 	ldr	r1, [fp, #-8]
 b20038f8:	e51b000c 	ldr	r0, [fp, #-12]
@@ -3883,11 +3883,11 @@ b2003984 <demand_a_blk>:
 b2003984:	e92d4800 	push	{fp, lr}
 b2003988:	e28db004 	add	fp, sp, #4
 b200398c:	e24dd018 	sub	sp, sp, #24
-b2003990:	ebfffe9b 	bl	b2003404 <atleast_a_memarea_alloc>
+b2003990:	ebfffe9b 	bl	b2003404 <atleast_a_page_alloc>
 b2003994:	e1a03000 	mov	r3, r0
 b2003998:	e3530000 	cmp	r3, #0
 b200399c:	1a00000b 	bne	b20039d0 <demand_a_blk+0x4c>
-b20039a0:	ebfffdc3 	bl	b20030b4 <alloc_mem_area>
+b20039a0:	ebfffdc3 	bl	b20030b4 <page_alloc>
 b20039a4:	e50b0008 	str	r0, [fp, #-8]
 b20039a8:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b20039ac:	e3a0103c 	mov	r1, #60	; 0x3c
@@ -3899,12 +3899,12 @@ b20039c0:	ebfffeff 	bl	b20035c4 <blk_alloc>
 b20039c4:	e50b0018 	str	r0, [fp, #-24]	; 0xffffffe8
 b20039c8:	e51b3018 	ldr	r3, [fp, #-24]	; 0xffffffe8
 b20039cc:	ea000023 	b	b2003a60 <demand_a_blk+0xdc>
-b20039d0:	ebfffeab 	bl	b2003484 <find_aval_inuse_memarea>
+b20039d0:	ebfffeab 	bl	b2003484 <find_aval_inuse_page>
 b20039d4:	e50b0008 	str	r0, [fp, #-8]
 b20039d8:	e51b3008 	ldr	r3, [fp, #-8]
 b20039dc:	e3530000 	cmp	r3, #0
 b20039e0:	1a00000b 	bne	b2003a14 <demand_a_blk+0x90>
-b20039e4:	ebfffdb2 	bl	b20030b4 <alloc_mem_area>
+b20039e4:	ebfffdb2 	bl	b20030b4 <page_alloc>
 b20039e8:	e50b0008 	str	r0, [fp, #-8]
 b20039ec:	e3a02e3e 	mov	r2, #992	; 0x3e0
 b20039f0:	e3a0103c 	mov	r1, #60	; 0x3c
@@ -6362,7 +6362,7 @@ b2005dc4:	e34b3200 	movt	r3, #45568	; 0xb200
 b2005dc8:	e5933000 	ldr	r3, [r3]
 b2005dcc:	e5933008 	ldr	r3, [r3, #8]
 b2005dd0:	e1a00003 	mov	r0, r3
-b2005dd4:	ebfff66c 	bl	b200378c <which_mem_area>
+b2005dd4:	ebfff66c 	bl	b200378c <which_page>
 b2005dd8:	e50b0008 	str	r0, [fp, #-8]
 b2005ddc:	e30930e4 	movw	r3, #37092	; 0x90e4
 b2005de0:	e34b3200 	movt	r3, #45568	; 0xb200
@@ -6370,7 +6370,7 @@ b2005de4:	e5933000 	ldr	r3, [r3]
 b2005de8:	e1a00003 	mov	r0, r3
 b2005dec:	eb0004a7 	bl	b2007090 <task_pop>
 b2005df0:	e51b0008 	ldr	r0, [fp, #-8]
-b2005df4:	ebfff4cb 	bl	b2003128 <free_mem_area>
+b2005df4:	ebfff4cb 	bl	b2003128 <page_free>
 b2005df8:	eb000350 	bl	b2006b40 <choose_task>
 b2005dfc:	e1a02000 	mov	r2, r0
 b2005e00:	e30930e4 	movw	r3, #37092	; 0x90e4
@@ -6391,7 +6391,7 @@ b2005e30:	e92d4800 	push	{fp, lr}
 b2005e34:	e28db004 	add	fp, sp, #4
 b2005e38:	e24dd018 	sub	sp, sp, #24
 b2005e3c:	e50b0018 	str	r0, [fp, #-24]	; 0xffffffe8
-b2005e40:	ebfff49b 	bl	b20030b4 <alloc_mem_area>
+b2005e40:	ebfff49b 	bl	b20030b4 <page_alloc>
 b2005e44:	e50b0008 	str	r0, [fp, #-8]
 b2005e48:	e51b3008 	ldr	r3, [fp, #-8]
 b2005e4c:	e3a02003 	mov	r2, #3
@@ -6410,7 +6410,7 @@ b2005e7c:	e34b3200 	movt	r3, #45568	; 0xb200
 b2005e80:	e5933000 	ldr	r3, [r3]
 b2005e84:	e5933008 	ldr	r3, [r3, #8]
 b2005e88:	e1a00003 	mov	r0, r3
-b2005e8c:	ebfff63e 	bl	b200378c <which_mem_area>
+b2005e8c:	ebfff63e 	bl	b200378c <which_page>
 b2005e90:	e50b0010 	str	r0, [fp, #-16]
 b2005e94:	e51b3008 	ldr	r3, [fp, #-8]
 b2005e98:	e5930010 	ldr	r0, [r3, #16]
@@ -6510,7 +6510,7 @@ b2006004:	e50b0018 	str	r0, [fp, #-24]	; 0xffffffe8
 b2006008:	e50b101c 	str	r1, [fp, #-28]	; 0xffffffe4
 b200600c:	e51b301c 	ldr	r3, [fp, #-28]	; 0xffffffe4
 b2006010:	e50b3008 	str	r3, [fp, #-8]
-b2006014:	ebfff426 	bl	b20030b4 <alloc_mem_area>
+b2006014:	ebfff426 	bl	b20030b4 <page_alloc>
 b2006018:	e50b000c 	str	r0, [fp, #-12]
 b200601c:	e51b300c 	ldr	r3, [fp, #-12]
 b2006020:	e3a02003 	mov	r2, #3
@@ -6581,7 +6581,7 @@ b2006118:	e34b3200 	movt	r3, #45568	; 0xb200
 b200611c:	e5933000 	ldr	r3, [r3]
 b2006120:	e5933008 	ldr	r3, [r3, #8]
 b2006124:	e1a00003 	mov	r0, r3
-b2006128:	ebfff597 	bl	b200378c <which_mem_area>
+b2006128:	ebfff597 	bl	b200378c <which_page>
 b200612c:	e50b000c 	str	r0, [fp, #-12]
 b2006130:	e51b000c 	ldr	r0, [fp, #-12]
 b2006134:	ebfff522 	bl	b20035c4 <blk_alloc>
@@ -6615,7 +6615,7 @@ b2006190:	e34b3200 	movt	r3, #45568	; 0xb200
 b2006194:	e5933000 	ldr	r3, [r3]
 b2006198:	e5933008 	ldr	r3, [r3, #8]
 b200619c:	e1a00003 	mov	r0, r3
-b20061a0:	ebfff579 	bl	b200378c <which_mem_area>
+b20061a0:	ebfff579 	bl	b200378c <which_page>
 b20061a4:	e50b000c 	str	r0, [fp, #-12]
 b20061a8:	e51b300c 	ldr	r3, [fp, #-12]
 b20061ac:	e593301c 	ldr	r3, [r3, #28]
@@ -7452,7 +7452,7 @@ b2006d9c:	e28db004 	add	fp, sp, #4
 b2006da0:	e24dd010 	sub	sp, sp, #16
 b2006da4:	e50b0010 	str	r0, [fp, #-16]
 b2006da8:	e50b1014 	str	r1, [fp, #-20]	; 0xffffffec
-b2006dac:	ebfff0c0 	bl	b20030b4 <alloc_mem_area>
+b2006dac:	ebfff0c0 	bl	b20030b4 <page_alloc>
 b2006db0:	e50b0008 	str	r0, [fp, #-8]
 b2006db4:	e51b3008 	ldr	r3, [fp, #-8]
 b2006db8:	e3a02003 	mov	r2, #3
@@ -10025,10 +10025,10 @@ b2008ed8:	00000000 	andeq	r0, r0, r0
 b2008edc <irq_handler_array>:
 	...
 
-b20090dc <free_area_list_head>:
+b20090dc <free_page_head>:
 b20090dc:	00000000 	andeq	r0, r0, r0
 
-b20090e0 <inuse_area_list_head>:
+b20090e0 <inuse_page_head>:
 b20090e0:	00000000 	andeq	r0, r0, r0
 
 b20090e4 <curr_running_task>:
@@ -10037,7 +10037,7 @@ b20090e4:	00000000 	andeq	r0, r0, r0
 b20090e8 <path_tree>:
 	...
 
-b20090f8 <areas_list>:
+b20090f8 <page_list>:
 	...
 
 b201d0f8 <task_ready_list>:

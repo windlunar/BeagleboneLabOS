@@ -37,7 +37,6 @@ int __do_taskCreate(void (*taskFunc)() ,int32_t prio)
     struct TASK_ARGS config ;
     config.taskCallBack = taskFunc ;
     config.prio = prio ;
-    uprintf("Here #1\r\n") ;
     return syscall_do_taskCreate(&config) ;
 }
 

@@ -32,7 +32,7 @@ int kernal_entry(void)
 /***************************************************************************************/
 // mmu	
 /***************************************************************************************/
-	_memset((void *)AFTER_KEND_PADDR_PTR, 0, AREA_SIZE) ;
+	_memset((void *)KERN_PADDR_PTR, 0, AREA_SIZE) ;
 	mmu_init() ;
 
 	printk("Enable MMU.\r\n") ;
@@ -46,7 +46,7 @@ int kernal_entry(void)
 	printk("CPSR register %x\r\n", READ_CPSR());
 	printk("Exception Vector Base = %x\r\n",getIntVectorAddr());
 	printk("kernel_end address :%x\r\n" ,KERNEL_END_VADDR) ;
-	printk("First area of memeory address start at :%p\r\n" ,AFTER_KEND_VADDR_PTR) ;
+	printk("First page of memeory address start at :%p\r\n" ,KERN_VADDR_PTR) ;
 
 	usrLedInit();
 	printk("\nInitialize user leds...\r\n") ;
@@ -61,10 +61,9 @@ int kernal_entry(void)
 
 
 /***************************************************************************************/
-// Init memory-area lists and files
+// Init memory-page lists and files
 /***************************************************************************************/
-	mem_areas_list_init();
-
+	page_list_init();
 	file_in_ram_init() ;
 
 /***************************************************************************************/

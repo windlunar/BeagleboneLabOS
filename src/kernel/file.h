@@ -38,7 +38,7 @@ struct FILE
     struct FILE *next_sibling ;
     uint32_t type ;
 
-    struct _DIR_NODE *parent ;
+    struct DIR_NODE *parent ;
 
     int (*file_read)(uint8_t *rdbuf ,uint32_t n_bytes) ;
     int (*file_write)(uint8_t *wrbuf ,uint32_t n_bytes) ;
@@ -65,7 +65,7 @@ struct DIR_NODE
 
 struct DIRTREE_INFO
 {
-    struct MEM_AREA_INFO *ma ;
+    struct PAGE_INFO *ma ;
     void *ma_aval_start ;
     uint32_t n_nodes ;  // Number of nodes
     struct DIR_NODE *root ;

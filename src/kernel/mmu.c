@@ -45,7 +45,7 @@ void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart)
         ve = ROUNDDOWN(pend ,PAGE_SIZE) ;
         //page_num++ ;
     }
-    page_num += pstartend2pagenum(pstart ,pend) ;
+    page_num += page_num_cal(pstart ,pend) ;
 
     // 初始化 page table 的 pte
     for (int i=0 ; i<page_num; i++) { 
@@ -77,6 +77,7 @@ void mem_map (void)
 //要先disable mmu再開啟
 void mmu_init (void)
 {
+    invalidate_tlb() ;
     mmu_disable() ;
     mem_map() ;
     set_domain() ;
@@ -100,11 +101,22 @@ void mmu_enable(void)
     ) ;
 }
 
-void mmu_disable(void)
+
+void invalidate_tlb(void)
 {
     asm volatile(
         "stmfd sp! ,{r0}\n\t"
         "mcr     p15, #0, r0, c8, c7, #0\n\t"
+        "dsb\n\t"
+        "ldmfd sp! ,{r0}\n\t"
+    ) ;    
+}
+
+
+void mmu_disable(void)
+{
+    asm volatile(
+        "stmfd sp! ,{r0}\n\t"
         "mrc     p15, #0, r0, c1, c0, #0\n\t"
         "bic     r0, r0, #0x01\n\t"
         "mcr     p15, #0, r0, c1, c0, #0\n\t"

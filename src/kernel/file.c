@@ -15,7 +15,7 @@ int file_in_ram_init()
 
     struct DIR_NODE *dev = create_path_node(root ,PATH_dev) ;
     if (dev == NULL) return -1 ;
-
+    
     struct DIR_NODE *fifo = create_path_node(root ,PATH_fifo) ;
     if (fifo == NULL) return -1 ;
 
@@ -34,11 +34,12 @@ int file_in_ram_init()
 
 int path_tree_init()
 {
-    path_tree.ma = alloc_mem_area() ;
+    path_tree.ma = page_alloc() ;
+
     if (path_tree.ma == NULL) return -1 ;
 
     path_tree.ma_aval_start = path_tree.ma->m_start ;
-    path_tree.ma->area_status = INUSE_FULL ;
+    path_tree.ma->page_status = INUSE_FULL ;
 
     path_tree.n_nodes = 0 ;
     path_tree.root = NULL ;

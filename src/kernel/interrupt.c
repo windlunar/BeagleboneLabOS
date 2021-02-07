@@ -224,9 +224,7 @@ void timer0_ISR(uint32_t *usrTaskContextOld)
 
 // 2021/1/15--Not work 
 void timer2_ISR(void)
-{
-	printk("Here\r\n") ;
-	
+{	
 	usrLedToggle(2);
 	usrLedToggle(1);
 	usrLedToggle(0);

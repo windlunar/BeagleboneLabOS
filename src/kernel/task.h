@@ -20,7 +20,7 @@ extern int32_t taskid;
 #define LOWEST_PRIORITY    MAXNUM_PRIORITY-1 
 #define HIGHEST_PRIORITY   0 
 /***********************************************************************************************/
-#define TASK_STACK_SIZE 2048
+#define TASK_STACK_SIZE 4096
 #define TASK_NUM_MAX 32
 #define stktop2bottom(x)   (x)-(TASK_STACK_SIZE/4)+1
 #define stkbottom2top(x)   (x)+(TASK_STACK_SIZE/4)-1
@@ -155,6 +155,7 @@ void open_console_in_out(struct TASK_INFO *task) ;
 void task_enqueue(struct TASK_INFO *task) ;
 struct TASK_INFO *task_dequeue(int32_t prio) ;
 void task_pop(struct TASK_INFO *task);
+void set_page_free_start(uint32_t mv_bytes ,struct PAGE_INFO *pg);
 /***********************************************************************************************/
 void print_task_id_from_head(int32_t prio) ;
 void print_task_addr_from_head(int32_t prio) ;
