@@ -24,7 +24,7 @@
 #include "file.h"
 #include "../klib/mem.h"
 
-
+extern void _reboot(void) ;
 
 int kernal_entry(void)
 {
@@ -33,7 +33,7 @@ int kernal_entry(void)
 // mmu	
 /***************************************************************************************/
 	_memset((void *)KERN_PADDR_PTR, 0, BLK_SIZE) ;
-	mmu_init() ;
+	//mmu_init() ;
 
 	printk("Enable MMU.\r\n") ;
 
@@ -58,7 +58,7 @@ int kernal_entry(void)
 	enableOsTick(IRQ_NUM_TIMER0) ;
 	printk("Init Timer0 to switch tasks.\r\n");
 
-
+	disable_watchdog(WATCHDOG_BASE) ;
 
 /***************************************************************************************/
 // Init memory-page lists and files

@@ -28,5 +28,6 @@ int __getsubdir(char *buf ,int n_bytes) ;
 int __getfdir(char *buf ,int n_bytes) ;
 int __chdir(char *subdirname) ;
 void __getfullpath(char *buf ,int n_bytes);
+void __restart(void) ;
 
 #endif

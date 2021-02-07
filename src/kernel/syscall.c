@@ -8,6 +8,7 @@
 #include "memory.h"
 #include "file.h"
 #include "mmu.h"
+#include "../driver/timer.h"
 
 
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
@@ -84,6 +85,10 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
 
     case SYSCALL_ID_getfullpath:
         __getfullpath_handler(usrTaskContextOld ,args) ;
+        break;
+
+    case SYSCALL_ID_restart:
+        __restart_handler() ;
         break;
 
     default:
@@ -279,13 +284,13 @@ void __malloc_mfree_blk_handler(uint32_t *usrTaskContextOld ,void *blk_aval_star
 void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
 {
     struct PAGE_INFO *curr_pg = which_page(curr_running_task->stk_bottom) ;
-    uint32_t *head = curr_pg->blk_list_head ;
+    struct BLK_INFO *head = curr_pg->blk_list_head ;
 
-    while (*head != 0) {
-        printk("blk addr =%p ,content =%x\r\n",head ,*head) ;
-        head = (uint32_t *)*head ;
+    while (head->next != NULL) {
+        printk("blk addr =%p ,start =%x\r\n",head ,head->start) ;
+        head = head->next ;
     }
-    printk("blk addr =%p ,content =%x\r\n",head ,*head) ;    
+    printk("blk addr =%p ,start =%x\r\n",head ,head->start) ;    
 }
 
 
@@ -459,4 +464,12 @@ void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args)
         _strcat(buf ,dirwk[j]->name) ;
         j-- ;
     }
+}
+
+
+
+void __restart_handler(void)
+{
+    set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
+    enable_watchdog(WATCHDOG_BASE) ;
 }

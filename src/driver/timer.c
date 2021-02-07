@@ -26,6 +26,8 @@ void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
 
     // Start
     DMTIMER_struct_ptr->TCLR |= (1 << 0); 
+
+    
 }
 
 
@@ -104,4 +106,40 @@ void disnableTimerAndUnbindISR(int32_t IRQ_ID)
 void __attribute__((optimize("O0"))) delay(uint32_t num)
 {
 	for (uint32_t count = 0 ;count < num ;count++) ;
+}
+
+/********************************************************************************/
+
+void reload_watchdog(uint32_t base)
+{
+    REG_RW(base + WDT_WLDR) = 0x01 ;
+    while (REG_RW(base + WDT_WWPS) & W_PEND_WLDR);
+}
+
+
+void disable_watchdog(uint32_t base)
+{
+    REG_RW(base + WDT_WSPR) = DISABLE_FIRST_WR;
+    while (REG_RW(base + WDT_WWPS) & W_PEND_WSPR) ;
+
+    REG_RW(base + WDT_WSPR) = DISABLE_SECOND_WR ;
+    while (REG_RW(base + WDT_WWPS) & W_PEND_WSPR) ;
+}
+
+
+void enable_watchdog(uint32_t base)
+{
+    REG_RW(base + WDT_WSPR) = ENABLE_FIRST_WR ;
+    while (REG_RW(base + WDT_WWPS) & W_PEND_WSPR) ;
+
+    REG_RW(base + WDT_WSPR) = ENABLE_SECOND_WR ;
+    while (REG_RW(base + WDT_WWPS) & W_PEND_WSPR) ;
+}
+
+
+
+void set_wdt_count(uint32_t base, uint32_t countVal)
+{
+    REG_RW(base + WDT_WCRR) = countVal;
+    while (REG_RW(base + WDT_WWPS) & W_PEND_WCRR) ;
 }

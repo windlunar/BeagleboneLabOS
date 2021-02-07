@@ -100,8 +100,6 @@ struct PAGE_INFO *find_aval_inuse_page(void);
 /****************************************************************************************/
 // alloc block
 /****************************************************************************************/
-#define DEFAULT_BLK_SIZE    64
-#define DEFAULT_AVAL_BLK_SIZE   DEFAULT_BLK_SIZE-4
 
 //主要
 struct PAGE_INFO *blks_init(struct PAGE_INFO *pg);

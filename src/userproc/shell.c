@@ -168,6 +168,13 @@ void main_shell()
 					put_str("\r\n\0") ;
 					put_str(cwd);
 					put_str("\r\n\0") ;
+
+				// command 'reboot'	
+				} else if (_strcmp(token ,"reboot\0") == 0) {
+					_memset(cwd ,0 ,SIZE_OF_CWD) ;
+					uprintf("Restart...\r\n") ;
+					__restart() ;
+					put_str("\r\n\0") ;
 				}
 
 				_memset((void *)cmdbuf ,0 ,SIZE_OF_CMDBUF) ;

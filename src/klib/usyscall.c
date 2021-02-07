@@ -156,3 +156,9 @@ void __getfullpath(char *buf ,int n_bytes)
     
     syscall_getfullpath(&args) ;
 }
+
+
+void __restart(void)
+{
+    syscall_restart() ;
+}

@@ -73,4 +73,32 @@ void reloadOsTick(uint32_t msecs) ;
 void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr);
 void enableOsTick(uint8_t irq_num) ;
 
+/*****************************************************************************************/
+
+#define WATCHDOG_BASE   (0x44E35000)
+#define WDT_WCRR        (0x28)
+#define WDT_WLDR        (0x2c)  //The Watchdog Load Register
+#define WDT_WTGR        (0x30)
+#define WDT_WWPS        (0x34)
+#define WDT_WSPR        (0x48)
+
+#define DISABLE_FIRST_WR    (0x0000AAAA)
+#define DISABLE_SECOND_WR   (0x00005555)
+#define ENABLE_FIRST_WR     (0x0000BBBB)
+#define ENABLE_SECOND_WR    (0x00004444)
+
+#define W_PEND_WCLR   (0x00000001)
+#define W_PEND_WCRR   (0x00000002)
+#define W_PEND_WLDR   (0x00000004)
+#define W_PEND_WTGR   (0x00000008)
+#define W_PEND_WSPR   (0x00000010)
+#define W_PEND_WDLY   (0x00000020)
+
+#define REG_RW(x)    (*((volatile uint32_t *)(x)))
+
+void reload_watchdog(uint32_t base) ;
+void disable_watchdog(unsigned int baseAdd) ;
+void enable_watchdog(uint32_t base) ;
+void set_wdt_count(uint32_t base, uint32_t countVal) ;
+
 #endif
