@@ -13,8 +13,8 @@ Feature:
 1. 有區分kernel模式與使用者模式(user mode) ,一般的task(process)運行在使用者模式 ,呼叫system call之後轉到kernel模式運行<br>
 2. 基於 Time slice 切換不同 task.<br>
 3. Priority-based round-robin multitasking.預設有0~4 ,5個priority.<br>
-4. MMU Enable.<br>
-5. 有簡易的 Memory分配機制.<br>
+4. MMU Enable. 每個task有自己的記憶體空間, 其他task無法寫入資料到自己的空間<br>
+5. 簡易的 Memory分配機制.<br>
 6. 有一個簡易的command line用於測試.<br>
 7. 有一個存在於記憶體中的類似檔案系統的小系統<br>
 
@@ -23,7 +23,7 @@ System call:
 
 目前有這些 system call (其實還有一個print_hello,是早期用於測試時第一個system call).<br>
 
-1. __yield :Task主動放棄CPU的使用權 ,切換其他的task運行.<br>
+1. __yield :Task主動放棄CPU的使用權 ,切換到其他的task運行.<br>
 2. __gettid :獲得現在正在執行的task的task id.<br>
 3. __exit :結束正在運行的task.<br>
 4. __fork :複製task自己 ,創造子task.<br>
