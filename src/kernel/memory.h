@@ -41,6 +41,7 @@ extern uint32_t *kernal_end ;
 #define INUSE    1
 #define FULL  2
 #define PAGE_FOR_TASK  3
+#define FOR_KERN    4
 
 // 如果是last node ,則 next = NULL
 // next 指向下一個node address
@@ -57,8 +58,6 @@ struct PAGE_INFO{
     void *blk_list_head ;    //在 page 中可用的起始位址 head
     uint32_t no_free_blks ;
     uint32_t blk_not_init ;
-    uint32_t blksize ;
-    uint32_t n_blk ;
 };
 
 extern struct PAGE_INFO *free_page_head;
@@ -115,6 +114,14 @@ struct BLK_INFO *which_blk(void *address) ;
 void put_to_blklist_end(struct PAGE_INFO *pg ,struct BLK_INFO *blk);
 uint32_t is_blk_init(struct PAGE_INFO *pg) ;
 uint32_t no_blks(struct PAGE_INFO *pg);
+
+/****************************************************************************************/
+// kernel page : 0x82000000 ~ 0x82100000
+/****************************************************************************************/
+extern struct PAGE_INFO kpage;
+
+void kpage_struct_init() ;
+void kpage_blks_init();
 /****************************************************************************************/
 // alloc 小塊記憶體相關function
 /****************************************************************************************/

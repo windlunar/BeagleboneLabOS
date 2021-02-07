@@ -6,6 +6,7 @@ uint32_t *kernal_end = (&_end) ;
 
 
 /****************************************************************************************/
+struct PAGE_INFO kpage;
 struct PAGE_INFO *free_page_head = NULL;
 struct PAGE_INFO *inuse_page_head = NULL;
 struct PAGE_INFO *page_list[PAGE_NUM] ;   //存放在 kernel binary的bss segment中
@@ -14,8 +15,7 @@ struct PAGE_INFO *page_list[PAGE_NUM] ;   //存放在 kernel binary的bss segmen
 // Memory Page Allocate
 /****************************************************************************************/
 //
-// 將所有memory page (1 page 其實就是一個page的大小)用link list串起來
-// A memoy Areas
+// 將所有memory page 用link list串起來
 //    
 //  |-------|
 //  | page  | 
@@ -26,12 +26,21 @@ struct PAGE_INFO *page_list[PAGE_NUM] ;   //存放在 kernel binary的bss segmen
 //  |-------|
 //  |       |
 //
+// A page(section)
+// ----------------------- offset = 0x100000 (1M)
+//	Free area for task
+// 
+// ----------------------- offset = task stack size = 4096 bytes
+//	task stack
+// ----------------------- offset = sizeof(struct TASK_INFO)
+// struct TASK_INFO
+// ----------------------- offset = 0
 void page_list_init()
 {
     for (int32_t j = 0; j < PAGE_NUM ;j++)
         page_list[j] = NULL ;
 
-    page_list[0] = (struct PAGE_INFO *)(KERN_PADDR_PTR + page_num_cal(0x00000000 ,0xa0000000)) ;
+    page_list[0] = (struct PAGE_INFO *)(kpage.free_start) ;
     free_page_head = page_list[0] ;
 
     for (int32_t i = 0; i < PAGE_NUM ;i++) {
@@ -44,10 +53,6 @@ void page_list_init()
         page_list[i]->free_start = page_list[i]->pgstart ;
         page_list[i]->no_free_blks = FALSE ;
         page_list[i]->blk_not_init = TRUE ;
-
-        //0 means blks not init
-        page_list[i]->blksize = 0 ; 
-        page_list[i]->n_blk = 0 ; 
 
         page_list[i+1] = page_list[i] + 1 ; // struct pointer + 1
 
@@ -62,8 +67,11 @@ void page_list_init()
         } else {
             page_list[i]->prev = page_list[i-1] ;
         }
-    }   
+    }  
+
+    kpage.free_start = (uint32_t *)(page_list[PAGE_NUM] + 1) ; 
 }
+
 
 
 struct PAGE_INFO *page_alloc(void)
@@ -217,22 +225,15 @@ struct PAGE_INFO *find_aval_inuse_page(void)
     return NULL ;
 }
 
-/***********************************************************************************************/
-//Blocks
-//    A memoy Page
-//  |-------|<-
-//  | blk   | ^
-//  |-------|<-->
-//  | blk   | ^
-//  |-------|<-->
-//  | blk   | ^   每個blk前四個byte為一個pointer, 指向下一個blk的起始位址 ,形成一個link list
-//  |-------|->
-//  |       |
-/****************************************************************************************/
-// Need to alloc a mem page fitst
-// (call page_alloc() first)
-// arg1 : 已經allocate的memory page (page_alloc()的回傳值)
-// arg2 : number of bytes
+
+// Blocks
+// ------------------------------------ page offset = 0x100000
+// Free blks
+// ------------------------------------ page offset = 0x3000
+// struct BLOCK_INFO(needs 2 blks)
+// ------------------------------------ page offset = 0x1000
+// For Task stack
+// ------------------------------------ page offset = 0
 struct PAGE_INFO 
 *blks_init(struct PAGE_INFO *pg)
 {
@@ -276,8 +277,6 @@ struct PAGE_INFO
 }
 
 // alloc a blk
-// page_list_init() -> page_alloc() -> blks_init() 
-// -> blk_alloc()
 void *blk_alloc(struct PAGE_INFO *pg)
 {
     if (pg == NULL)
@@ -376,6 +375,7 @@ void free_blk(void *address)
     put_to_blklist_end(pg ,blk) ;
 }
 
+
 uint32_t is_blk_init(struct PAGE_INFO *pg)
 {
     if (pg->blk_not_init) {
@@ -395,6 +395,64 @@ uint32_t no_blks(struct PAGE_INFO *pg)
     }
 }
 
+/****************************************************************************************/
+// kernel page : 0x82000000 ~ 0x82100000
+/****************************************************************************************/
+
+void kpage_struct_init()
+{
+    kpage.page_id = -1 ;
+    kpage.page_status = FOR_KERN ;
+    kpage.pgstart = (uint32_t *)0x82000000 ;
+    kpage.top = kpage.pgstart + (PAGE_SIZE-4) ;
+    kpage.task_stk_top = NULL ;
+    kpage.prev = NULL ;
+    kpage.next = NULL ;
+    kpage.free_start = (KERN_PADDR_PTR + page_num_cal(0x00000000 ,0xa0000000)) ;
+    kpage.blk_list_head = NULL ;
+    kpage.blk_not_init = TRUE ;
+    kpage.no_free_blks = FALSE ;
+}
+
+void kpage_blks_init()
+{
+    kpage.blk_list_head = (void *)(kpage.free_start) ;
+    struct BLK_INFO * head = (struct BLK_INFO *)(kpage.blk_list_head) ;
+
+    kpage.free_start = (uint32_t *)(head + BLK_NUM_PER_PAGE) ;
+
+    for ( int i = 0 ; i < BLK_NUM_PER_PAGE ;i++) {
+        head[i].id = i ;
+        head[i].status = FREE ;
+        head[i].start = kpage.pgstart + i * (BLK_SIZE / 4) ;
+        head[i].top = head[i].start + (BLK_SIZE - 4) ;
+        head[i].owner = &kpage ;
+    
+        if (i == 0) {
+            head[i].prev = NULL ;
+            head[i].next = &head[i+1] ;
+        } else if (i == BLK_NUM_PER_PAGE - 1){
+            head[i].prev = &head[i-1] ;
+            head[i].next = NULL ;   
+        } else {
+            head[i].prev = &head[i-1] ; ;
+            head[i].next = &head[i+1] ;
+        }
+    }
+    kpage.blk_not_init == FALSE ;
+
+    // cal usage
+    uint32_t end = ROUNDDOWN((uint32_t)kpage.free_start ,BLK_SIZE) ;
+    uint32_t index = (end - 0x82000000) / BLK_SIZE ;
+
+    for (int j ; j<=index; j++) {
+        head[j].status = FULL ;
+    }
+    
+    kpage.blk_list_head = (void *)&head[index+1] ;
+
+    kpage.free_start = (uint32_t *)ROUNDUP((uint32_t)kpage.free_start ,BLK_SIZE) ;
+}
 
 /****************************************************************************************/
 // alloc 小塊記憶體相關function

@@ -140,8 +140,6 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 
     taskCreate(ntask ,taskFunc ,(void *)pg->pgstart ,prio);
 
-    // init blocks
-    // 總共應該會有56個blks = (4096-512)/64
     blks_init(pg) ;
 
     open_console_in_out(ntask) ;
