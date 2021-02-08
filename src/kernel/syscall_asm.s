@@ -37,6 +37,7 @@
 .equ	 SYSCALL_ID_chdir               ,		17
 .equ	 SYSCALL_ID_getfullpath         ,		18
 .equ	 SYSCALL_ID_restart				,		19
+.equ	 SYSCALL_ID_close               ,		20
 /************************************************************************************************/
 
 
@@ -450,6 +451,23 @@ syscall_restart:
 	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_restart
+
+	svc 0x00
+	pop	{r2 ,lr}
+	msr     CPSR_c, #CPSR_M_USR
+	bx lr	//返回 user proc
+
+
+/*****************************************************************************************/
+// 
+/*****************************************************************************************/
+.global syscall_close; 
+.align	2
+syscall_close:
+	//保存傳入參數 到r2
+	push {r2 ,lr}
+	mov	r2 ,r0
+	mov r0, #SYSCALL_ID_close
 
 	svc 0x00
 	pop	{r2 ,lr}

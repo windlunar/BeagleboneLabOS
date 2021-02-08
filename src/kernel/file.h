@@ -112,7 +112,7 @@ struct FILE *find_file(char *filename) ;
 int console_read_func(uint8_t *rdbuf ,uint32_t n_bytes);
 int console_write_func(uint8_t *wrbuf ,uint32_t n_bytes);
 fd_t file_open(char *filename ,void *_task) ;
-
+void file_close(fd_t fd ,void *_task) ;
 
 /***************************************************************************************/
 // Others

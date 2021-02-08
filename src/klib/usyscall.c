@@ -162,3 +162,10 @@ void __restart(void)
 {
     syscall_restart() ;
 }
+
+
+
+void __close(int fd)
+{
+    syscall_close(fd) ;
+}

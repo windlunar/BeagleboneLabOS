@@ -141,15 +141,18 @@ void main_shell()
 				} else if (_strcmp(token ,"help\0") == 0) {
 					uprintf("\r\n");
 					uprintf("help:\r\n") ;
-					uprintf("Available command :test ,info ,help\r\n") ;
+					uprintf("Available command :test ,info ,help ,ls ,cd ,pwd ,reboot\r\n") ;
 
 				} else if (_strcmp(token ,"info\0") == 0) {
 					uprintf("\r\n");
 					uprintf("A simple os running on Beaglebone black\r\n\r\n") ;
 					uprintf("Feature:\r\n") ;
-					uprintf("  Time slice based round-robin multitasking.\r\n");
+					uprintf("  Priority based round-robin multitasking.\r\n");
+					uprintf("  MMU enable .\r\n");
 					uprintf("  Simple memory management.\r\n");
-					uprintf("  Simple command line.\r\n");
+					uprintf("  ipc.\r\n");
+					uprintf("  command line.\r\n");
+					
 
 				// command 'ls'
 				} else if (_strcmp(token ,"ls\0") == 0) {

@@ -72,42 +72,8 @@ int kernal_entry(void)
 /***************************************************************************************/
 // Test
 /***************************************************************************************/
-/*	
-	struct QUEUE q ;
-	kq_init(&q ,10) ;
-	enqueue(&q ,'a') ;
-	enqueue(&q ,'b') ;
-	enqueue(&q ,'c') ;
-	enqueue(&q ,'d') ;
-	enqueue(&q ,'e') ;
-	enqueue(&q ,'f') ;
-	enqueue(&q ,'g') ;
 
-	dump_queue(&q) ;
 
-	uint8_t byte = 0 ;
-	byte = dequeue(&q);
-	printk("%c " ,byte) ;
-	byte = dequeue(&q);
-	printk("%c " ,byte) ;
-	byte = dequeue(&q);
-	printk("%c " ,byte) ;
-
-	dump_queue(&q) ;
-
-	enqueue(&q ,'h') ;
-	enqueue(&q ,'i') ;
-	enqueue(&q ,'j') ;
-	enqueue(&q ,'k') ;
-	enqueue(&q ,'l') ;
-	enqueue(&q ,'m') ;
-
-	dump_queue(&q) ;
-	enqueue(&q ,'n') ;
-	kq_delete(&q) ;
-
-	for(;;) ;
-*/
 /***************************************************************************************/
 // Init Task First thread :Shell
 /***************************************************************************************/

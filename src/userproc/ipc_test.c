@@ -20,6 +20,8 @@ void ipc0_test(void){
 	uprintf("Successfully open ipc0 ,fd =%d\r\n",fd) ;
 	__write(fd ,"Send :Hello Message\r\n\0",23) ;
 
+	__close(fd) ;
+
 	__exit();
 }
 
@@ -49,6 +51,8 @@ int ipc_test_main(void)
 	uprintf("r=%d\r\n" ,r) ;
 	put_str("Get :") ;
 	put_str(rbuf) ;
+
+	__close(fd) ;
 
 	return 0 ;
 }

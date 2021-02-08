@@ -26,6 +26,7 @@
 #define SYSCALL_ID_chdir                17
 #define SYSCALL_ID_getfullpath          18
 #define SYSCALL_ID_restart              19
+#define SYSCALL_ID_close                20
 
 /***************************************************************************************/
 //
@@ -56,6 +57,7 @@ void __getfdir_handler(uint32_t *usrTaskContextOld ,void *args) ;
 void __chdir_handler(uint32_t *usrTaskContextOld ,void *args) ;
 void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args) ;
 void __restart_handler(void) ;
+void __close_handler(uint32_t *usrTaskContextOld ,void *args) ;
 
 /***************************************************************************************/
 //syscall call by user task ,define in syscall_asm.s
@@ -79,6 +81,7 @@ extern void syscall_getfdir() ;
 extern int syscall_chdir() ;
 extern void syscall_getfullpath() ;
 extern void syscall_restart();
+extern void syscall_close();
 
 /***************************************************************************************/
 // Args Structure for syscall

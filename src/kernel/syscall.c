@@ -91,6 +91,10 @@ void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *arg
         __restart_handler() ;
         break;
 
+    case SYSCALL_ID_close:
+        __close_handler(usrTaskContextOld ,args) ;
+        break;
+
     default:
         break;
     }
@@ -472,4 +476,12 @@ void __restart_handler(void)
 {
     set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
     enable_watchdog(WATCHDOG_BASE) ;
+}
+
+
+
+void __close_handler(uint32_t *usrTaskContextOld ,void *args)
+{
+    int fd = (int)args ;
+    file_close(fd ,(void *)curr_running_task) ;
 }

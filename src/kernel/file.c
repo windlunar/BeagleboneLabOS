@@ -340,6 +340,13 @@ fd_t file_open(char *filename ,void *_task)
 }
 
 
+void file_close(fd_t fd ,void *_task)
+{
+    struct TASK_INFO *task = (struct TASK_INFO *)_task ;
+    task->openfiles[fd] = NULL ;
+}
+
+
 int console_read_func(uint8_t *rdbuf ,uint32_t n_bytes)
 {
     uint8_t *s = rdbuf ;
