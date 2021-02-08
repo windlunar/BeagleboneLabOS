@@ -14,8 +14,6 @@
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args)
 {
-    switch_mm((uint32_t *)L1_PAGE_TABLE_BASE_PADDR) ;
-
     switch (syscall_id) {
     case SYSCALL_ID_print_hello:
         __print_hello_handler(*(uint32_t *)args) ;
@@ -118,9 +116,9 @@ void __yield_handler(uint32_t *usrTaskContextOld)
 	curr_running_task->task_status = TASK_READY ;
 	curr_running_task = NULL ;
 
-	//prepare sched() context
-	schedFuncContextPrepare();
-	_call_sched((uint32_t)schedFuncContextSPtr) ;
+	//prepare sched_first_run() context
+	set_sched_context();
+	call_sched((uint32_t)schedFuncContextSPtr) ;
 }
 
 
@@ -148,17 +146,6 @@ void __exit_handler(uint32_t *usrTaskContextOld)
 
     //回收 pgt
     free_pgt(curr_running_task->pgtbase) ;
-  
-    //curr_running_task->stk_bottom = NULL ;
-    curr_running_task = choose_task() ;
-
-/************************************************************************/
-// Test
-/************************************************************************/
-	switch_mm(curr_running_task->pgtbase) ;
-/************************************************************************/
-
-    set_context_sp((uint32_t *)curr_running_task->task_context) ;
 }
 
 

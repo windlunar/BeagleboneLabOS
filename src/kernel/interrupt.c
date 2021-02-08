@@ -212,13 +212,13 @@ void timer0_ISR(uint32_t *usrTaskContextOld)
 	curr_running_task->task_status = TASK_READY ;
 	curr_running_task = NULL ;
 
-	//prepare sched() context
-	schedFuncContextPrepare();
+	//prepare sched_first_run() context
+	set_sched_context() ;
 
 	// 讓下一個irq能觸發
 	*(INTC_BASE_PTR + INTC_CONTROL) = (NEW_IRQ_AGREE << 0); 
 
-	_call_sched((uint32_t)schedFuncContextSPtr) ;
+	call_sched((uint32_t)schedFuncContextSPtr) ;
 }
 
 
@@ -249,6 +249,15 @@ void set_exception_entry(uint32_t *exept_vec_base)
 void __attribute__((interrupt("PABT"))) prefetch_abort_handler(void)
 {
 	printk("In prefetch_abort_handler\r\n");
+	for(int i=0 ;i<2560 ;i++)
+    {
+        printk("addr =%p ,context =%x\r\n" ,(curr_running_task->pgtbase)+i ,*((curr_running_task->pgtbase)+i)) ;
+    }
+    printk("\r\ntask_info addr =%p" ,curr_running_task) ;
+    printk(" ,base addr =%p" ,curr_running_task->pgtbase) ;
+    printk(" ,task_context addr =%p\r\n" ,curr_running_task->task_context) ;
+	set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
+    enable_watchdog(WATCHDOG_BASE) ;
 	for(;;) ;
 }
 
@@ -256,6 +265,13 @@ void __attribute__((interrupt("PABT"))) prefetch_abort_handler(void)
 void __attribute__((interrupt("DABT"))) data_abort_handler(void)
 {
 	printk("In data_abort_handler\r\n");
+	for(int i=0 ;i<2560 ;i++)
+    {
+        printk("addr =%p ,context =%x\r\n" ,(curr_running_task->pgtbase)+i ,*((curr_running_task->pgtbase)+i)) ;
+    }
+    printk("\r\ntask_info addr =%p" ,curr_running_task) ;
+    printk(" ,base addr =%p" ,curr_running_task->pgtbase) ;
+    printk(" ,task_context addr =%p\r\n" ,curr_running_task->task_context) ;
 	set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
     enable_watchdog(WATCHDOG_BASE) ;
 	for(;;) ;

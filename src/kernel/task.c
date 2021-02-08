@@ -22,20 +22,7 @@ int32_t prio = -1 ;
 
 /****************************************************************************************/
 
-void sched (void)
-{
-	//choose a task to run
-	curr_running_task = choose_task() ;
 
-/************************************************************************/
-// Test
-/************************************************************************/
-	switch_mm(curr_running_task->pgtbase) ;
-	
-/************************************************************************/
-
-	TaskRun((uint32_t *)curr_running_task->task_context) ;
-}
 
 
 struct TASK_INFO *choose_task(void)
@@ -60,13 +47,44 @@ struct TASK_INFO *choose_task(void)
 	}	
 }
 
-
-
-
-void schedFuncContextPrepare(void)
+void sched_first_run (void)
 {
-	//跳轉address為 task.c的函式shed()
+	//choose a task to run
+	curr_running_task = choose_task() ;
+
+	// Switch page table base
+	switch_mm(curr_running_task->pgtbase) ;
+	
+	// Run task
+	first_run((uint32_t *)curr_running_task->task_context) ;
+}
+
+
+
+void sched (void)
+{
+	//choose a task to run
+	curr_running_task = choose_task() ;
+
+	// Switch page table base
+	switch_mm(curr_running_task->pgtbase) ;
+	
+	// Run task
+	switch_task((uint32_t *)curr_running_task->task_context) ;
+}
+
+
+void set_sched_context(void)
+{
+	// 跳轉address為 task.c的函式shed()
 	schedFuncContextSPtr->lr = (uint32_t)sched ;	
+}
+
+
+void set_first_sched(void)
+{
+	// 跳轉address為 task.c的函式shed()
+	schedFuncContextSPtr->lr = (uint32_t)sched_first_run ;	
 }
 
 /****************************************************************************************/

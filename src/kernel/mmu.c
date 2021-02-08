@@ -214,7 +214,8 @@ void *task_pgt_setup (void *pgstart ,void *pgtop)
 {
     void *pgt_base = kblk_alloc(FOR_KERN) ;
 
-    pte_init(0x82000000 ,0xa0000000 ,AP_USER_PROHIBIT ,0x82000000 ,(uint32_t)pgt_base) ;
+    pte_init(0x00000000 ,0x82000000 ,AP_USER_R_ONLY ,0x00000000 ,(uint32_t)pgt_base) ;
+    pte_init(0x82000000 ,0xa0000000 ,AP_USER_R_ONLY ,0x82000000 ,(uint32_t)pgt_base) ;
 
     pte_init((paddr_t)pgstart 
             ,(paddr_t)pgtop 
@@ -239,6 +240,5 @@ void set_pte (void *pgstart ,void *pgtop ,void *pgt_base)
 void switch_mm (uint32_t *base)
 {
     invalidate_tlb() ;
-
     pgt_base_setup(base) ;
 }

@@ -2546,7 +2546,7 @@ b200259c:	e30930e4 	movw	r3, #37092	; 0x90e4
 b20025a0:	e34b3200 	movt	r3, #45568	; 0xb200
 b20025a4:	e3a02000 	mov	r2, #0
 b20025a8:	e5832000 	str	r2, [r3]
-b20025ac:	eb00118e 	bl	b2006bec <schedFuncContextPrepare>
+b20025ac:	eb00118e 	bl	b2006bec <set_first_sched>
 b20025b0:	e3a03048 	mov	r3, #72	; 0x48
 b20025b4:	e3443820 	movt	r3, #18464	; 0x4820
 b20025b8:	e3a02001 	mov	r2, #1
@@ -2555,7 +2555,7 @@ b20025c0:	e3083ec8 	movw	r3, #36552	; 0x8ec8
 b20025c4:	e34b3200 	movt	r3, #45568	; 0xb200
 b20025c8:	e5933000 	ldr	r3, [r3]
 b20025cc:	e1a00003 	mov	r0, r3
-b20025d0:	eb000b49 	bl	b20052fc <_call_sched>
+b20025d0:	eb000b49 	bl	b20052fc <call_sched>
 b20025d4:	e320f000 	nop	{0}
 b20025d8:	e24bd004 	sub	sp, fp, #4
 b20025dc:	e8bd8800 	pop	{fp, pc}
@@ -2963,12 +2963,12 @@ b2002bd0:	eb001070 	bl	b2006d98 <do_ktaskCreate>
 b2002bd4:	e30806d8 	movw	r0, #34520	; 0x86d8
 b2002bd8:	e34b0200 	movt	r0, #45568	; 0xb200
 b2002bdc:	ebfffed6 	bl	b200273c <printk>
-b2002be0:	eb001001 	bl	b2006bec <schedFuncContextPrepare>
+b2002be0:	eb001001 	bl	b2006bec <set_first_sched>
 b2002be4:	e3083ec8 	movw	r3, #36552	; 0x8ec8
 b2002be8:	e34b3200 	movt	r3, #45568	; 0xb200
 b2002bec:	e5933000 	ldr	r3, [r3]
 b2002bf0:	e1a00003 	mov	r0, r3
-b2002bf4:	eb0009c0 	bl	b20052fc <_call_sched>
+b2002bf4:	eb0009c0 	bl	b20052fc <call_sched>
 b2002bf8:	eafffffe 	b	b2002bf8 <kernal_entry+0x1d4>
 
 b2002bfc <_memset>:
@@ -5605,21 +5605,21 @@ b2005280:	ebfff4e7 	bl	b2002624 <set_exception_entry>
 b2005284:	e8bd000f 	pop	{r0, r1, r2, r3}
 b2005288:	ee1c0f10 	mrc	15, 0, r0, cr12, cr0, {0}
 b200528c:	e2800024 	add	r0, r0, #36	; 0x24
-b2005290:	e59f1070 	ldr	r1, [pc, #112]	; b2005308 <_call_sched+0xc>
+b2005290:	e59f1070 	ldr	r1, [pc, #112]	; b2005308 <call_sched+0xc>
 b2005294:	e5801000 	str	r1, [r0]
 b2005298:	ee1c0f10 	mrc	15, 0, r0, cr12, cr0, {0}
 b200529c:	e2800028 	add	r0, r0, #40	; 0x28
-b20052a0:	e59f1064 	ldr	r1, [pc, #100]	; b200530c <_call_sched+0x10>
+b20052a0:	e59f1064 	ldr	r1, [pc, #100]	; b200530c <call_sched+0x10>
 b20052a4:	e5801000 	str	r1, [r0]
 b20052a8:	ee1c0f10 	mrc	15, 0, r0, cr12, cr0, {0}
 b20052ac:	e280002c 	add	r0, r0, #44	; 0x2c
-b20052b0:	e59f1058 	ldr	r1, [pc, #88]	; b2005310 <_call_sched+0x14>
+b20052b0:	e59f1058 	ldr	r1, [pc, #88]	; b2005310 <call_sched+0x14>
 b20052b4:	e5801000 	str	r1, [r0]
 b20052b8:	ee1c0f10 	mrc	15, 0, r0, cr12, cr0, {0}
 b20052bc:	e2800034 	add	r0, r0, #52	; 0x34
-b20052c0:	e59f104c 	ldr	r1, [pc, #76]	; b2005314 <_call_sched+0x18>
+b20052c0:	e59f104c 	ldr	r1, [pc, #76]	; b2005314 <call_sched+0x18>
 b20052c4:	e5801000 	str	r1, [r0]
-b20052c8:	e59fd048 	ldr	sp, [pc, #72]	; b2005318 <_call_sched+0x1c>
+b20052c8:	e59fd048 	ldr	sp, [pc, #72]	; b2005318 <call_sched+0x1c>
 b20052cc:	e28d1a01 	add	r1, sp, #4096	; 0x1000
 b20052d0:	e10f3000 	mrs	r3, CPSR
 b20052d4:	e3a02012 	mov	r2, #18
@@ -5633,7 +5633,7 @@ b20052f0:	e28d1a01 	add	r1, sp, #4096	; 0x1000
 b20052f4:	e12ff003 	msr	CPSR_fsxc, r3
 b20052f8:	ebfff5c9 	bl	b2002a24 <kernal_entry>
 
-b20052fc <_call_sched>:
+b20052fc <call_sched>:
 b20052fc:	e1a0d000 	mov	sp, r0
 b2005300:	e8bd5fff 	pop	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
 b2005304:	e12fff1e 	bx	lr
@@ -6310,12 +6310,12 @@ b2005d04:	e30930e4 	movw	r3, #37092	; 0x90e4
 b2005d08:	e34b3200 	movt	r3, #45568	; 0xb200
 b2005d0c:	e3a02000 	mov	r2, #0
 b2005d10:	e5832000 	str	r2, [r3]
-b2005d14:	eb0003b4 	bl	b2006bec <schedFuncContextPrepare>
+b2005d14:	eb0003b4 	bl	b2006bec <set_first_sched>
 b2005d18:	e3083ec8 	movw	r3, #36552	; 0x8ec8
 b2005d1c:	e34b3200 	movt	r3, #45568	; 0xb200
 b2005d20:	e5933000 	ldr	r3, [r3]
 b2005d24:	e1a00003 	mov	r0, r3
-b2005d28:	ebfffd73 	bl	b20052fc <_call_sched>
+b2005d28:	ebfffd73 	bl	b20052fc <call_sched>
 b2005d2c:	e320f000 	nop	{0}
 b2005d30:	e24bd004 	sub	sp, fp, #4
 b2005d34:	e8bd8800 	pop	{fp, pc}
@@ -7271,7 +7271,7 @@ b2006af8:	e8bd4004 	pop	{r2, lr}
 b2006afc:	e321f010 	msr	CPSR_c, #16
 b2006b00:	e12fff1e 	bx	lr
 
-b2006b04 <sched>:
+b2006b04 <sched_first_run>:
 b2006b04:	e92d4800 	push	{fp, lr}
 b2006b08:	e28db004 	add	fp, sp, #4
 b2006b0c:	eb00000b 	bl	b2006b40 <choose_task>
@@ -7284,7 +7284,7 @@ b2006b24:	e34b3200 	movt	r3, #45568	; 0xb200
 b2006b28:	e5933000 	ldr	r3, [r3]
 b2006b2c:	e593301c 	ldr	r3, [r3, #28]
 b2006b30:	e1a00003 	mov	r0, r3
-b2006b34:	eb0001e4 	bl	b20072cc <TaskRun>
+b2006b34:	eb0001e4 	bl	b20072cc <first_run>
 b2006b38:	e320f000 	nop	{0}
 b2006b3c:	e8bd8800 	pop	{fp, pc}
 
@@ -7333,7 +7333,7 @@ b2006be0:	e1a00003 	mov	r0, r3
 b2006be4:	e24bd004 	sub	sp, fp, #4
 b2006be8:	e8bd8800 	pop	{fp, pc}
 
-b2006bec <schedFuncContextPrepare>:
+b2006bec <set_first_sched>:
 b2006bec:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
 b2006bf0:	e28db000 	add	fp, sp, #0
 b2006bf4:	e3083ec8 	movw	r3, #36552	; 0x8ec8
@@ -7793,7 +7793,7 @@ b20072c0:	ebffed1d 	bl	b200273c <printk>
 b20072c4:	e24bd004 	sub	sp, fp, #4
 b20072c8:	e8bd8800 	pop	{fp, pc}
 
-b20072cc <TaskRun>:
+b20072cc <first_run>:
 b20072cc:	e14fc000 	mrs	ip, SPSR
 b20072d0:	e92d5ff0 	push	{r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
 b20072d4:	e10fa000 	mrs	sl, CPSR

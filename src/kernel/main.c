@@ -34,7 +34,7 @@ int kernal_entry(void)
 // mmu	
 /***************************************************************************************/
 	_memset((void *)KERN_PADDR_PTR, 0, BLK_SIZE) ;
-	//mmu_init() ;
+	mmu_init() ;
 
 	printk("Enable MMU.\r\n") ;
 
@@ -92,11 +92,11 @@ int kernal_entry(void)
 	disable_watchdog(WATCHDOG_BASE) ;
 
 	//設定要跳進去sched()的context
-	schedFuncContextPrepare();
+	set_first_sched();
 
-	//Jump to sched() in task.c
+	//Jump to sched_first_run() in task.c
 	//跳到 sched後不再回來
-	_call_sched((uint32_t)schedFuncContextSPtr) ;
+	call_sched((uint32_t)schedFuncContextSPtr) ;
 
 /***************************************************************************************/
 	for(;;);

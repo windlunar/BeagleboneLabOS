@@ -47,7 +47,7 @@ extern int32_t taskid;
 // r2
 // r1 -----------------0x9df31000 + 4*1
 // r0 -----------------kernel init stack top = 0x9df31000 (set up in start.s)
-//                      sched sp (start addr of struct struct SCHED_CONTEXT schedFuncContextSPtr)
+//                      sched_first_run sp (start addr of struct struct SCHED_CONTEXT schedFuncContextSPtr)
 struct SCHED_CONTEXT
 {
     uint32_t r0;
@@ -103,7 +103,7 @@ struct TASK_CONTEXT
     uint32_t r9_return_lr;
     uint32_t r10;
     uint32_t r11;
-    uint32_t r12;
+    uint32_t r12_spsr;
     uint32_t lr;
 
 };
@@ -143,10 +143,13 @@ struct TASK_ARGS
 //extern struct TASK_INFO *task_ready_list_head[MAXNUM_PRIORITY] ;
 extern struct TASK_INFO *curr_running_task ;
 /***********************************************************************************************/
-void sched(void);
-void schedFuncContextPrepare(void);
-extern void _call_sched(uint32_t schedContext) ;    //定義在task_asm.s
-void TaskRun(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
+void sched_first_run(void);
+void sched (void) ;
+void set_sched_context(void) ;
+void set_first_sched(void);
+extern void call_sched(uint32_t schedContext) ;    //定義在task_asm.s
+void first_run(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
+void switch_task(uint32_t *sp);
 struct TASK_INFO *choose_task(void) ;
 
 void task_init() ;

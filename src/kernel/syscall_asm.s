@@ -115,23 +115,16 @@ syscall_get_tid:
 .align	2
 syscall_exit:
 	//保存傳入參數
-	push {r0 ,r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_exit
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_exit
 
-	/**************************************************************************/
-	//stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	
-	//mov		r0 ,#(ostick_msec)
-	//bl 		reloadOsTick
+	svc 	0x00
 
-	//ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	/**************************************************************************/
-
-	svc 0x00
-	pop	{r0 ,r2 ,lr}
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr							/* 返回 user proc */
+
 
 
 /*****************************************************************************************/
@@ -145,15 +138,6 @@ syscall_fork:
 	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_fork
-
-	/**************************************************************************/
-	//stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	
-	//mov		r0 ,#(ostick_msec)
-	//bl 		reloadOsTick
-
-	//ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	/**************************************************************************/
 
 	svc 0x00
 	pop	{r2 ,lr}
@@ -175,15 +159,6 @@ syscall_do_taskCreate:
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_do_taskCreate
 
-	/**************************************************************************/
-	//stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	
-	//mov		r0 ,#(ostick_msec)
-	//bl 		reloadOsTick
-
-	//ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	/**************************************************************************/
-
 	svc 0x00
 	pop	{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
@@ -202,15 +177,6 @@ syscall_malloc_blk:
 	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_malloc_blk
-
-	/**************************************************************************/
-	//stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	
-	//mov		r0 ,#(ostick_msec)
-	//bl 		reloadOsTick
-
-	//ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	/**************************************************************************/
 
 	svc 0x00
 	pop	{r2 ,lr}
@@ -232,15 +198,6 @@ syscall_mfree_blk:
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_mfree_blk
 
-	/**************************************************************************/
-	//stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	
-	//mov		r0 ,#(ostick_msec)
-	//bl 		reloadOsTick
-
-	//ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	/**************************************************************************/
-
 	svc 0x00
 	pop	{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
@@ -258,15 +215,6 @@ syscall_get_mblk_list:
 	push {r2 ,lr}
 	mov	r2 ,r0
 	mov r0, #SYSCALL_ID_get_mblk_list
-
-	/**************************************************************************/
-	//stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	
-	//mov		r0 ,#(ostick_msec)
-	//bl 		reloadOsTick
-
-	//ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	/**************************************************************************/
 
 	svc 0x00
 	pop	{r2 ,lr}

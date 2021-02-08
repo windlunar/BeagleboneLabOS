@@ -11,7 +11,7 @@ CFLAGS  += -march=armv7-a -mtune=cortex-a8 -nostdlib
 #CFLAGS  += -march=armv7-a -mtune=cortex-a8
 
 c_obj=main.o debug.o task.o interrupt.o syscall.o memory.o file.o kprint.o mmu.o ipc.o
-asm_obj=start.o syscall_asm.o exception.o task_asm.o
+asm_obj=start.o syscall_asm.o exception.o task_asm.o 
 
 .PHONY : all
 all: $(c_obj) $(asm_obj) move

@@ -23,6 +23,7 @@ int __gettid(void)
 void __exit(void)
 {
     syscall_exit();
+    for(;;) ;
 }
 
 
