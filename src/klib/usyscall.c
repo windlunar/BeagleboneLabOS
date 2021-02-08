@@ -1,11 +1,13 @@
 
 #include "../klib/usyscall.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
+
 
 void __print_hello(uint32_t *input)
 {
     syscall_print_hello(input) ;
 }
+
 
 
 void __yield(void)
@@ -14,10 +16,12 @@ void __yield(void)
 }
 
 
+
 int __gettid(void)
 {
     return syscall_get_tid();
 }
+
 
 
 void __exit(void)
@@ -27,10 +31,12 @@ void __exit(void)
 }
 
 
+
 int __fork(void)
 {
     return syscall_fork();
 }
+
 
 
 int __do_taskCreate(void (*taskFunc)() ,int32_t prio)
@@ -41,18 +47,21 @@ int __do_taskCreate(void (*taskFunc)() ,int32_t prio)
     return syscall_do_taskCreate(&config) ;
 }
 
-// Allocate one block(60 bytes aval)
+
+
+/** Allocate one block(4K bytes) */
 void *__malloc_blk()
 {
     return syscall_malloc_blk() ;
 }
 
 
-// 如果輸入參數不是blk起始位址的話 ,目前還沒有偵錯機制
+
 void __mfree_blk(void *blk_aval_start)
 {
     syscall_mfree_blk(blk_aval_start) ;
 }
+
 
 
 void __get_mblk_list()
@@ -80,6 +89,7 @@ int __write(int fd ,char *buf ,uint32_t n_bytes)
 }
 
 
+
 int __read(int fd ,char *buf ,uint32_t n_bytes)
 {
     struct FILE_RDWR_ARGS args ;
@@ -91,10 +101,12 @@ int __read(int fd ,char *buf ,uint32_t n_bytes)
 }
 
 
+
 int __open(char *path)
 {
     return syscall_open(path) ;
 }
+
 
 
 void __getcwd(char *buf ,int n_bytes)
@@ -109,6 +121,7 @@ void __getcwd(char *buf ,int n_bytes)
 }
 
 
+
 int __getsubdir(char *buf ,int n_bytes)
 {
     _memset(buf ,0 ,n_bytes) ;
@@ -121,8 +134,8 @@ int __getsubdir(char *buf ,int n_bytes)
 
     if(args.buf == NULL) return -1 ;
     return 0 ;
-
 }
+
 
 
 int __getfdir(char *buf ,int n_bytes)
@@ -137,8 +150,9 @@ int __getfdir(char *buf ,int n_bytes)
 
     if(args.buf == NULL) return -1 ;
     return 0 ;
-
 }
+
+
 
 // return 0  : success
 // return -1 : No dir found
@@ -157,6 +171,7 @@ void __getfullpath(char *buf ,int n_bytes)
     
     syscall_getfullpath(&args) ;
 }
+
 
 
 void __restart(void)

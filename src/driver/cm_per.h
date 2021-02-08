@@ -2,11 +2,12 @@
 #ifndef __CM_PER_H_
 #define __CM_PER_H_
 
+
 #include "../common.h"
 
 
-#define CM_PER_BASE    (0x44e00000)
-#define CM_PER_BASE_PTR           ((volatile CM_PER_T *)CM_PER_BASE)
+#define CM_PER_BASE                 (0x44e00000)
+#define CM_PER_BASE_PTR             ((volatile CM_PER_T *)CM_PER_BASE)
 
 typedef struct{
     uint32_t CM_PER_L4LS_CLKSTCTRL ;      // 0x0 

@@ -3,6 +3,7 @@
 #include "mmu.h"
 #include "../klib/mem.h"
 
+
 /****************************************************************************************/
 // MMU
 /****************************************************************************************/
@@ -19,15 +20,19 @@ pte_t gen_pte (paddr_t paddr)
 }
 
 
+
 pte_paddr_t gen_pte_addr (pgt_paddr_t pgt_base ,vaddr_t vaddr)
 {
     return (pgt_base & L1_PAGE_TABLE_BASE_MASK) | vaddr2L1pteidx(vaddr ,MAP_START_VADDR) ;
 }
 
 
-// AP_USER_RW          (0x03)  // privilege R/W
-// AP_USER_R_ONLY      (0x02)  // privilege R/W
-// AP_USER_PROHIBIT    (0x01)  // privilege R/W
+
+/** 
+ * AP_USER_RW          (0x03)  , privilege R/W
+ * AP_USER_R_ONLY      (0x02)  , privilege R/W 
+ * AP_USER_PROHIBIT    (0x01)  , privilege R/W
+ **/
 void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart ,uint32_t pgt_base)
 {
     pte_t pte ;
@@ -38,7 +43,6 @@ void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart ,uint
 
     vs = ROUNDDOWN(pstart ,PAGE_SIZE) ;
 
-    //避免變成 0x1 0000 0000 時 overflow的情況
     if (pend < 0xfff00000) {
         ve = ROUNDUP(pend ,PAGE_SIZE) ;
     } else {
@@ -47,7 +51,7 @@ void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart ,uint
     }
     page_num += page_num_cal(pstart ,pend) ;
 
-    // 初始化 page table 的 pte
+    /** 初始化 page table 的 pte */
     for (int i=0 ; i<page_num; i++) { 
         pte = gen_pte(vs + (i << 20)) ;
         pte |= NO_CACHE_WRITEBUF << CACHE_WRITEBUF_BIT_SHIFT ;
@@ -59,9 +63,7 @@ void pte_init (paddr_t pstart ,paddr_t pend ,int permision ,vaddr_t vstart ,uint
         pte_paddr = gen_pte_addr(pgt_base ,vstart + (i << 20)) ;
         _memset((void *)(pte_paddr_t *) pte_paddr ,0 ,4) ;
         *(pte_paddr_t *) pte_paddr = pte ;
-        //printk("pte addr =%p ,pte content =%x\r\n" ,(pte_paddr_t *) pte_paddr ,*(pte_paddr_t *) pte_paddr) ;
-    }
-    
+    }    
 }
 
 
@@ -77,7 +79,9 @@ void mem_map (void)
     pte_init(0x9df00000 ,0xa0000000 ,AP_USER_R_ONLY ,0x9df00000 ,pgt_base) ;
 }
 
-//要先disable mmu再開啟
+
+
+/** 要先disable mmu再開啟 */
 void mmu_init (void)
 {
     invalidate_tlb() ;
@@ -87,6 +91,7 @@ void mmu_init (void)
     set_pgt_base() ;
     mmu_enable() ;
 }
+
 
 
 void mmu_enable(void)
@@ -105,6 +110,7 @@ void mmu_enable(void)
 }
 
 
+
 void invalidate_tlb(void)
 {
     asm volatile(
@@ -114,6 +120,7 @@ void invalidate_tlb(void)
         "ldmfd sp! ,{r0}\n\t"
     ) ;    
 }
+
 
 
 void mmu_disable(void)
@@ -147,6 +154,8 @@ void set_pgt_base(void)
     ) ;
 }
 
+
+
 uint32_t get_pgt_base(void)
 {
 	uint32_t pgtb;
@@ -160,11 +169,15 @@ uint32_t get_pgt_base(void)
 	return pgtb;
 }
 
-// C3 保存16個domain ,一個domain佔用2bits
-// 00 :記憶體區域不能訪問 ,會引起domain fault
-// 01 :記憶體訪問須配合pte中的AP bits
-// 10 :保留
-// 11 :都不進行permission檢查
+
+
+/** 
+ * C3 保存16個domain ,一個domain佔用2bits
+ * 00 :記憶體區域不能訪問 ,會引起domain fault
+ * 01 :記憶體訪問須配合pte中的AP bits
+ * 10 :保留
+ * 11 :都不進行permission檢查
+ */
 void set_domain(void)
 {
     uint32_t domain = 0x00000001 ;
@@ -178,6 +191,7 @@ void set_domain(void)
         :
     );
 }
+
 
 
 uint32_t get_domain(void)
@@ -194,13 +208,14 @@ uint32_t get_domain(void)
 }
 
 
+
 void pgt_base_setup(uint32_t *base)
 {
     pgt_paddr_t pgtb = (pgt_paddr_t)base ;
     asm volatile(
         "stmfd sp! ,{r0}\n\t"
         "mov r0 ,%0\n\t"
-        "mcr p15 ,0 ,%0 ,c2 ,c0 ,0\n\t"       // 設定 page table base, CP15的c2 register保存
+        "mcr p15 ,0 ,%0 ,c2 ,c0 ,0\n\t" /** 設定 page table base, CP15的c2 register保存 */
         "ldmfd sp! ,{r0}\n\t"
         :
         :"r" (pgtb)
@@ -209,7 +224,7 @@ void pgt_base_setup(uint32_t *base)
 }
 
 
-// page table要align 16K ,所以分配4個block(4K)
+/** page table要align 16K ,所以分配16K的block */
 void *task_pgt_setup (void *pgstart ,void *pgtop)
 {
     void *pgt_base = kblk_alloc(FOR_KERN) ;
@@ -227,6 +242,7 @@ void *task_pgt_setup (void *pgstart ,void *pgtop)
 }
 
 
+
 void set_pte (void *pgstart ,void *pgtop ,void *pgt_base)
 {
     pte_init((paddr_t)pgstart 
@@ -235,6 +251,7 @@ void set_pte (void *pgstart ,void *pgtop ,void *pgt_base)
             ,(vaddr_t)pgstart
             ,(uint32_t)pgt_base) ;    
 }
+
 
 
 void switch_mm (uint32_t *base)

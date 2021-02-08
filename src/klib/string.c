@@ -1,13 +1,14 @@
 
-
 #include "../common.h"
 #include "../klib/mem.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "../klib/string.h"
 
 
-// 字串長度(不包含最後的 \0)
-// 如 "abcd\0" 則回傳 len=4
+/** 
+ * 字串長度(不包含最後的 \0)
+ *  如 "abcd\0" 則回傳 len=
+ */
 int _strlen(char *s)
 {
 	int len=0 ;
@@ -33,22 +34,22 @@ int _strcmp(char *s ,char *b)
         b++ ;
     } 
 
-    // not eq
+    /* not eq */
     return 1 ;
 }
 
 
-// dest須保留能夠串接src的空間
+/** dest須保留能夠串接src的空間 */
 int _strcat(char *dest ,char *src)
 {
     char *d = dest ;
     char *s = src ;
 
-    // 先把pointer移動到 dest的尾部 '\0'
+    /** 先把pointer移動到 dest的尾部 '\0' */
     while (*d != '\0') {
         d++ ;
     }
-    // 現在 d指向 dest的尾 '\0'
+    /** 現在 d指向 dest的尾 '\0' */
 
     while (*s != '\0') {
         *d = *s ;
@@ -102,10 +103,10 @@ char *strtok_fst(char *start ,char *delim ,int delim_sz ,char *token)
     char sbuf[delim_sz+1] ;
     _memset(sbuf ,0 ,sizeof(sbuf)) ;
 
-    // sbuf = delim + '\0'
+    /** sbuf = delim + '\0'  */
     _strncpy(sbuf ,s ,delim_sz) ;
 
-    while (_strcmp(sbuf ,delim)) {    //不相等就執行 while迴圈
+    while (_strcmp(sbuf ,delim)) {    /** 不相等就執行 while迴圈 */
         s++ ;
         if(*s == '\0') break ;
         _strncpy(sbuf ,s ,delim_sz) ;

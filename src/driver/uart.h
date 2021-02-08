@@ -5,8 +5,10 @@
 #ifndef __UART_H_
 #define __UART_H_
 
+
 #include "../common.h"
 #include "cm_conf.h"
+
 
 #define UART0_BASE      (0x44E09000)
 #define UART1_BASE      (0x48022000)
@@ -23,6 +25,7 @@
 #define UART5_PTR       ((UART_REG_T *)UART5_BASE)
 
 #define CONSOLE         UART0_PTR
+
 
 /** Define UART related structure*/
 typedef struct{
@@ -137,6 +140,7 @@ typedef enum{
    OFF = 0,
    ON = 1
 }FLOW_CTRL_T;
+
 
 void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLOW_CTRL_T flowControl);
 void uart_set_Baudrate(UART_REG_T *uartChannel, uint32_t baudrate);

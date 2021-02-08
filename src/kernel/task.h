@@ -2,34 +2,44 @@
 #ifndef __TASK_H_
 #define __TASK_H_
 
+
 #include "../common.h"
-#include "kprint.h"
+#include "printk.h"
 #include "debug.h"
 #include "memory.h"
 #include "file.h"
 #include "mmu.h"
 
+
 extern int32_t taskid;
-/***********************************************************************************************/
+
+/*************************************************************************/
+
 #define TASK_RUNNING    0
 #define TASK_READY      1
 #define TASK_TERMINATE  2
-#define TASK_WAIT    3
-/***********************************************************************************************/
+#define TASK_WAIT       3
+
+/*************************************************************************/
+
 #define MAXNUM_PRIORITY    5
 #define LOWEST_PRIORITY    MAXNUM_PRIORITY-1 
 #define HIGHEST_PRIORITY   0 
-/***********************************************************************************************/
+
+/*************************************************************************/
 
 #define TASK_NUM_MAX 32
 #define stktop2bottom(x)   (x)-(TASK_STACK_SIZE/4)+1
 #define stkbottom2top(x)   (x)+(TASK_STACK_SIZE/4)-1
 
 
-/***********************************************************************************************/
+/*************************************************************************/
+
 #define MAX_FD   8
 #define MAX_DIR_LENGTH  64
-/***********************************************************************************************/
+
+/*************************************************************************/
+
 #define KSTACK_SCHED_CONTEXT_SP	( (KSTACK_TOP_PADDR)-(4*13) )
 // -----------------
 // ......
@@ -45,9 +55,8 @@ extern int32_t taskid;
 // r4
 // r3
 // r2
-// r1 -----------------0x9df31000 + 4*1
-// r0 -----------------kernel init stack top = 0x9df31000 (set up in start.s)
-//                      sched_first_run sp (start addr of struct struct SCHED_CONTEXT schedFuncContextSPtr)
+// r1 -----------------kernel stack top + 4*1
+// r0 -----------------kernel init stack top
 struct SCHED_CONTEXT
 {
     uint32_t r0;
@@ -70,8 +79,7 @@ extern struct SCHED_CONTEXT *schedFuncContextSPtr ;
 
 
 
-
-// *******************************************************
+// ************************************************
 //
 //                 SP------>lr
 //                          r12
@@ -88,7 +96,7 @@ extern struct SCHED_CONTEXT *schedFuncContextSPtr ;
 //                          r1              
 //                          r0 <------SP
 //
-// *******************************************************
+// ************************************************
 struct TASK_CONTEXT
 {
     uint32_t r0;
@@ -109,7 +117,6 @@ struct TASK_CONTEXT
 };
 
 
-
 struct TASK_INFO
 {
     struct TASK_INFO *next_ptr ;
@@ -127,7 +134,6 @@ struct TASK_INFO
 };
 
 
-
 struct TASK_ARGS
 {
     // task function pointer
@@ -138,17 +144,18 @@ struct TASK_ARGS
 };
 
 
+/*************************************************************************/
 
-/***********************************************************************************************/
-//extern struct TASK_INFO *task_ready_list_head[MAXNUM_PRIORITY] ;
 extern struct TASK_INFO *curr_running_task ;
-/***********************************************************************************************/
+
+/*************************************************************************/
+
 void sched_first_run(void);
 void sched (void) ;
 void set_sched_context(void) ;
 void set_first_sched(void);
-extern void call_sched(uint32_t schedContext) ;    //定義在task_asm.s
-void first_run(uint32_t *sp);     //輸入參數 stack(Process stack pointer)會存到r0
+extern void call_sched(uint32_t schedContext) ;    /*定義在task_asm.s */
+void first_run(uint32_t *sp);     /*輸入參數 stack(Process stack pointer)會存到r0 */
 void switch_task(uint32_t *sp);
 struct TASK_INFO *choose_task(void) ;
 
@@ -160,9 +167,10 @@ void task_enqueue(struct TASK_INFO *task) ;
 struct TASK_INFO *task_dequeue(int32_t prio) ;
 void task_pop(struct TASK_INFO *task);
 void set_page_free_start(uint32_t mv_bytes ,struct PAGE_INFO *pg);
-/***********************************************************************************************/
+
+/*************************************************************************/
+
 void print_task_id_from_head(int32_t prio) ;
 void print_task_addr_from_head(int32_t prio) ;
 
 #endif
-

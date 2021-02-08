@@ -1,11 +1,10 @@
 
 #include "usrtasks.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "../klib/usyscall.h"
 
 
 #define LOOP_NUM	5
-
 
 
 void prio_test1(void){
@@ -23,6 +22,7 @@ void prio_test1(void){
 }
 
 
+
 void prio_test2(void){
 	
 	int k = 1 ;
@@ -38,6 +38,8 @@ void prio_test2(void){
 	__exit();
 }
 
+
+
 void prio_test3(void){
 	__do_taskCreate(&prio_test4 ,2) ;
 	int k = 1 ;
@@ -52,6 +54,8 @@ void prio_test3(void){
 	__exit();
 }
 
+
+
 void prio_test4(void){
 	int k = 1 ;
 	int tid = -1 ;
@@ -65,6 +69,7 @@ void prio_test4(void){
 	}
 	__exit();
 }
+
 
 
 void prio_test5(void){
@@ -82,6 +87,7 @@ void prio_test5(void){
 }
 
 
+
 void prio_test6(void){
 	__do_taskCreate(&prio_test7 ,1) ;
 	int k = 1 ;
@@ -95,6 +101,7 @@ void prio_test6(void){
 	}
 	__exit();
 }
+
 
 
 void prio_test7(void){
@@ -111,6 +118,7 @@ void prio_test7(void){
 	}
 	__exit();
 }
+
 
 
 void prio_test8(void){

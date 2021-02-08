@@ -2,11 +2,14 @@
 #ifndef __SYSCALL_H_
 #define __SYSCALL_H_
 
+
 #include "../common.h"
+
 
 /***************************************************************************************/
 // Define System call id
 /***************************************************************************************/
+
 #define SYSCALL_ID_print_hello          1
 #define SYSCALL_ID_yield                2        
 #define SYSCALL_ID_get_tid              3
@@ -28,16 +31,16 @@
 #define SYSCALL_ID_restart              19
 #define SYSCALL_ID_close                20
 
+
 /***************************************************************************************/
-//
-/***************************************************************************************/
+
 void svc_entry(void) ;
 extern void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args);
-
 
 /***************************************************************************************/
 //svc syscall call by syscall_handler
 /***************************************************************************************/
+
 void __print_hello_handler(uint32_t input) ;
 void __yield_handler(uint32_t *usrTaskContextOld);
 void __get_tid_handler(uint32_t *usrTaskContextOld);
@@ -62,6 +65,7 @@ void __close_handler(uint32_t *usrTaskContextOld ,void *args) ;
 /***************************************************************************************/
 //syscall call by user task ,define in syscall_asm.s
 /***************************************************************************************/
+
 extern void syscall_print_hello(uint32_t *input) ;
 extern void syscall_yield();
 extern int syscall_get_tid();
@@ -86,12 +90,12 @@ extern void syscall_close();
 /***************************************************************************************/
 // Args Structure for syscall
 /***************************************************************************************/
+
 struct BUF_AND_SZ_ARG
 {
     char *buf ;
     uint32_t n_size ;
 };
-
 
 /***************************************************************************************/
 extern void set_context_sp(uint32_t *context) ;

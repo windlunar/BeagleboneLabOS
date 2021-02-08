@@ -1,6 +1,6 @@
 
-#ifndef __STD_IO_H_
-#define __STD_IO_H_
+#ifndef __STDIO_H_
+#define __STDIO_H_
 
 #include "../common.h"
 

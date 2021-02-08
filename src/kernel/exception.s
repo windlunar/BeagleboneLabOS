@@ -45,18 +45,18 @@ irq_entry:
 	 * 分支處理timer0 irq(as os tick)跟其他中斷
 	 */
 	stmfd 	sp!,	{r0 ,r1 ,r2 ,r3 ,r4 ,r5 ,r6 ,r7 ,r8 ,r9 ,r10 ,r11 ,r12 ,lr}
-	bl 		getActivateIrqNum	//回傳值在r0
-
-	cmp 	r0, #66			//判斷是不是 os_tick中斷
-	bne 	non_ostick_irq	//不是的話就跳去處理一般中斷
-
+	bl 		getActivateIrqNum		/* 回傳值在r0 */
+	cmp 	r0, #66					/* 判斷是不是 os_tick中斷 */
+	bne 	non_ostick_irq			/* 不是的話就跳去處理一般中斷 */
 	ldmfd 	sp!,	{r0 ,r1 ,r2 ,r3 ,r4 ,r5 ,r6 ,r7 ,r8 ,r9 ,r10 ,r11 ,r12 ,lr}
+
 
 	/**
 	 * 準備原來user task的context 結構
 	 * 然後存到 r0 作為 irq_handler的傳入參數
 	 **/
 	sub		lr, lr, #4			/* 調整 lr_irq(返回user proc的位址) */
+
 
 	mov		r9 ,lr				/* r9 = lr_irq */
 	mrs		r12, spsr
@@ -76,6 +76,7 @@ irq_entry:
 	orr 	r10, r10, #0xC0
 	msr 	cpsr, r10
 
+
 	/**
 	 * In system mode
 	 * r9 =lr_irq
@@ -84,8 +85,10 @@ irq_entry:
 	 */
 	stmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 
+
 	/* make r0 as the user stack pointer (user task的context struct的起始位址) */
 	mov		r0,	sp	
+
 
 	/**	
 	 * switch to svc mode
@@ -95,6 +98,7 @@ irq_entry:
 	orr 	r10, r10, #(CPSR_M_SVC) // switch to svc mode
 	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
 	msr 	cpsr, r10
+
 
 	/* 在svc mode中處理irq中斷 ,應該傳入 user task的context(sp) 結構 address = r0 */
 	bl 		timer0_ISR
@@ -122,8 +126,10 @@ svc_entry:
 	 */
 	mov 	r9 ,lr	//保存返回user proc的 address
 	
+
 	/* Save user state*/
 	mrs		ip, spsr
+
 
 	/* switch to system mode to save user proc context */
 	mrs 	r10, cpsr
@@ -132,10 +138,12 @@ svc_entry:
 	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
 	msr 	cpsr, r10
 
+
 	/**
 	 * 儲存 user proc context
 	 */
 	mov		lr ,r9	
+
 
 	/** 
 	 * push ,準備原來user task的context 結構
@@ -145,13 +153,14 @@ svc_entry:
 	stmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	mov		r1,	sp	
 
-/****************************************************************************************/
+
 	/* switch back to svc mode */
 	mrs 	r10, cpsr
 	bic 	r10, r10, #0x1F 		// clear bits
 	orr 	r10, r10, #(CPSR_M_SVC) // system mode
 	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
 	msr 	cpsr, r10
+
 
 	/**
 	 * call syscall handler ,
@@ -161,7 +170,6 @@ svc_entry:
 	 */
 	push	{r0 ,r1 ,r2 ,r3}
 	bl 		syscall_handler
-
 	pop		{r0 ,r1 ,r2 ,r3}
 
 
@@ -172,12 +180,15 @@ svc_entry:
 	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
 	msr 	cpsr, r10
 	
+
 	/* pop user context */
 	ldmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 	mrs		r10 ,spsr
 
+
 	/* switch back to user mode */
 	msr		cpsr, r10
+
 
 	/* 返回 syscall_<NAME> */
 	blx 	lr	

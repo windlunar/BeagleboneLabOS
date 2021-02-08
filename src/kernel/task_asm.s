@@ -5,15 +5,15 @@
 /** 
  * CPSR MODE FIELD :
  */ 
-.equ 	CPSR_M_USR,   0x10U		// CPSR: M User mode (PL0)
-.equ 	CPSR_M_FIQ,   0x11U		//CPSR: M Fast Interrupt mode (PL1)
-.equ 	CPSR_M_IRQ,   0x12U		//CPSR: M Interrupt mode (PL1) 
-.equ 	CPSR_M_SVC,   0x13U		//CPSR: M Supervisor mode (PL1)
-.equ 	CPSR_M_MON,   0x16U		//CPSR: M Monitor mode (PL1) 
-.equ 	CPSR_M_ABT,   0x17U		//CPSR: M Abort mode (PL1)  
-.equ 	CPSR_M_HYP,   0x1AU		//CPSR: M Hypervisor mode (PL2) 
-.equ 	CPSR_M_UND,   0x1BU		//CPSR: M Undefined mode (PL1) 
-.equ 	CPSR_M_SYS,   0x1FU		//CPSR: M system mode 
+.equ 	CPSR_M_USR,   0x10U		/*  User mode (PL0) */
+.equ 	CPSR_M_FIQ,   0x11U		/* Fast Interrupt mode (PL1) */
+.equ 	CPSR_M_IRQ,   0x12U		/* Interrupt mode (PL1) */ 
+.equ 	CPSR_M_SVC,   0x13U		/* Supervisor mode (PL1) */
+.equ 	CPSR_M_MON,   0x16U		/* Monitor mode (PL1) */
+.equ 	CPSR_M_ABT,   0x17U		/* Abort mode (PL1) */
+.equ 	CPSR_M_HYP,   0x1AU		/* Hypervisor mode (PL2) */
+.equ 	CPSR_M_UND,   0x1BU		/* Undefined mode (PL1) */
+.equ 	CPSR_M_SYS,   0x1FU		/* system mode */
 
 
 

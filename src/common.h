@@ -5,7 +5,9 @@
 
 #define FALSE	0
 #define TRUE	1
+
 /***************************************************************************************/
+
 typedef unsigned char uint8  ;
 typedef unsigned short uint16 ;
 typedef unsigned int uint32 ;
@@ -14,7 +16,6 @@ typedef unsigned long uint64 ;
 typedef char int8 ;
 typedef short int16 ;
 typedef int int32 ;
-
 
 typedef unsigned char uint8_t ;
 typedef unsigned short uint16_t ;
@@ -27,12 +28,12 @@ typedef int int32_t ;
 
 /***************************************************************************************/
 
-//extern uint32_t _estack;
 extern void WRITE_REG32 (unsigned int address, unsigned int value);
 extern unsigned int READ_REG32 (unsigned int address);
 extern void __attribute__((optimize("O0"))) delay(uint32_t nr_of_nops);
 
 /***************************************************************************************/
+
 static inline void dataSyncBarrier(void)
 {
 	asm volatile("dsb\n");
@@ -54,11 +55,13 @@ static inline void dataSyncBarrier(void)
 
 /***************************************************************************************/
 
-// Rounding operations (efficient when n is a power of 2)
-// Round down to the nearest multiple of n
-//捨去到最接近n的倍數
-//cprintf("%d\n",ROUNDDOWN(4100,4096));
-//印出4096
+/**
+ * Rounding operations (efficient when n is a power of 2)
+ * Round down to the nearest multiple of n
+ * 捨去到最接近n的倍數
+ * ROUNDDOWN(4100,4096));
+ * 印出4096
+ */
 #define ROUNDDOWN(a, n)			\
 ({									\
 	uint32_t __a = (uint32_t) (a);	\
@@ -66,16 +69,20 @@ static inline void dataSyncBarrier(void)
 })
 
 
-// Round up to the nearest multiple of n
-//進位到最接近n的倍數
-//cprintf("%d\n",ROUNDUP(4100,4096));
-//印出8192
+/**
+ * Round up to the nearest multiple of n
+ * 進位到最接近n的倍數
+ * ROUNDUP(4100,4096));
+ * 印出8192 
+ */
 #define ROUNDUP(a, n)						\
 ({												\
 	uint32_t __n = (uint32_t) (n);				\
 	(typeof(a)) (ROUNDDOWN((uint32_t) (a) + __n - 1, __n));	\
 })
+
 /***************************************************************************************/
+
 #define kpa2va(pa)  ((uint32_t)pa + 0x30000000)
 #define kva2pa(va)	((uint32_t)va - 0x30000000)
 

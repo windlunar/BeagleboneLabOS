@@ -2,10 +2,12 @@
 #ifndef __USYSCALL_H_
 #define __USYSCALL_H_
 
+
 #include "../common.h"
 #include "../kernel/syscall.h"
 #include "../kernel/task.h"
 #include "../kernel/file.h"
+
 
 /****************************************************************************/
 // Console default file description
@@ -19,8 +21,6 @@
 /****************************************************************************/
 #define TTY0            "/tty0\0"
 #define IPC0            "/ipc0\0"
-
-
 
 
 /****************************************************************************/
@@ -47,5 +47,6 @@ int __chdir(char *subdirname) ;
 void __getfullpath(char *buf ,int n_bytes);
 void __restart(void) ;
 void __close(int fd) ;
+
 
 #endif

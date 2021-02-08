@@ -1,15 +1,11 @@
 /**
  * U-Boot version: 2017.01
- * 
- * BBB will reset itself after 50 seconds by watchdog
  */ 
 
-//#include "../klib/queue.h"
-//#include "../klib/mem.h"
 #include "../driver/usr_led.h"
 #include "../common.h"
 #include "../driver/uart.h"
-#include "kprint.h"
+#include "printk.h"
 #include "../userproc/usrtasks.h"
 #include "syscall.h"
 #include "debug.h"
@@ -26,21 +22,20 @@
 #include "../klib/queue.h"
 
 
-
 int kernal_entry(void)
 {
-
-/***************************************************************************************/
-// mmu	
-/***************************************************************************************/
+	/**
+	 * mmu
+	 */ 	
 	_memset((void *)KERN_PADDR_PTR, 0, BLK_SIZE) ;
 	mmu_init() ;
 
 	printk("Enable MMU.\r\n") ;
 
-/***************************************************************************************/
-// Init Task First thread :Shell
-/***************************************************************************************/
+
+	/**
+	 * Init Timer
+	 */ 
 	printk("\r\nKernel Init start...\r\n") ;
 
 	printk("sp : %x ---CP15_c1 : %x\r\n" ,READ_SP() ,READ_CP15_c1());
@@ -59,46 +54,50 @@ int kernal_entry(void)
 	enableOsTick(IRQ_NUM_TIMER0) ;
 	printk("Init Timer0 to switch tasks.\r\n");
 
-/***************************************************************************************/
-// Init memory-page lists and files
-/***************************************************************************************/
+
+	/**
+	 * Init memory-page lists and files-like system
+	 */ 
 	kpage_struct_init();
 	page_list_init();
-
 	kpage_blks_init() ;
 	
 	file_in_ram_init() ;
 
-/***************************************************************************************/
-// Test
-/***************************************************************************************/
+
+	/**
+	 * Test
+	 */ 
 
 
-/***************************************************************************************/
-// Init Task First thread :Shell
-/***************************************************************************************/
+	/**
+	 * Init Task First thread :Shell
+	 */ 
 	printk("Init Tasks Shell...\r\n");
 
 	task_init() ;
 	
-	//Init the first thread
+	/** Init the first Task */
 	do_ktaskCreate(LOWEST_PRIORITY ,&main_shell) ;
 
-/***************************************************************************************/
-// Start Sched
-/***************************************************************************************/
+
+	/**
+	 * Start Sched
+	 */ 
 	printk("Sched Starting...\r\n");
 
 	disable_watchdog(WATCHDOG_BASE) ;
 
-	//設定要跳進去sched()的context
+	/* 設定要跳進去sched()的context */
 	set_first_sched();
 
-	//Jump to sched_first_run() in task.c
-	//跳到 sched後不再回來
+
+	/** 
+	 * Jump to sched_first_run() in task.c.
+	 * Never back
+	 */ 
 	call_sched((uint32_t)schedFuncContextSPtr) ;
 
-/***************************************************************************************/
 	for(;;);
 
 	return 0;

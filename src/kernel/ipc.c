@@ -3,7 +3,9 @@
 #include "ipc.h"
 #include "../driver/uart.h"
 
+
 struct QUEUE q ;
+
 
 int ipc_buf_alloc()
 {
@@ -12,6 +14,8 @@ int ipc_buf_alloc()
     else
         return 0 ;
 }
+
+
 
 int ipc_read_func(uint8_t *rbuf ,uint32_t n_bytes)
 {
@@ -26,6 +30,8 @@ int ipc_read_func(uint8_t *rbuf ,uint32_t n_bytes)
     }
     return n_rd ;
 }
+
+
 
 int ipc_write_func(uint8_t *wbuf ,uint32_t n_bytes)
 {
@@ -43,7 +49,9 @@ int ipc_write_func(uint8_t *wbuf ,uint32_t n_bytes)
     return 0 ;
 }
 
-// Not close
+
+
+/** Not close */
 void free_ipc(void)
 {
     kq_delete(&q) ;

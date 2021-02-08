@@ -8,18 +8,25 @@ void print_LR(uint32_t data){
     for(;;);
 }
 
+
+
 void print_SP(uint32_t data){
     printk("SP : %x\r\n", data) ;
-    //for(;;);
 }
+
+
 
 void print_here(){
     printk("HERE\r\n") ;
 }
 
+
+
 void print_cpsr(){
     printk("cpsr : %x \r\n",READ_CPSR());
 }
+
+
 
 void stackDisplay(uint32_t stackTop ,int num){
     uint32_t *stackTopAddr = (uint32_t *)stackTop ;
@@ -56,9 +63,12 @@ int32_t readCpsrMode(){
 }
 
 
-void print_R0_R1_R2_R3(uint32_t r0 ,uint32_t r1 ,uint32_t r2 ,uint32_t r3){
+
+void print_R0_R1_R2_R3(uint32_t r0 ,uint32_t r1 ,uint32_t r2 ,uint32_t r3)
+{
     printk("R0 : %x---R1 : %x---R2 : %x---R3 : %x\r\n", r0,r1,r2,r3) ;
 }
+
 
 
 void print_free_area_list_from_head()
@@ -76,6 +86,7 @@ void print_free_area_list_from_head()
 }
 
 
+
 void print_free_area_list_from_end()
 {
     struct PAGE_INFO *head = free_page_head ;
@@ -85,7 +96,7 @@ void print_free_area_list_from_end()
     }
     struct PAGE_INFO *end = head ;
 
-    //Just print first 10 nodes for test
+    /* Just print first 10 nodes for test */
     printk("Print free list from end\r\n");
     for(int i =0 ;i<10;i++){
         printk("%p  ",end->pgstart) ;
@@ -94,6 +105,7 @@ void print_free_area_list_from_end()
         end = end->prev ;
     }
 }
+
 
 
 void print_inuse_area_list_from_head()
@@ -111,37 +123,6 @@ void print_inuse_area_list_from_head()
         head = head->next ;
     }
 }
-
-void mem_area_alloc_free_test()
-{
-	print_free_area_list_from_head();
-
-	printk("Test alloc\r\n") ;
-
-	struct PAGE_INFO *mem_area0 = page_alloc() ;
-	struct PAGE_INFO *mem_area1 = page_alloc() ;
-	struct PAGE_INFO *mem_area2 = page_alloc() ;
-
-	print_free_area_list_from_head();
-	print_inuse_area_list_from_head();
-
-	printk("Test free\r\n") ;
-
-	page_free(mem_area0) ;
-	page_free(mem_area1) ;
-
-	print_free_area_list_from_end();
-	print_inuse_area_list_from_head();   
-
-    printk("Page's blk_list_head addr =%p\r\n",mem_area2->blk_list_head) ;
-
-    uint32_t *p= kmalloc() ;
-    printk("p =%p\r\n" ,p) ;
-    printk("Page's start addr =%p\r\n" ,mem_area2->pgstart) ;
-    printk("Page's blk_list_head addr =%p\r\n",mem_area2->blk_list_head) ;
-
-}
-
 
 
 

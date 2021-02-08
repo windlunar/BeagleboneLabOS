@@ -5,7 +5,7 @@
 
 #include "../common.h"
 #include "../driver/uart.h"
-#include "kprint.h"
+#include "printk.h"
 
 
 /****************************************************************************************/
@@ -13,31 +13,34 @@
 /****************************************************************************************/
 typedef unsigned int paddr_t ;
 typedef unsigned int vaddr_t ;
-typedef unsigned int pte_t ;        // page table entry connent
-typedef unsigned int pte_paddr_t ;  // page table entry addr
-typedef unsigned int pgt_paddr_t ;  // page table addr
+typedef unsigned int pte_t ;        /** page table entry connent */
+typedef unsigned int pte_paddr_t ;  /** page table entry addr */
+typedef unsigned int pgt_paddr_t ;  /** page table addr */
+
 /****************************************************************************************/
+
 #define L1_PAGE_PTE_BASE_MASK       (0xfff00000)
-#define L1_PAGE_PTE_BITS            (0x02)      //代表 1M page(section) ,只有一個level的轉換
-#define L1_PAGE_TABLE_BASE_PADDR          KERN_PADDR
-#define L1_PAGE_TABLE_BASE_VADDR          (L1_PAGE_TABLE_BASE_PADDR)
+#define L1_PAGE_PTE_BITS            (0x02)      /** 代表 1M page(section) ,只有一個level */
+#define L1_PAGE_TABLE_BASE_PADDR    KERN_PADDR
+#define L1_PAGE_TABLE_BASE_VADDR    (L1_PAGE_TABLE_BASE_PADDR)
 #define L1_PAGE_TABLE_BASE_MASK     (0xffffc000)
 
 /****************************************************************************************/
-#define TOTAL_MEM_SIZE_BYTES    (0x100000000) // 4G bytes
-//#define TOTAL_MEM_SIZE_BYTES    (0x20000000) // 512M bytes
-#define L1_PAGE_SIZE_BYTES      (0x00100000) // 1M bytes
+#define TOTAL_MEM_SIZE_BYTES    (0x100000000)   /** 4G bytes */
+#define L1_PAGE_SIZE_BYTES      (0x00100000)    /** 1M bytes */
 
 
-// vaddr的bit20~bit31(12位元)用作 page table的 index
-// 所以先減去 vaddr的起始位址後 與 0xfff00000 做位元OR取得 bit20~bit31
-// 然後往右 shift 20 位元後在往左shift 2位元(因為一個pte佔用4 bytes)
-// s : vaddr_map_start ,v :vaddr
-//
+/** 
+ * vaddr的bit20~bit31(12位元)用作 page table的 index
+ * 所以先減去 vaddr的起始位址後 與 0xfff00000 做位元OR取得 bit20~bit31
+ * 然後往右 shift 20 位元後在往左shift 2位元(因為一個pte佔用4 bytes)
+ * s : vaddr_map_start ,v :vaddr
+ */ 
 #define vaddr2L1pteidx(v ,s)   ((((v-s)&0xfff00000) >>20) <<2)  
 
 /****************************************************************************************/
-// 4096個pages = 4096個pte = 16KB per page table
+
+/** 4096個pages = 4096個pte = 16KB per page table */
 #define L1_PAGES_NUM                (TOTAL_MEM_SIZE_BYTES / L1_PAGE_SIZE_BYTES)  
 #define L1_PAGE_TABLE_SIZE_BYTE     (L1_PAGES_NUM*4)
 #define L1_PAGE_TABLE_END_PADDR           (L1_PAGE_TABLE_BASE_PADDR + L1_PAGES_NUM)   
@@ -73,21 +76,21 @@ typedef unsigned int pgt_paddr_t ;  // page table addr
  * I/O
  * ------------------------- 0x00000000
  */  
-
 #define MEM_END_PADDR               (0xffffffff)
-#define KSTACK_TOP_PADDR            (0x9df3fffc)  //sp最高能指向的address
-#define KSTACK_BOTTOM_PADDR         (0x9df00000)  //這個addr應為0x9df00000
+#define KSTACK_TOP_PADDR            (0x9df3fffc)  /* sp最高能指向的address */
+#define KSTACK_BOTTOM_PADDR         (0x9df00000)  /* 這個addr應為0x9df00000 */
 #define UMEM_START_PADDR            (0x82100000) 
 #define KUSE_START_PADDR            (0x82000000)
-#define PADDR_MAP_START             (0x00000000)   //paddr從此處開始映射
+#define PADDR_MAP_START             (0x00000000)  /* paddr從此處開始映射 */
 
-#define KSTACK_BOTTOM_VADDR         (0x9df00000)  //sp最高能指向的address
-#define UMEM_START_VADDR            (0x82100000) //
+#define KSTACK_BOTTOM_VADDR         (0x9df00000)  /* sp最高能指向的address */
+#define UMEM_START_VADDR            (0x82100000) 
 #define KUSE_START_VADDR            (0x82000000)
 #define DRAM_SPACE_START_VADDR      (0x80000000)
-#define MAP_START_VADDR             (0x00000000)   //vaddr從此處開始映射
+#define MAP_START_VADDR             (0x00000000)  /* vaddr從此處開始映射 */
 
 #define page_num_cal(vstart ,vend)   ((ROUNDUP(vend ,PAGE_SIZE)-ROUNDDOWN(vstart ,PAGE_SIZE)) >> 20)   
+
 /****************************************************************************************/
 // 獲得pte內容 ,PTE:
 //  -----------------------------------------------------------
@@ -105,7 +108,7 @@ typedef unsigned int pgt_paddr_t ;  // page table addr
 
 //domain bits
 #define DOMAIN_BIT_SHIFT       (5)
-#define DEFAULT_DOMAIN      (0x0) //共有16個domain可選,可控制記憶體區塊權限,但實際上用AP bits來控制
+#define DEFAULT_DOMAIN      (0x0)   //共有16個domain可選,可控制記憶體區塊權限
 
 // XN bits :Execute Never
 // 要AP permission檢查一定要設定為 0

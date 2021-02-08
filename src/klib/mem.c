@@ -1,6 +1,7 @@
 
 #include "../klib/mem.h"
-#include "../kernel/kprint.h"
+#include "../kernel/printk.h"
+
 
 void _memset(void *start ,uint8_t value ,uint32_t SizeofBytes)
 {

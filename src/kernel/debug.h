@@ -5,10 +5,9 @@
 
 #include "../common.h"
 #include "../driver/uart.h"
-#include "kprint.h"
+#include "printk.h"
 #include "memory.h"
 #include "task.h"
-
 
 
 extern unsigned int READ_CPSR ();
@@ -27,7 +26,6 @@ void print_R1_R2_R3(uint32_t r1 ,uint32_t r2 ,uint32_t r3) ;
 void print_free_area_list_from_head();
 void print_free_area_list_from_end();
 void print_inuse_area_list_from_head();
-void mem_area_alloc_free_test();
 void print_from_blk_head(struct PAGE_INFO *mem_area);
 
 #endif

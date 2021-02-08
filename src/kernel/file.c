@@ -3,6 +3,8 @@
 #include "task.h"
 #include "ipc.h"
 #include "../klib/string.h"
+
+
 /***************************************************************************************/
 struct DIRTREE_INFO path_tree ;
 struct DIR_NODE *root = NULL ;
@@ -36,6 +38,7 @@ int file_in_ram_init()
 }
 
 
+
 int path_tree_init()
 {
     path_tree.ma = page_alloc() ;
@@ -50,6 +53,7 @@ int path_tree_init()
 
     return 0 ;
 }
+
 
 
 int create_root_path()
@@ -69,6 +73,7 @@ int create_root_path()
     root->name = PATH_root ;
     return 0 ;
 }
+
 
 
 struct DIR_NODE *create_path_node(struct DIR_NODE *parent ,char *name)
@@ -94,8 +99,7 @@ struct DIR_NODE *create_path_node(struct DIR_NODE *parent ,char *name)
         name++ ; 
     }
 
-    // Set the parent node's child
-    // Should be link list
+    /* Set parent node's child */
     if (node->parent->firstchild != NULL){
         struct DIR_NODE *end = find_end_sibling(node->parent->firstchild) ;
         end->next_sibling = node ;
@@ -109,6 +113,7 @@ struct DIR_NODE *create_path_node(struct DIR_NODE *parent ,char *name)
 }
 
 
+
 struct DIR_NODE *find_end_sibling(struct DIR_NODE *node)
 {
     struct DIR_NODE *start = node ;
@@ -120,8 +125,7 @@ struct DIR_NODE *find_end_sibling(struct DIR_NODE *node)
 
 
 
-
-// 目前只能印出root下第一階
+/* 印出node下一階 */
 void print_under_node(struct DIR_NODE *node)
 {
     if (node == NULL) return ;
@@ -162,13 +166,13 @@ struct FILE *create_file_under_node(struct DIR_NODE *node ,char * filename ,int 
 {
     if ((root == NULL) || (node == NULL)) return NULL ;
 
-    //分配記憶體空間
+    /* 分配記憶體空間 */
     struct FILE *file = (struct FILE *)path_tree.ma_aval_start ;
     path_tree.ma_aval_start += sizeof(struct FILE) ;
 
     file->parent = node ;
 
-    // Setup file name
+    /* Setup file name */
     _memset((void *)file->namebuf ,0 ,NAME_BUF_SIZE) ;
     file->name = &file->namebuf[0] ;
     char *dest = file->name ;
@@ -179,7 +183,7 @@ struct FILE *create_file_under_node(struct DIR_NODE *node ,char * filename ,int 
         filename++ ; 
     }
 
-    // setup file type
+    /* setup file type */
     file->type = type ;
 
     switch (file->type) {
@@ -209,7 +213,7 @@ struct FILE *create_file_under_node(struct DIR_NODE *node ,char * filename ,int 
             break;
     }
 
-    // Setup list
+    /* Setup list */
     file->next_sibling = NULL ;
 
     if (node->firstfile == NULL) {
@@ -220,16 +224,17 @@ struct FILE *create_file_under_node(struct DIR_NODE *node ,char * filename ,int 
         end->next_sibling = file ;
 
     }
-    // Add file to list
+    /* Add file to list */
     file_list_push(file) ;
 
     return file ;
 }
 
 
+
 void file_list_push(struct FILE *file)
 {
-    // list內還沒有資料
+    /* list內還沒有資料 */
     if (file_list_head == NULL) {
         file_list_head = file ;
         file->list_next = NULL ;
@@ -237,14 +242,15 @@ void file_list_push(struct FILE *file)
         return ;
     }
 
-    //代表list中只有一項
+    /* 代表list中只有一項 */
     if (file_list_head->list_next == NULL) {
         file_list_head->list_next = file ;
         file->list_prev = file_list_head ;
         file->list_next = NULL ;
         return ;
     }
-    //移動到end
+
+    /* 移動到end */
     struct FILE *head = file_list_head ;
     while (head->list_next != NULL) {
         head = head->list_next ;
@@ -255,6 +261,7 @@ void file_list_push(struct FILE *file)
     file->list_prev = end ;
     file->list_next = NULL ;
 }
+
 
 
 void print_file_list()
@@ -268,8 +275,6 @@ void print_file_list()
         head = head->list_next ;
     }
 }
-
-
 
 
 
@@ -289,8 +294,6 @@ struct FILE *find_file(char *filename)
 
 
 
-
-
 struct DIR_NODE *find_target_subdir(struct DIR_NODE *curdir ,char *subdir_name)
 {
     struct DIR_NODE *en = curdir->firstchild ;
@@ -302,21 +305,21 @@ struct DIR_NODE *find_target_subdir(struct DIR_NODE *curdir ,char *subdir_name)
             if (!_strcmp(en->name ,subdir_name)) return en ; //eq
             en = en->next_sibling ;
         }
-        return NULL ;   // No match
+        return NULL ;       /* No match */
 
-    }else if (neq == 0) { //eq ,切換道上一層路徑
-        if (curdir->parent == NULL) return NULL ; // No parent dir
+    }else if (neq == 0) {   /*eq ,切換道上一層路徑 */
+        if (curdir->parent == NULL) return NULL ; /* No parent dir */
 
-        return curdir->parent ; //return parent dir
+        return curdir->parent ; /* return parent dir */
     } else {
         return NULL ;
-    }
-       
+    }    
 }
 
 /***********************************************************************************/
 // File operation
 /***********************************************************************************/
+
 fd_t file_open(char *filename ,void *_task)
 {
     struct TASK_INFO *task = (struct TASK_INFO *)_task ;
@@ -333,11 +336,12 @@ fd_t file_open(char *filename ,void *_task)
             fd = i ;
             break ;
         } else if ((task->openfiles[i] == NULL) && (i==2)) {
-            //i = fd = 2 for stderr ,not implement yet.
+            /* i = fd = 2 for stderr ,not implement yet. */
         }
     }
     return fd ;
 }
+
 
 
 void file_close(fd_t fd ,void *_task)
@@ -345,6 +349,7 @@ void file_close(fd_t fd ,void *_task)
     struct TASK_INFO *task = (struct TASK_INFO *)_task ;
     task->openfiles[fd] = NULL ;
 }
+
 
 
 int console_read_func(uint8_t *rdbuf ,uint32_t n_bytes)
@@ -360,6 +365,7 @@ int console_read_func(uint8_t *rdbuf ,uint32_t n_bytes)
 
     return n_rd ;
 }
+
 
 
 int console_write_func(uint8_t *wrbuf ,uint32_t n_bytes)

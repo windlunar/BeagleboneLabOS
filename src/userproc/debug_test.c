@@ -1,17 +1,19 @@
+
 #include "usrtasks.h"
 #include "debug_test.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "../klib/queue.h"
 #include "../klib/usyscall.h"
 #include "commands.h"
+
 
 void test_sys_getsubdir_and_getfdir()
 {
 	char buf[16*5] ;
 	_memset(buf ,0 ,sizeof(buf)) ;
-	if (__getsubdir(buf ,sizeof(buf)) < 0) {
+	if (__getsubdir(buf ,sizeof(buf)) < 0)
 		printk("buf size not enough.\r\n") ;
-	}
+
 	put_str(buf) ;
 	put_str("\r\n") ;
 	printk("Split subdir list string.") ;
@@ -29,11 +31,10 @@ void test_sys_getsubdir_and_getfdir()
 	}
 	printk("__getsubdir Test end\r\n\r\n") ;
 
-	//
 	_memset(buf ,0 ,sizeof(buf)) ;
-	if (__getfdir(buf ,sizeof(buf)) < 0) {
+	if (__getfdir(buf ,sizeof(buf)) < 0)
 		printk("buf size not enough.\r\n") ;
-	}
+
 	put_str(buf) ;
 	put_str("\r\n") ;
 	printk("Split file list string.") ;
@@ -68,6 +69,4 @@ void test_sys_chdir()
 	if (__chdir("..\0") < 0) put_str("\r\nDir not found\r\n") ;
 	put_str("\r\nList subdirs and files") ;
 	lsdir();
-
-
 }

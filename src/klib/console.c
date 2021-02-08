@@ -1,9 +1,8 @@
 
 #include "../klib/console.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "../klib/usyscall.h"
 #include "../driver/uart.h"
-
 
 
 // |---------->h(h)
@@ -17,7 +16,6 @@
 // arg4 : h軸(橫軸)的開始(要畫的起點)
 // arg5 : 長度(像素點)
 // arg6 : 要填的字 (如果是像素點的話可以改成顏色)
-
 void draw_horizental_line(char *input ,int n_h,int h ,int v ,char character ,int len)
 {
 	char *s = input ;
@@ -28,6 +26,7 @@ void draw_horizental_line(char *input ,int n_h,int h ,int v ,char character ,int
 		len--;
 	}
 }
+
 
 
 // |---------->h
@@ -64,6 +63,7 @@ void draw_whole(char *input ,int n_v ,int n_h ,char character)
 }
 
 
+
 void draw_last_pix_every_line(char *input ,int n_v ,int n_h ,char character)
 {
 	draw_vertical_line(input ,n_h ,n_h-1 ,0 ,'\n' ,n_v) ;
@@ -71,6 +71,7 @@ void draw_last_pix_every_line(char *input ,int n_v ,int n_h ,char character)
 	//最後一個字元放空字元
 	draw_vertical_line(input ,n_h ,n_h-1 ,n_v-1 ,'\0' ,1) ;
 }
+
 
 
 void draw_console(void)
@@ -101,6 +102,5 @@ void draw_console(void)
 	
 	//uart_tx_str(UART0_PTR ,&p[0][0] ,VERTICAL_LENTH*HORIZENTAL_LENTH) ;
 	__write(FD_CONSOLE_OUT ,&p[0][0] ,VERTICAL_LENTH*HORIZENTAL_LENTH) ;
-
 }
 

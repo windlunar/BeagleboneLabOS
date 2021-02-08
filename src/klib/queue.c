@@ -24,10 +24,13 @@ int kq_init(struct QUEUE *qPtr ,int qSize)
     return 0 ;
 }
 
+
+
 void kq_delete(struct QUEUE *qPtr)
 {
     kblk_free(qPtr->data) ;
 }
+
 
 
 int queue_is_empty(struct QUEUE *qPtr)
@@ -81,7 +84,6 @@ uint8_t dequeue(struct QUEUE *qPtr)
     qPtr->head = ( (qPtr->head) + 1 ) % (qPtr->size) ;
     return data ;
 }
-
 
 
 

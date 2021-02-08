@@ -4,29 +4,21 @@
 #include "../klib/mem.h"
 #include "../klib/string.h"
 #include "../klib/usyscall.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "debug_test.h"
 #include "usrtasks.h"
 #include "commands.h"
 
 
 ////////////////////////////////////////////////////////////////////////////////////
- #include "../kernel/task.h"
- #include "../kernel/kprint.h"
+ #include "../kernel/printk.h"
 ////////////////////////////////////////////////////////////////////////////////////
+
 
 void main_shell()
 {
-
 	draw_console();
 	uprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
-/***********************************************************************************/
-// Test
-/***********************************************************************************/
-	//int a = *(uint32_t *)0x90000000 ;
-	//*(uint32_t *)0x90000000 = 0x12345678 ;
-	//printk("test\r\n") ;
-/***********************************************************************************/
 	uprintf("\r\nThe command line is the first process\r\n") ;
 
 	uprintf("\r\nThe task id :%d\r\n",__gettid()) ;
@@ -54,12 +46,12 @@ void main_shell()
 	char token[SIZE_OF_CMD_TOKEN] ;
 	char *start = NULL;
 
-	//command line
+	/* command line */
 	while (1) {
-		//獲取在console輸入的字元
+		/* 獲取在console輸入的字元 */
 		byte = get_c() ;
 
-		//在console上印出輸入的字元
+		/* 在console上印出輸入的字元 */
 		uprintf("%c" ,byte) ;
 		
 		if (_strlen(cmd) == sizeof(cmdbuf)-2) {
@@ -73,7 +65,7 @@ void main_shell()
 		}
 
 		switch (byte) {
-			case 0x08 : //Backspace
+			case 0x08 : /* Backspace */
 				put_c(' ') ;
 				put_c(0x08) ;
 				if(s != cmdbuf) s-- ;
@@ -81,9 +73,9 @@ void main_shell()
 				
 				break;
 			
-			case 0x0d:	//Enter ,按下Enter鍵後的處理
+			case 0x0d:	/* Enter ,按下Enter鍵後的處理 */
 				_memset(token ,0 ,SIZE_OF_CMD_TOKEN) ;
-				_strcat(cmd ,delim) ;	//這行不加的話 type cd指令會出錯
+				_strcat(cmd ,delim) ;	/* 這行不加的話 type cd指令會出錯 */
 				cmd = strtok_fst(cmd ,delim ,_strlen(delim) ,token) ;
 
 				if (_strcmp(token ,"test\0") == 0) {
@@ -97,40 +89,40 @@ void main_shell()
 					uprintf("Or '0' break.\r\n") ;
 
 					while (1) {
-						//獲取在console輸入的字元
+						/* 獲取在console輸入的字元 */
 						uint8_t get = get_c() ;
 
-						//在console上印出輸入的字元
+						/* 在console上印出輸入的字元 */
 						uprintf("%c" ,get) ;
 						
 						if (get == '1') {
-							// Test Fork function
+							/* Test Fork function */
 							fork_test() ;
 							uprintf("Back to Shell.\r\n") ;
 							break ;
 
 						} else if (get == '2') {
-							// 測試 multitasking							
-							// Time slice base. Round Robin Multitasking    
+							/* 測試 multitasking */
+							/* Time slice base. Round Robin Multitasking */
 							multitasking_test_main() ;
 							uprintf("Back to Shell.\r\n") ;
 							break ;
 
 						} else if (get == '3') {
-							// 測試 priority							
-							// Time slice base. priority base Multitasking    
+							/* 測試 priority							
+							/* Time slice base. priority base Multitasking */
 							priority_test_main() ;
 							uprintf("Back to Shell.\r\n") ;
 							break ;
 
 						} else if (get == '4') {
-							// 測試 tty0							
+							/* 測試 tty0 */
 							tty0_test_main() ;
 							for(int i = 0 ; i<20000;i++) ;
 							break ;
 
 						} else if (get == '5') {
-							// 測試 tty0							
+							/* 測試 ipc */
 							ipc_test_main() ;
 							for(int i = 0 ; i<20000;i++) ;
 							break ;
@@ -156,12 +148,12 @@ void main_shell()
 					uprintf("  command line.\r\n");
 					
 
-				// command 'ls'
+				/* command 'ls' */
 				} else if (_strcmp(token ,"ls\0") == 0) {
 					lsdir() ;
 					put_str("\r\n\0") ;
 
-				// command 'cd'
+				/* command 'cd' */
 				} else if (_strcmp(token ,"cd\0") == 0) {
 					_memset(token ,0 ,SIZE_OF_CMD_TOKEN) ;
 					if(*cmd == '\0'){
@@ -173,7 +165,7 @@ void main_shell()
 					if(cd(token) < 0) put_str("\r\nDir not found") ;
 					put_str("\r\n\0") ;
 
-				// command 'pwd'	
+				/* command 'pwd' */	
 				} else if (_strcmp(token ,"pwd\0") == 0) {
 					_memset(cwd ,0 ,SIZE_OF_CWD) ;
 					pwd(cwd ,SIZE_OF_CWD) ;
@@ -181,7 +173,7 @@ void main_shell()
 					put_str(cwd);
 					put_str("\r\n\0") ;
 
-				// command 'reboot'	
+				/* command 'reboot' */	
 				} else if (_strcmp(token ,"reboot\0") == 0) {
 					_memset(cwd ,0 ,SIZE_OF_CWD) ;
 					uprintf("Restart...\r\n") ;
@@ -205,6 +197,4 @@ void main_shell()
 				break;
 		}
 	}
-	
-	for(;;) ;
 }

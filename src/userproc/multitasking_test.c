@@ -1,12 +1,11 @@
 
 #include "usrtasks.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "../klib/usyscall.h"
 #include "../kernel/task.h"
 
 
 #define LOOP_NUM	10
-
 
 
 void usertask0(void){
@@ -24,6 +23,7 @@ void usertask0(void){
 }
 
 
+
 void usertask1(void){
 	uprintf("Starting User Task 1 \r\n");
 	__do_taskCreate(&usertask2 ,HIGHEST_PRIORITY) ;
@@ -38,6 +38,8 @@ void usertask1(void){
 	__exit();
 }
 
+
+
 void usertask2(void){
 	uprintf("Starting User Task 2 \r\n");
 	__do_taskCreate(&usertask3 ,HIGHEST_PRIORITY) ;
@@ -51,6 +53,8 @@ void usertask2(void){
 	}
 	__exit();
 }
+
+
 
 void usertask3(void){
 	uprintf("Starting User Task 3 \r\n");
@@ -68,6 +72,7 @@ void usertask3(void){
 }
 
 
+
 void usertask4(void){
 
 	uprintf("Starting User Task 4 \r\n");
@@ -81,6 +86,7 @@ void usertask4(void){
 	}
 	__exit();
 }
+
 
 
 int multitasking_test_main(void)

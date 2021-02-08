@@ -1,8 +1,8 @@
+
 #include "usrtasks.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "../klib/queue.h"
 #include "../klib/usyscall.h"
-
 
 
 int fork_test()
@@ -11,6 +11,8 @@ int fork_test()
 
 	return 0 ;
 }
+
+
 
 void fork_test_main()
 {
@@ -47,5 +49,4 @@ void fork_test_main()
 		uprintf("I'm child task., tid=%d\r\n" ,ctid) ;
 		__exit() ;
 	}
-
 }

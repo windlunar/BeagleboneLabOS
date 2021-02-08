@@ -1,10 +1,7 @@
 
 #include "usrtasks.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "../klib/usyscall.h"
-
-
-
 
 
 void ipc0_test(void){
@@ -18,13 +15,11 @@ void ipc0_test(void){
 	}
 
 	uprintf("Successfully open ipc0 ,fd =%d\r\n",fd) ;
+	put_str("Send :Hello Message\r\n\0") ;
 	__write(fd ,"Send :Hello Message\r\n\0",23) ;
-
 	__close(fd) ;
-
 	__exit();
 }
-
 
 
 

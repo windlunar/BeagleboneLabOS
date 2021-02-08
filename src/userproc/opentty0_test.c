@@ -1,10 +1,7 @@
 
 #include "usrtasks.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "../klib/usyscall.h"
-
-
-
 
 
 void tty0_test(void){
@@ -19,10 +16,8 @@ void tty0_test(void){
 
 	uprintf("Successfully open tty0 ,fd =%d\r\n",fd) ;
 	__write(fd ,"Write tty0 test\r\n\0",18) ;
-
 	__exit();
 }
-
 
 
 

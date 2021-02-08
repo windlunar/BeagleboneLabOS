@@ -5,8 +5,9 @@
 #include "../common.h"
 
 
-#define GPIO1_BASE		(0x4804C000)
+#define GPIO1_BASE		    (0x4804C000)
 #define GPIO1_PTR           ((volatile GPIO_T *)GPIO1_BASE)
+
 
 typedef struct{
     uint32_t GPIO_REVISION ;          // 0x0 

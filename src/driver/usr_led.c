@@ -4,7 +4,9 @@
 #include "cm_per.h"
 #include "gpio_reg.h"
 
+
 volatile uint32_t read_val;
+
 
 void usrLedInitAsm(){
     
@@ -23,6 +25,7 @@ void usrLedInitAsm(){
 }
 
 
+
 void usrLedBlinkAsm(){
     WRITE_REG32((unsigned int)&(GPIO1_PTR->GPIO_SETDATAOUT), (15 << 21));
 	for (read_val = 0; read_val < 1000000; read_val ++) ;
@@ -30,6 +33,7 @@ void usrLedBlinkAsm(){
 	WRITE_REG32((unsigned int)&(GPIO1_PTR->GPIO_CLEARDATAOUT) ,15 << 21);
 	for (read_val = 0; read_val < 1000000; read_val ++) ;
 }
+
 
 
 void usrLedInit(){
@@ -45,6 +49,7 @@ void usrLedInit(){
 }
 
 
+
 void usrLedBlink(){
     GPIO1_PTR->GPIO_SETDATAOUT = (15<<21) ;
     for (read_val = 0; read_val < 500000; read_val ++) ;
@@ -52,6 +57,7 @@ void usrLedBlink(){
     GPIO1_PTR->GPIO_CLEARDATAOUT = (15 << 21) ;
 	for (read_val = 0; read_val < 500000; read_val ++) ;
 }
+
 
 
 void usrLedToggle(uint32_t usr_led_num)

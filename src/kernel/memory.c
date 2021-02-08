@@ -6,11 +6,12 @@ uint32_t *kernal_end = (&_end) ;
 
 
 /****************************************************************************************/
+
 struct PAGE_INFO kpage;
 struct BLK_INFO *kblk_list_base = NULL ;
 struct PAGE_INFO *free_page_head = NULL;
 struct PAGE_INFO *inuse_page_head = NULL;
-struct PAGE_INFO *page_list[PAGE_NUM] ;   //存放在 kernel binary的bss segment中
+struct PAGE_INFO *page_list[PAGE_NUM] ;   
 
 /****************************************************************************************/
 // Memory Page Allocate
@@ -77,22 +78,23 @@ void page_list_init()
 
 struct PAGE_INFO *page_alloc(void)
 {
-    //保存原有的 head node
+    /* 保存原有的 head node */
     struct PAGE_INFO *prev_head = free_page_head ;
 
-    //修改現在的 head_ptr
+    /* 修改現在的 head_ptr */
     free_page_head = prev_head->next ;
     free_page_head->prev = NULL ;
 
-    //設定原來的 head node
+    /* 設定原來的 head node */
     prev_head->next =NULL ;
     prev_head->page_status = INUSE ;
 
     insert_to_inuse_list(prev_head) ;
 
-    //回傳原來 head area的結構指標
+    /* 回傳原來 head area的結構指標 */
     return prev_head ;
 }
+
 
 
 void page_free(struct PAGE_INFO *page_node)
@@ -106,9 +108,10 @@ void page_free(struct PAGE_INFO *page_node)
 }
 
 
+
 void add_to_free_list_end(struct PAGE_INFO *page_node)
 {
-    //如果還沒有 head node
+    /* 如果還沒有 head node */
     if (free_page_head == NULL) {
         free_page_head = page_node ;
         page_node->next = NULL ;
@@ -126,13 +129,13 @@ void add_to_free_list_end(struct PAGE_INFO *page_node)
     end_ptr->next = page_node ;
     page_node->next = NULL ;
     page_node->prev = end_ptr ;
-
 }
+
 
 
 void insert_to_inuse_list(struct PAGE_INFO *page_node)
 {
-    //如果還沒有 head node
+    /* 如果還沒有 head node */
     if (inuse_page_head == NULL) {
         inuse_page_head = page_node ;
         page_node->next = NULL ;
@@ -151,17 +154,16 @@ void insert_to_inuse_list(struct PAGE_INFO *page_node)
     end_ptr->next = page_node ;
     page_node->next = NULL ;
     page_node->prev = end_ptr ;
-
 }
+
 
 
 void delete_from_inuse_list(struct PAGE_INFO *page_node)
 {
-
     struct PAGE_INFO *prev_node = page_node->prev ;
     struct PAGE_INFO *next_node = page_node->next ;
 
-    //如果 area_node是head ,next node變成 head
+    /* 如果 area_node是head ,next node變成 head */
     if (prev_node == NULL) {
         inuse_page_head = next_node ;
         next_node->prev = NULL ;
@@ -169,7 +171,7 @@ void delete_from_inuse_list(struct PAGE_INFO *page_node)
         return ;
     }
 
-    // 如果 area_node是end ,prev node變成end
+    /* 如果 area_node是end ,prev node變成end */
     if (next_node == NULL) {
         prev_node->next = NULL ;
         page_node->prev = NULL ;
@@ -183,6 +185,7 @@ void delete_from_inuse_list(struct PAGE_INFO *page_node)
 }
 
 
+
 void clean_area_content(void *start)
 {
     uint32_t *startPtr = (uint32_t *)start ;
@@ -194,6 +197,7 @@ void clean_area_content(void *start)
 }
 
 
+
 uint32_t atleast_a_page_alloc(void)
 {
     if (inuse_page_head == NULL) {
@@ -203,6 +207,8 @@ uint32_t atleast_a_page_alloc(void)
     }
 }
 
+
+
 struct PAGE_INFO *find_page_list_end(struct PAGE_INFO *headnode)
 {
     struct PAGE_INFO *head =headnode ;
@@ -211,6 +217,7 @@ struct PAGE_INFO *find_page_list_end(struct PAGE_INFO *headnode)
     }
     return head ;
 }
+
 
 
 struct PAGE_INFO *find_aval_inuse_page(void)
@@ -227,6 +234,7 @@ struct PAGE_INFO *find_aval_inuse_page(void)
 }
 
 
+
 // Blocks
 // ------------------------------------ page offset = 0x100000
 // Free blks
@@ -238,7 +246,7 @@ struct PAGE_INFO *find_aval_inuse_page(void)
 struct PAGE_INFO 
 *blks_init(struct PAGE_INFO *pg)
 {
-    //已經初始化過
+    /* 已經初始化過 */
     if (pg->blk_not_init == FALSE) 
         return pg ;
 
@@ -269,15 +277,17 @@ struct PAGE_INFO
         }
     }
     pg->blk_not_init == FALSE ;
-    head[0].status = FULL ;         //For task
-    head[1].status = FULL ;         // for struct BLK_INFO
-    head[2].status = FULL ;         // for struct BLK_INFO
+    head[0].status = FULL ;         /* For task */
+    head[1].status = FULL ;         /* for struct BLK_INFO */
+    head[2].status = FULL ;         /* for struct BLK_INFO */
     pg->blk_list_head = (void *)(head + 3) ;
 
     return pg ;
 }
 
-// alloc a blk
+
+
+/** alloc a blk */
 void *blk_alloc(struct PAGE_INFO *pg)
 {
     if (pg == NULL)
@@ -291,7 +301,7 @@ void *blk_alloc(struct PAGE_INFO *pg)
     if(ret == NULL)
         return NULL ;
 
-    if (ret->next == NULL) {    //the last
+    if (ret->next == NULL) {    /* the last */
         pg->blk_list_head = NULL ;
         pg->no_free_blks = TRUE ; 
     }
@@ -303,21 +313,23 @@ void *blk_alloc(struct PAGE_INFO *pg)
 }
 
 
+
+/** 判斷 memarea這個 addr是那個page */
 struct PAGE_INFO *which_page(void *address)
 {
     uint32_t *pg = (uint32_t *)ROUNDDOWN((uint32_t)address ,PAGE_SIZE) ;
-
-    //判斷 memarea這個 addr是那個area
     struct PAGE_INFO *head = inuse_page_head ;
 
     while (head->next != NULL) {
-        if (head->pgstart == pg) break ;
+        if (head->pgstart == pg) 
+            break ;
         head = head->next ;
     }
     struct PAGE_INFO *target = head ;
 
     return target ;
 }
+
 
 
 struct BLK_INFO *find_blk_list_end(struct PAGE_INFO *pg)
@@ -331,6 +343,7 @@ struct BLK_INFO *find_blk_list_end(struct PAGE_INFO *pg)
     }
     return head ;
 }
+
 
 
 void put_to_blklist_end(struct PAGE_INFO *pg ,struct BLK_INFO *blk)
@@ -353,6 +366,7 @@ void put_to_blklist_end(struct PAGE_INFO *pg ,struct BLK_INFO *blk)
 }
 
 
+
 struct BLK_INFO *which_blk(void *address)
 {
     uint32_t blk_start = ROUNDDOWN((uint32_t)address ,BLK_SIZE) ;
@@ -363,8 +377,8 @@ struct BLK_INFO *which_blk(void *address)
     struct BLK_INFO *ret = ((struct BLK_INFO *)(page_start + BLK_SIZE) + index) ;
 
     return ret ;
-
 }
+
 
 
 void free_blk(void *address)
@@ -372,19 +386,21 @@ void free_blk(void *address)
     struct BLK_INFO *blk= which_blk(address);
     struct PAGE_INFO *pg = which_page(blk) ;
 
-    //將原本的blk放到list最後
+    /** 將原本的blk放到list最後 */
     put_to_blklist_end(pg ,blk) ;
 }
+
 
 
 uint32_t is_blk_init(struct PAGE_INFO *pg)
 {
     if (pg->blk_not_init) {
-        return FALSE ;  // Not init
+        return FALSE ;  /** Not init */
     } else {
         return TRUE ;
     }
 }
+
 
 
 uint32_t no_blks(struct PAGE_INFO *pg)
@@ -415,6 +431,8 @@ void kpage_struct_init()
     kpage.no_free_blks = FALSE ;
 }
 
+
+
 void kpage_blks_init()
 {
     kpage.blk_list_head = (void *)(kpage.free_start) ;
@@ -443,7 +461,7 @@ void kpage_blks_init()
     kpage.blk_not_init == FALSE ;
     kblk_list_base = &head[0] ;
 
-    // cal usage
+    /* cal inuse pages **/
     uint32_t end = ROUNDUP((uint32_t)kpage.free_start ,KBLK_SIZE) ;
     uint32_t index = (end - 0x82000000) >> 12 ;
 
@@ -500,6 +518,7 @@ void kblk_free(void *address)
 }
 
 
+
 void *kblk_alloc(int purpose)
 {
     if (kpage.blk_list_head == NULL) {
@@ -518,71 +537,17 @@ void *kblk_alloc(int purpose)
     ret->status = purpose ;
 
     return (void *)(ret->start) ;
-
 }
 
-// free 16K (4 blks)
+
+
+/** free 16K (4 blks) */
 void free_pgt (void *pgtbase)
 {
     kblk_free(pgtbase) ;
     
 }
+
 /****************************************************************************************/
 // alloc 小塊記憶體相關function
-// 都沒空間的話,要先呼叫 
-// page_list_init()
-// page_alloc()
-// blks_init();
-// blk_alloc() ;
-/****************************************************************************************/
-void *demand_a_blk()
-{
-    struct PAGE_INFO *pg ;
-    // 尚未 alloc 一個 mem page
-    if (atleast_a_page_alloc() == FALSE) {
-        pg = page_alloc() ;
-        pg = blks_init(pg) ;
-
-        void *p = blk_alloc(pg);
-        return p ;
-    }
-
-    //已經至少alloc過一個area
-    pg = find_aval_inuse_page();
-
-    //沒有可用的 mem page
-    //預設1個block 64bytes(前4個用作blks linklist指標)
-    if (pg == NULL) {
-        pg = page_alloc() ;
-        pg = blks_init(pg) ;
-
-        void *p = blk_alloc(pg);
-        return p ;
-    }
-
-    //有可用的 mem page
-    //判斷有無 init blocks
-    if (is_blk_init(pg) == FALSE) {
-        pg = blks_init(pg) ;
-
-        void *p = blk_alloc(pg);
-        return p ;       
-    }
-
-    void *p = blk_alloc(pg);
-    return p ;  
-
-}
-
-
-void *kmalloc(void)
-{
-    return demand_a_blk() ;
-}
-
-
-void kfree(void *p){
-    free_blk(p) ;
-}
-
 /****************************************************************************************/

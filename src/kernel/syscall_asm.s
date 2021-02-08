@@ -70,18 +70,17 @@ syscall_print_hello:
 syscall_yield: 
 	push {r0 ,lr}
 	mov r0, #SYSCALL_ID_yield
-/*****************************************************************************************/
-// 在這邊 reload ostimer counter ,tick =1ms (mov r0 #1)
-// 而不要在初始化 timer就load的話
-// 看起來可以解決卡住跳不出去的問題
-/*****************************************************************************************/
+
+	/**
+	* 在這邊 reload ostimer counter ,tick =1ms (mov r0 #1)
+	* 而不要在初始化 timer就load的話
+	* 看起來可以解決卡住跳不出去的問題
+	*/
 	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-	
 	mov		r0 ,#(ostick_msec)
 	bl 		reloadOsTick
-
 	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
-/*****************************************************************************************/
+
 	svc 0x00
 	pop	{r0 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
@@ -97,14 +96,13 @@ syscall_yield:
 .global syscall_get_tid; 
 .align	2
 syscall_get_tid:
-	//保存傳入參數
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_get_tid
-	svc 0x00
-	pop	{r2 ,lr}
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_get_tid
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr							/* 返回 user proc */
 	
 
 /*****************************************************************************************/
@@ -114,7 +112,6 @@ syscall_get_tid:
 .global syscall_exit; 
 .align	2
 syscall_exit:
-	//保存傳入參數
 	push 	{r2 ,lr}
 	mov		r2 ,r0
 	mov 	r0, #SYSCALL_ID_exit
@@ -134,15 +131,14 @@ syscall_exit:
 .global syscall_fork; 
 .align	2
 syscall_fork:
-	//保存傳入參數
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_fork
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_fork
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -154,15 +150,14 @@ syscall_fork:
 .global syscall_do_taskCreate; 
 .align	2
 syscall_do_taskCreate:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_do_taskCreate
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_do_taskCreate
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -173,15 +168,14 @@ syscall_do_taskCreate:
 .global syscall_malloc_blk; 
 .align	2
 syscall_malloc_blk:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_malloc_blk
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_malloc_blk
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -193,15 +187,14 @@ syscall_malloc_blk:
 .global syscall_mfree_blk; 
 .align	2
 syscall_mfree_blk:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_mfree_blk
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_mfree_blk
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 /*****************************************************************************************/
@@ -211,15 +204,14 @@ syscall_mfree_blk:
 .global syscall_get_mblk_list; 
 .align	2
 syscall_get_mblk_list:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_get_mblk_list
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_get_mblk_list
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -233,15 +225,14 @@ syscall_get_mblk_list:
 .global syscall_get_task_priority; 
 .align	2
 syscall_get_task_priority:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_get_task_priority
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_get_task_priority
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -251,15 +242,14 @@ syscall_get_task_priority:
 .global syscall_write; 
 .align	2
 syscall_write:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_write
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_write
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 /*****************************************************************************************/
@@ -268,15 +258,14 @@ syscall_write:
 .global syscall_read; 
 .align	2
 syscall_read:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_read
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_read
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -286,15 +275,14 @@ syscall_read:
 .global syscall_open; 
 .align	2
 syscall_open:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_open
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_open
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -305,15 +293,14 @@ syscall_open:
 .global syscall_getcwd; 
 .align	2
 syscall_getcwd:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_getcwd
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_getcwd
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -323,15 +310,14 @@ syscall_getcwd:
 .global syscall_getsubdir; 
 .align	2
 syscall_getsubdir:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_getsubdir
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_getsubdir
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -342,15 +328,14 @@ syscall_getsubdir:
 .global syscall_getfdir; 
 .align	2
 syscall_getfdir:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_getfdir
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_getfdir
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -360,15 +345,14 @@ syscall_getfdir:
 .global syscall_chdir; 
 .align	2
 syscall_chdir:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_chdir
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_chdir
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 /*****************************************************************************************/
@@ -377,15 +361,14 @@ syscall_chdir:
 .global syscall_getfullpath; 
 .align	2
 syscall_getfullpath:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_getfullpath
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_getfullpath
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 
@@ -395,15 +378,14 @@ syscall_getfullpath:
 .global syscall_restart; 
 .align	2
 syscall_restart:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_restart
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_restart
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr						/* 返回 user task */
 
 
 /*****************************************************************************************/
@@ -412,12 +394,11 @@ syscall_restart:
 .global syscall_close; 
 .align	2
 syscall_close:
-	//保存傳入參數 到r2
-	push {r2 ,lr}
-	mov	r2 ,r0
-	mov r0, #SYSCALL_ID_close
+	push 	{r2 ,lr}
+	mov		r2 ,r0
+	mov 	r0, #SYSCALL_ID_close
 
-	svc 0x00
-	pop	{r2 ,lr}
+	svc 	0x00
+	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx 		lr							/* 返回 user task */

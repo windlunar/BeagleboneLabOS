@@ -1,17 +1,18 @@
 
 #include "commands.h"
 #include "usrtasks.h"
-#include "../klib/std_io.h"
+#include "../klib/stdio.h"
 #include "../klib/queue.h"
 #include "../klib/usyscall.h"
+
 
 void lsdir()
 {
 	char buf[16*10] ;
 	_memset(buf ,0 ,sizeof(buf)) ;
-	if (__getsubdir(buf ,sizeof(buf)) < 0) {
+	if (__getsubdir(buf ,sizeof(buf)) < 0)
 		printk("buf size not enough.\r\n") ;
-	}
+
 
 	char *delim = ";;\0" ;
 	char token[16] ;
@@ -25,12 +26,10 @@ void lsdir()
 		put_str(token) ;
 	}
 
-	//
 	_memset(buf ,0 ,sizeof(buf)) ;
-	if (__getfdir(buf ,sizeof(buf)) < 0) {
+	if (__getfdir(buf ,sizeof(buf)) < 0)
 		printk("buf size not enough.\r\n") ;
-	}
-
+	
 	start = buf ;
 
 	while (start != NULL) {
@@ -41,6 +40,7 @@ void lsdir()
 		put_str(token) ;		
 	}
 }
+
 
 
 int cd(char *subdir)
