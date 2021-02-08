@@ -14,6 +14,8 @@
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
 void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args)
 {
+    switch_mm((uint32_t *)L1_PAGE_TABLE_BASE_PADDR) ;
+
     switch (syscall_id) {
     case SYSCALL_ID_print_hello:
         __print_hello_handler(*(uint32_t *)args) ;

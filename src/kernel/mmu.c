@@ -72,8 +72,8 @@ void mem_map (void)
     pte_init(0x00000000 ,0x80000000 ,AP_USER_PROHIBIT ,0x00000000 ,pgt_base) ;
     pte_init(0x80000000 ,0x82000000 ,AP_USER_PROHIBIT ,0x80000000 ,pgt_base) ;
     pte_init(0x82000000 ,0x82100000 ,AP_USER_R_ONLY ,0x82000000 ,pgt_base) ;
-    pte_init(0x82100000 ,0x90000000 ,AP_USER_RW ,0x82100000 ,pgt_base) ;
-    pte_init(0x90000000 ,0x9df00000 ,AP_USER_RW ,0x90000000 ,pgt_base) ;
+    pte_init(0x82100000 ,0x90000000 ,AP_USER_R_ONLY ,0x82100000 ,pgt_base) ;
+    pte_init(0x90000000 ,0x9df00000 ,AP_USER_R_ONLY ,0x90000000 ,pgt_base) ;
     pte_init(0x9df00000 ,0xa0000000 ,AP_USER_R_ONLY ,0x9df00000 ,pgt_base) ;
 }
 
@@ -212,11 +212,8 @@ void pgt_base_setup(uint32_t *base)
 // page table要align 16K ,所以分配4個block(4K)
 void *task_pgt_setup (void *pgstart ,void *pgtop)
 {
-    int pgt_size = 4 * page_num_cal(0x00000000 ,0xa0000000) ;
-
     void *pgt_base = kblk_alloc(FOR_KERN) ;
 
-    pte_init(0x00000000 ,0x82000000 ,AP_USER_R_ONLY ,0x00000000 ,(uint32_t)pgt_base) ;
     pte_init(0x82000000 ,0xa0000000 ,AP_USER_R_ONLY ,0x82000000 ,(uint32_t)pgt_base) ;
 
     pte_init((paddr_t)pgstart 
