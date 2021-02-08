@@ -256,5 +256,7 @@ void __attribute__((interrupt("PABT"))) prefetch_abort_handler(void)
 void __attribute__((interrupt("DABT"))) data_abort_handler(void)
 {
 	printk("In data_abort_handler\r\n");
+	set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
+    enable_watchdog(WATCHDOG_BASE) ;
 	for(;;) ;
 }
