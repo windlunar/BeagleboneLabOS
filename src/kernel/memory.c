@@ -458,6 +458,21 @@ void kpage_blks_init()
 
 
 
+struct BLK_INFO *which_kblk(void *address)
+{
+    uint32_t blk_start = ROUNDDOWN((uint32_t)address ,BLK_SIZE) ;
+    struct BLK_INFO *target = NULL ;
+
+    for ( int i = 0 ; i < BLK_NUM_PER_PAGE ;i++) {
+        if (kblk_list_base[i].start == (uint32_t *)blk_start) {
+            target = &kblk_list_base[i] ;
+            return target ;
+        }
+    }    
+}
+
+
+
 void kblk_free(void *address)
 {
     uint32_t blk_start = ROUNDDOWN((uint32_t)address ,BLK_SIZE) ;
@@ -481,10 +496,11 @@ void kblk_free(void *address)
     end->next = target ;
     target->prev = end ;
     target->next = NULL ;
+    target->status = FREE ;
 }
 
 
-void *kblk_alloc()
+void *kblk_alloc(int purpose)
 {
     if (kpage.blk_list_head == NULL) {
         printk("blk_list_head is empty.\r\n") ;
@@ -499,6 +515,7 @@ void *kblk_alloc()
 
     ret->next = NULL ;
     ret->prev = NULL ;
+    ret->status = purpose ;
 
     return (void *)(ret->start) ;
 

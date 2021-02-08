@@ -4,7 +4,7 @@
 #include "../klib/usyscall.h"
 
 
-#define TTY0            "/tty0\0"
+
 
 
 void tty0_test(void){

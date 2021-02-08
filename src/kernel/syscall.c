@@ -163,7 +163,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     // Alloc 一個 Memory Page,並回傳描述該area的結構體 struct PAGE_INFO
     // 並將該 area使用狀況設為 FULL ,只屬於這個task使用
     struct PAGE_INFO *n_pg = page_alloc();
-    n_pg->page_status = PAGE_FOR_TASK ;
+    n_pg->page_status = FOR_TASK ;
     _memset((void *)n_pg->pgstart, 0, TASK_STACK_SIZE) ;
 
 
@@ -233,7 +233,7 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
     struct TASK_ARGS *config = (struct TASK_ARGS *)arg ;
 
     struct PAGE_INFO *pg = page_alloc();
-    pg->page_status = PAGE_FOR_TASK ; 
+    pg->page_status = FOR_TASK ; 
     _memset((void *)pg->pgstart, 0, TASK_STACK_SIZE) ;
 
     // 把 TASK_INFO 結構放在該 memo區域的起始位址

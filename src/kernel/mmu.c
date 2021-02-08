@@ -214,7 +214,7 @@ void *task_pgt_setup (void *pgstart ,void *pgtop)
 {
     int pgt_size = 4 * page_num_cal(0x00000000 ,0xa0000000) ;
 
-    void *pgt_base = kblk_alloc() ;
+    void *pgt_base = kblk_alloc(FOR_KERN) ;
 
     pte_init(0x00000000 ,0x82000000 ,AP_USER_R_ONLY ,0x00000000 ,(uint32_t)pgt_base) ;
     pte_init(0x82000000 ,0xa0000000 ,AP_USER_R_ONLY ,0x82000000 ,(uint32_t)pgt_base) ;

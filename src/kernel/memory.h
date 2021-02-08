@@ -39,11 +39,12 @@ extern uint32_t *kernal_end ;
 // Structs
 /****************************************************************************************/
 // Define page_status
-#define FREE    0
-#define INUSE    1
-#define FULL  2
-#define PAGE_FOR_TASK  3
-#define FOR_KERN    4
+#define FREE            0
+#define INUSE           1
+#define FULL            2
+#define FOR_TASK        3
+#define FOR_KERN        4
+#define FOR_QUEUE       5
 
 // 如果是last node ,則 next = NULL
 // next 指向下一個node address
@@ -122,9 +123,10 @@ extern struct PAGE_INFO kpage;
 
 void kpage_struct_init() ;
 void kpage_blks_init();
-void *kblk_alloc() ;
+void *kblk_alloc(int purpose) ;
 void kblk_free(void *address) ;
 void free_pgt (void *pgtbase) ;
+struct BLK_INFO *which_kblk(void *address) ;
 /****************************************************************************************/
 // alloc 小塊記憶體相關function
 /****************************************************************************************/

@@ -11,7 +11,7 @@
 /***************************************************************************************/
 #define PATH_root   "/root\0"
 #define PATH_dev    "/dev\0"
-#define PATH_fifo   "/fifo\0"
+#define PATH_ipc   "/ipc\0"
 /***************************************************************************************/
 #define CONSOLE_IN_FD      0
 #define CONSOLE_OUT_FD     1
@@ -19,15 +19,16 @@
 #define FILE_CONSOLE_IN      "/console_in\0"
 #define FILE_CONSOLE_OUT     "/console_out\0"
 #define FILE_TTY0            "/tty0\0"
+#define FILE_IPC0            "/ipc0\0"
 /***************************************************************************************/
 #define CONSOLE_IN_TYPE     0
 #define CONSOLE_OUT_TYPE    1
 #define TTY0_TYPE           2
-#define FIFO_TYPE           3
+#define IPC_TYPE            3
 #define TEXT_TYPE           4
 /***************************************************************************************/
 #define NAME_BUF_SIZE       16
-typedef int FILE_DESCRIPTOR_t ;
+typedef int fd_t ;
 
 
 /***************************************************************************************/
@@ -35,19 +36,15 @@ typedef int FILE_DESCRIPTOR_t ;
 /***************************************************************************************/
 struct FILE
 {
-    struct FILE *next_sibling ;
-    uint32_t type ;
-
     struct DIR_NODE *parent ;
-
-    int (*file_read)(uint8_t *rdbuf ,uint32_t n_bytes) ;
-    int (*file_write)(uint8_t *wrbuf ,uint32_t n_bytes) ;
-
-    char namebuf[NAME_BUF_SIZE] ;
-    char *name ;
-
+    struct FILE *next_sibling ;
     struct FILE *list_next ;
     struct FILE *list_prev ;
+    uint32_t type ;
+    char namebuf[NAME_BUF_SIZE] ;
+    char *name ;
+    int (*file_read)(uint8_t *rdbuf ,uint32_t n_bytes) ;
+    int (*file_write)(uint8_t *wrbuf ,uint32_t n_bytes) ;
 };
 
 
@@ -114,7 +111,7 @@ struct FILE *find_file(char *filename) ;
 /***************************************************************************************/
 int console_read_func(uint8_t *rdbuf ,uint32_t n_bytes);
 int console_write_func(uint8_t *wrbuf ,uint32_t n_bytes);
-FILE_DESCRIPTOR_t file_open(char *filename ,void *_task) ;
+fd_t file_open(char *filename ,void *_task) ;
 
 
 /***************************************************************************************/

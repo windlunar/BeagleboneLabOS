@@ -1,6 +1,7 @@
 
 #include "file.h"
 #include "task.h"
+#include "ipc.h"
 #include "../klib/string.h"
 /***************************************************************************************/
 struct DIRTREE_INFO path_tree ;
@@ -16,13 +17,16 @@ int file_in_ram_init()
     struct DIR_NODE *dev = create_path_node(root ,PATH_dev) ;
     if (dev == NULL) return -1 ;
     
-    struct DIR_NODE *fifo = create_path_node(root ,PATH_fifo) ;
-    if (fifo == NULL) return -1 ;
+    struct DIR_NODE *ipc = create_path_node(root ,PATH_ipc) ;
+    if (ipc == NULL) return -1 ;
 
     create_file_under_node(dev ,FILE_CONSOLE_IN ,CONSOLE_IN_TYPE) ;
     create_file_under_node(dev ,FILE_CONSOLE_OUT ,CONSOLE_OUT_TYPE) ;
     create_file_under_node(dev ,FILE_TTY0 ,TTY0_TYPE) ;
 
+    create_file_under_node(ipc ,FILE_IPC0 ,IPC_TYPE) ;
+    ipc_buf_alloc() ;
+    
     // Only For test
     create_file_under_node(root ,"/fileForTest1\0" ,TEXT_TYPE) ;
     create_file_under_node(root ,"/fileForTest2\0" ,TEXT_TYPE) ;
@@ -194,6 +198,11 @@ struct FILE *create_file_under_node(struct DIR_NODE *node ,char * filename ,int 
             file->file_write = console_write_func ;          
             break ;
 
+        case IPC_TYPE:
+            file->file_read = ipc_read_func ;
+            file->file_write = ipc_write_func ;          
+            break ;
+
         default:
             file->file_read = NULL ;
             file->file_write = NULL ;
@@ -261,33 +270,7 @@ void print_file_list()
 }
 
 
-int console_read_func(uint8_t *rdbuf ,uint32_t n_bytes)
-{
-    uint8_t *s = rdbuf ;
-    int n_rd = 0;
-    while (n_bytes != 0) {
-        *s = uart_getC(CONSOLE) ;
-        s++ ;
-        n_rd++ ;
-        n_bytes-- ;
-    }
 
-    return n_rd ;
-}
-
-int console_write_func(uint8_t *wrbuf ,uint32_t n_bytes)
-{
-    uint8_t *s = wrbuf ;
-    int n_wr = 0 ;
-    while (n_bytes != 0) {
-        uart_putC(CONSOLE ,*s) ;
-        s++ ;
-        n_wr++ ;
-        n_bytes-- ;
-    }
-
-    return n_wr ;
-}
 
 
 struct FILE *find_file(char *filename)
@@ -305,26 +288,7 @@ struct FILE *find_file(char *filename)
 }
 
 
-FILE_DESCRIPTOR_t file_open(char *filename ,void *_task)
-{
-    struct TASK_INFO *task = (struct TASK_INFO *)_task ;
 
-    int fd = -1;
-    struct FILE *file = find_file(filename) ;
-
-    if (file == NULL) return -1 ;
-
-    for (int i =0 ; i<MAX_FD; i++) {
-        if ((task->openfiles[i] == NULL) && (i!=2)){
-            task->openfiles[i] = file ;
-            fd = i ;
-            break ;
-        } else if ((task->openfiles[i] == NULL) && (i==2)) {
-            //i = fd = 2 for stderr ,not implement yet.
-        }
-    }
-    return fd ;
-}
 
 
 struct DIR_NODE *find_target_subdir(struct DIR_NODE *curdir ,char *subdir_name)
@@ -348,4 +312,59 @@ struct DIR_NODE *find_target_subdir(struct DIR_NODE *curdir ,char *subdir_name)
         return NULL ;
     }
        
+}
+
+/***********************************************************************************/
+// File operation
+/***********************************************************************************/
+fd_t file_open(char *filename ,void *_task)
+{
+    struct TASK_INFO *task = (struct TASK_INFO *)_task ;
+
+    int fd = -1;
+    struct FILE *file = find_file(filename) ;
+
+    if (file == NULL) 
+        return -1 ;
+
+    for (int i =0 ; i<MAX_FD; i++) {
+        if ((task->openfiles[i] == NULL) && (i!=2)){
+            task->openfiles[i] = file ;
+            fd = i ;
+            break ;
+        } else if ((task->openfiles[i] == NULL) && (i==2)) {
+            //i = fd = 2 for stderr ,not implement yet.
+        }
+    }
+    return fd ;
+}
+
+
+int console_read_func(uint8_t *rdbuf ,uint32_t n_bytes)
+{
+    uint8_t *s = rdbuf ;
+    int n_rd = 0;
+    while (n_bytes != 0) {
+        *s = uart_getC(CONSOLE) ;
+        s++ ;
+        n_rd++ ;
+        n_bytes-- ;
+    }
+
+    return n_rd ;
+}
+
+
+int console_write_func(uint8_t *wrbuf ,uint32_t n_bytes)
+{
+    uint8_t *s = wrbuf ;
+    int n_wr = 0 ;
+    while (n_bytes != 0) {
+        uart_putC(CONSOLE ,*s) ;
+        s++ ;
+        n_wr++ ;
+        n_bytes-- ;
+    }
+
+    return n_wr ;
 }

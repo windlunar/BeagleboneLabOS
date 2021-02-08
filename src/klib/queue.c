@@ -1,55 +1,38 @@
 /**
  * Queue Implementation
  * 
- * Date : 2020/11/25
- * Author : Yi-Ying Lin
  */ 
 
-#include "../klib/queue.h"
+#include "queue.h"
+#include "../kernel/memory.h"
+#include "mem.h"
 
 
-
-
-/** 初始化queue
- * argument 1 : 指向 Queue結構的pointer
- * argument 2 : queue最大可存放的元素數 
- * 作用 : 將頭尾的index,queue內的元素數目初始化為0, 分配一個記憶體空間給queue存放data
- * 回傳值 : 無
- */
-//還沒實做malloc與memset 
-void queueInit(QUEUE_TASK_INFO_t *qPtr ,int qSize)
+int kq_init(struct QUEUE *qPtr ,int qSize)
 {
-    qPtr->idxHead = 0 ;
-    qPtr->idxBack = 0 ;
-    qPtr->NumDataInQueue = 0 ;
+    qPtr->head = 0 ;
+    qPtr->end = 0 ;
+    qPtr->n_data = 0 ;
+
+    qPtr->data = kblk_alloc(FOR_QUEUE) ; //16KB
+    if (qPtr->data == NULL)
+        return -1 ;
 
     qPtr->size = qSize;
+    _memset((void *)(qPtr->data) ,0 ,qSize * sizeof(char)) ;
 
-    for (int32_t i =0 ;i<qSize ;i++) {
-        qPtr->qDataTaskStructPtr[i] = NULL ; 
-    }
+    return 0 ;
 }
 
-/** 
- * argument 1 : 指向 Queue結構的pointer
- * 作用 : 釋放 在queueInit()中透過 malloc分配的記憶體空間
- * 回傳值 : 無
-*/
-void queueDelete(QUEUE_TASK_INFO_t *qPtr)
+void kq_delete(struct QUEUE *qPtr)
 {
-    //Not Implement Yet
-    //free(qPtr->qDataTaskStructPtr);
+    kblk_free(qPtr->data) ;
 }
 
 
-/** 
- * argument 1 : 指向 Queue結構的pointer
- * 作用 : 判斷該queue是否為 empty
- * 回傳值 : 回傳1, 代表 queue為空沒有data, 反之回傳 0
-*/
-int32_t queueIsEmpty(QUEUE_TASK_INFO_t *qPtr)
+int queue_is_empty(struct QUEUE *qPtr)
 {
-    if (qPtr->NumDataInQueue == 0) {
+    if (qPtr->n_data == 0) {
         return 1;
     } else {
         return 0 ;
@@ -57,14 +40,10 @@ int32_t queueIsEmpty(QUEUE_TASK_INFO_t *qPtr)
 }
 
 
-/** 
- * argument 1 : 指向 Queue結構的pointer
- * 作用 : 判斷該queue是否 full
- * 回傳值 : 回傳1, 代表 queue為 full, 反之回傳 0
-*/
-int32_t queueIsFull(QUEUE_TASK_INFO_t *qPtr)
+
+int queue_is_full(struct QUEUE *qPtr)
 {
-    if (qPtr->NumDataInQueue == qPtr->size) {
+    if (qPtr->n_data == qPtr->size) {
         return 1;
     } else {
         return 0 ;
@@ -72,76 +51,57 @@ int32_t queueIsFull(QUEUE_TASK_INFO_t *qPtr)
 }
 
 
-/** 
- * argument 1 : 指向 Queue結構的pointer
- * argument 2 : 欲存放進queue的 data 
- * 作用 : 將data從尾部放入queue
- * 回傳值 : 0代表成功, -1代表失敗(因為queue已經滿了)
-*/
-int32_t enQueue(QUEUE_TASK_INFO_t *qPtr, struct TASK_INFO *data)
+
+int enqueue(struct QUEUE *qPtr, uint8_t byte)
 {
-    if (queueIsFull(qPtr) == 1) {
+    if (queue_is_full(qPtr) == 1) {
         printk("Warning : Can't not put data to queue. Queue is Full. Return -1.\r\n");
         return -1 ;
     }
 
-    qPtr->qDataTaskStructPtr[qPtr->idxBack] = data ;
-    qPtr->idxBack = ( (qPtr->idxBack)+1 ) % (qPtr->size) ;
-    qPtr->NumDataInQueue++ ;
+    qPtr->data[qPtr->end] = byte ;
+    qPtr->end = ( (qPtr->end) + 1 ) % (qPtr->size) ;
+    qPtr->n_data++ ;
     return 0 ;
 }
 
 
-/** 
- * argument 1 : 指向 Queue結構的pointer
- * 作用 : 將data從頭部取出
- * 回傳值 : 0代表成功, -1代表失敗(因為queue為空)
-*/
-struct TASK_INFO *deQueue(QUEUE_TASK_INFO_t *qPtr)
+
+uint8_t dequeue(struct QUEUE *qPtr)
 {
-    if (queueIsEmpty(qPtr) == 1) {
+    if (queue_is_empty(qPtr) == 1) {
         printk("Warning : Can't not get data from queue. Queue is Empty. Return -1.\r\n");
-        return NULL ;
+        return -1 ;
     }
 
-    struct TASK_INFO *data = qPtr->qDataTaskStructPtr[qPtr->idxHead] ;
-    qPtr->qDataTaskStructPtr[qPtr->idxHead] = NULL ;
-    qPtr->NumDataInQueue--;
+    uint8_t data = qPtr->data[qPtr->head] ;
+    qPtr->data[qPtr->head] = 0 ;
+    qPtr->n_data--;
 
-    qPtr->idxHead = ( (qPtr->idxHead)+1 ) % (qPtr->size) ;
+    qPtr->head = ( (qPtr->head) + 1 ) % (qPtr->size) ;
     return data ;
 }
 
 
 
-/** 
- * argument 1 : 指向 Queue結構的pointer
- * 作用 : 從頭到尾將queue存放的data印出來
- * 回傳值 : 無
-*/
-void printDataInQueue(QUEUE_TASK_INFO_t *qPtr){
-    int idx = qPtr->idxHead ;
 
-    printk("\n++++++++++++++++++++++++++++++++++\r\n");
-    printk("Print data from head.\r\n");
-
-    if (queueIsEmpty(qPtr) == 1) {
+void dump_queue (struct QUEUE *qPtr)
+{
+    if(qPtr == NULL)
+        printk("qPtr is Null.\r\n");
+        
+    int idx = qPtr->head ;
+    printk("\r\n++++++++++++++++++++++++++++++++++\r\n");
+    if (queue_is_empty(qPtr) == 1) {
         printk("No data in queue.\r\n");
     } else {
-        for (int i = 0 ; i<qPtr->NumDataInQueue ;i++) {
-
-            printk("queue[%d] : id=%d ,status=%d\r\n",idx
-            ,qPtr->qDataTaskStructPtr[idx]->task_id
-            ,qPtr->qDataTaskStructPtr[idx]->task_status);
-
-            idx = (idx+1) % (qPtr->size);
+        
+        printk("Print data from head.\r\n");
+        for (int i = 0 ; i<qPtr->n_data ;i++) {
+            printk("queue[%d] : %c\r\n",idx,qPtr->data[idx]);
+            idx = (idx + 1) % (qPtr->size);
         }
-
-        printk("queue[%d] is the back ,id=%d ,status=%d\r\n" 
-        ,qPtr->idxBack
-        ,qPtr->qDataTaskStructPtr[qPtr->idxBack]->task_id
-        ,qPtr->qDataTaskStructPtr[idx]->task_status);
         
     }
-    printk("++++++++++++++++++++++++++++++++++\r\n\r\n");
+    printk("++++++++++++++++++++++++++++++++++\r\n");
 }

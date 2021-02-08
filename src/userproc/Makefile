@@ -11,7 +11,7 @@ CFLAGS  += -march=armv7-a -mtune=cortex-a8 -nostdlib
 #CFLAGS  += -march=armv7-a -mtune=cortex-a8
 #CFLAGS  += -march=armv7-a -mtune=cortex-a8 -O2 	# -O2是gcc會自動優化 ,最好不要加
 
-c_obj=multitasking_test.o shell.o fork_test.o priority_test.o opentty0_test.o debug_test.o commands.o
+c_obj=multitasking_test.o shell.o fork_test.o priority_test.o opentty0_test.o debug_test.o commands.o ipc_test.o
 
 
 .PHONY : all

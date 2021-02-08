@@ -141,7 +141,7 @@ int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int3
 int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 {
     struct PAGE_INFO *pg = page_alloc();
-    pg->page_status = PAGE_FOR_TASK ; 
+    pg->page_status = FOR_TASK ; 
 	_memset((void *)pg->pgstart, 0, TASK_STACK_SIZE) ;
 
     struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->pgstart) ;

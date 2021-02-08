@@ -91,6 +91,7 @@ void main_shell()
 					uprintf("	'2' for multitasking test\r\n") ; 
 					uprintf("	'3' for priority-based multitasking test.\r\n") ;
 					uprintf("	'4' for tty0 open test.\r\n") ;
+					uprintf("	'5' for ipc test.\r\n") ;
 					uprintf("Or '0' break.\r\n") ;
 
 					while (1) {
@@ -123,6 +124,12 @@ void main_shell()
 						} else if (get == '4') {
 							// 測試 tty0							
 							tty0_test_main() ;
+							for(int i = 0 ; i<20000;i++) ;
+							break ;
+
+						} else if (get == '5') {
+							// 測試 tty0							
+							ipc_test_main() ;
 							for(int i = 0 ; i<20000;i++) ;
 							break ;
 

@@ -23,8 +23,9 @@
 #include "mmu.h"
 #include "file.h"
 #include "../klib/mem.h"
+#include "../klib/queue.h"
 
-extern void _reboot(void) ;
+
 
 int kernal_entry(void)
 {
@@ -58,8 +59,6 @@ int kernal_entry(void)
 	enableOsTick(IRQ_NUM_TIMER0) ;
 	printk("Init Timer0 to switch tasks.\r\n");
 
-	disable_watchdog(WATCHDOG_BASE) ;
-
 /***************************************************************************************/
 // Init memory-page lists and files
 /***************************************************************************************/
@@ -70,6 +69,45 @@ int kernal_entry(void)
 	
 	file_in_ram_init() ;
 
+/***************************************************************************************/
+// Test
+/***************************************************************************************/
+/*	
+	struct QUEUE q ;
+	kq_init(&q ,10) ;
+	enqueue(&q ,'a') ;
+	enqueue(&q ,'b') ;
+	enqueue(&q ,'c') ;
+	enqueue(&q ,'d') ;
+	enqueue(&q ,'e') ;
+	enqueue(&q ,'f') ;
+	enqueue(&q ,'g') ;
+
+	dump_queue(&q) ;
+
+	uint8_t byte = 0 ;
+	byte = dequeue(&q);
+	printk("%c " ,byte) ;
+	byte = dequeue(&q);
+	printk("%c " ,byte) ;
+	byte = dequeue(&q);
+	printk("%c " ,byte) ;
+
+	dump_queue(&q) ;
+
+	enqueue(&q ,'h') ;
+	enqueue(&q ,'i') ;
+	enqueue(&q ,'j') ;
+	enqueue(&q ,'k') ;
+	enqueue(&q ,'l') ;
+	enqueue(&q ,'m') ;
+
+	dump_queue(&q) ;
+	enqueue(&q ,'n') ;
+	kq_delete(&q) ;
+
+	for(;;) ;
+*/
 /***************************************************************************************/
 // Init Task First thread :Shell
 /***************************************************************************************/
@@ -84,6 +122,8 @@ int kernal_entry(void)
 // Start Sched
 /***************************************************************************************/
 	printk("Sched Starting...\r\n");
+
+	disable_watchdog(WATCHDOG_BASE) ;
 
 	//設定要跳進去sched()的context
 	schedFuncContextPrepare();
