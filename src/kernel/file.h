@@ -48,9 +48,9 @@ typedef int fd_t ;
 struct FILE
 {
     struct DIR_NODE *parent ;
-    struct FILE *next_sibling ;
-    struct FILE *list_next ;
-    struct FILE *list_prev ;
+    struct FILE *next_sibling ; /* under same dir */
+    struct FILE *list_next ;    /* All file */
+    struct FILE *list_prev ;    /* All file */
     uint32_t type ;
     char namebuf[NAME_BUF_SIZE] ;
     char *name ;

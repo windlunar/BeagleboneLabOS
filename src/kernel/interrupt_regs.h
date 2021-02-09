@@ -86,7 +86,7 @@
  */
 #define INTC_ILR_n_BASE     (0x100)   /** n = 0 to 127 */
 
-//define interrupt num
+/* define interrupt num */
 #define IRQ_NUM_TIMER0       (66)  /** Timer0 */
 #define IRQ_NUM_TIMER1_1MS   (67)  /** DMTIMER_1ms */
 #define IRQ_NUM_TIMER2       (68)  /** DMTIMER2 */

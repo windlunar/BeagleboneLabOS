@@ -16,27 +16,28 @@ struct PAGE_INFO *page_list[PAGE_NUM] ;
 /****************************************************************************************/
 // Memory Page Allocate
 /****************************************************************************************/
-//
-// 將所有memory page 用link list串起來
-//    
-//  |-------|
-//  | page  | 
-//  |-------|
-//  | page  |
-//  |-------|
-//  | page  |  
-//  |-------|
-//  |       |
-//
-// A page(section)
-// ----------------------- offset = 0x100000 (1M)
-//	Free area for task
-// 
-// ----------------------- offset = task stack size = 4096 bytes
-//	task stack
-// ----------------------- offset = sizeof(struct TASK_INFO)
-// struct TASK_INFO
-// ----------------------- offset = 0
+/**
+ * 將所有memory page 用link list串起來
+ *     
+ *   |-------|
+ *   | page  | 
+ *   |-------|
+ *   | page  |
+ *   |-------|
+ *   | page  |  
+ *   |-------|
+ *   |       |
+ * 
+ *  A page(section)
+ *  ----------------------- offset = 0x100000 (1M)
+ * 	Free area for task
+ *  
+ *  ----------------------- offset = task stack size = 4096 bytes
+ * 	task stack
+ *  ----------------------- offset = sizeof(struct TASK_INFO)
+ *  struct TASK_INFO
+ *  ----------------------- offset = 0
+ */
 void page_list_init()
 {
     for (int32_t j = 0; j < PAGE_NUM ;j++)
@@ -56,7 +57,7 @@ void page_list_init()
         page_list[i]->no_free_blks = FALSE ;
         page_list[i]->blk_not_init = TRUE ;
 
-        page_list[i+1] = page_list[i] + 1 ; // struct pointer + 1
+        page_list[i+1] = page_list[i] + 1 ; /* struct pointer + 1 */
 
         if (i == PAGE_NUM - 1) {
             page_list[i]->next = NULL ;
@@ -235,14 +236,15 @@ struct PAGE_INFO *find_aval_inuse_page(void)
 
 
 
-// Blocks
-// ------------------------------------ page offset = 0x100000
-// Free blks
-// ------------------------------------ page offset = 0x3000
-// struct BLOCK_INFO(needs 2 blks)
-// ------------------------------------ page offset = 0x1000
-// For Task stack
-// ------------------------------------ page offset = 0
+/** Blocks
+ *  ------------------------------------ page offset = 0x100000
+ *  Free blks
+ *  ------------------------------------ page offset = 0x3000
+ *  struct BLOCK_INFO(needs 2 blks)
+ *  ------------------------------------ page offset = 0x1000
+ *  For Task stack
+ *  ------------------------------------ page offset = 0
+ */
 struct PAGE_INFO 
 *blks_init(struct PAGE_INFO *pg)
 {

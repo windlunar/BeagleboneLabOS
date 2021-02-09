@@ -29,12 +29,8 @@ int file_in_ram_init()
     create_file_under_node(ipc ,FILE_IPC0 ,IPC_TYPE) ;
     ipc_buf_alloc() ;
     
-    // Only For test
-    create_file_under_node(root ,"/fileForTest1\0" ,TEXT_TYPE) ;
-    create_file_under_node(root ,"/fileForTest2\0" ,TEXT_TYPE) ;
-    create_file_under_node(root ,"/fileForTest3\0" ,TEXT_TYPE) ;
-    create_file_under_node(root ,"/fileForTest4\0" ,TEXT_TYPE) ;
-    create_file_under_node(root ,"/fileForTest5\0" ,TEXT_TYPE) ;
+    /* test */
+
 }
 
 
@@ -88,7 +84,7 @@ struct DIR_NODE *create_path_node(struct DIR_NODE *parent ,char *name)
     node->next_sibling = NULL ;
     node->firstfile = NULL ;
 
-    // Setup node name
+    /* Setup node name */
     _memset((void *)node->namebuf ,0 ,NAME_BUF_SIZE) ;
     node->name = &node->namebuf[0] ;
     char *dest = node->name ;
@@ -242,14 +238,6 @@ void file_list_push(struct FILE *file)
         return ;
     }
 
-    /* 代表list中只有一項 */
-    if (file_list_head->list_next == NULL) {
-        file_list_head->list_next = file ;
-        file->list_prev = file_list_head ;
-        file->list_next = NULL ;
-        return ;
-    }
-
     /* 移動到end */
     struct FILE *head = file_list_head ;
     while (head->list_next != NULL) {
@@ -280,7 +268,6 @@ void print_file_list()
 
 struct FILE *find_file(char *filename)
 {
-    //print_file_list() ;
     struct FILE *head = file_list_head ;
     while (head->list_next != NULL) {
         if (_strcmp(filename ,head->name) == 0) return head ;
@@ -300,9 +287,9 @@ struct DIR_NODE *find_target_subdir(struct DIR_NODE *curdir ,char *subdir_name)
 
     int neq = _strcmp(subdir_name ,"..\0") ;
 
-    if (neq){ //neq
+    if (neq){ /* neq */
         while (en != NULL) {
-            if (!_strcmp(en->name ,subdir_name)) return en ; //eq
+            if (!_strcmp(en->name ,subdir_name)) return en ; /* eq */
             en = en->next_sibling ;
         }
         return NULL ;       /* No match */

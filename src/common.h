@@ -43,7 +43,7 @@ static inline void dataSyncBarrier(void)
 
 #define NULL ((void *)(0))
 
-// ARM has 7 modes and banked registers
+/* ARM has 7 modes and banked registers */
 #define MODE_MASK   0x1f
 #define USR_MODE    0x10
 #define FIQ_MODE    0x11

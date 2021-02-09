@@ -37,7 +37,7 @@ extern uint32_t *kernal_end ;
 /****************************************************************************************/
 // Structs
 /****************************************************************************************/
-// Define page_status
+/* Define page_status */
 #define FREE            0
 #define INUSE           1
 #define FULL            2
@@ -75,7 +75,7 @@ struct BLK_INFO
     struct BLK_INFO *next ;
     struct BLK_INFO *prev ;
     uint32_t *start ;
-    uint32_t *top ; //可用的最後四個bytes(指向四個bytes中位址最小的)
+    uint32_t *top ; /* 可用的最後四個bytes(指向四個bytes中位址最小的) */
     uint32_t status ;
     uint32_t id ;
 };

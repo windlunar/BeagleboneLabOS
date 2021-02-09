@@ -8,12 +8,12 @@
 // MMU
 /****************************************************************************************/
 
-// 獲得pte內容 ,PTE:
-//  -----------------------------------------------------------
-//  || base   |   0   |   AP | 0 | Domain | 1 | C | B | 1 | 0 |        Content
-//  -----------------------------------------------------------
-//   31  ~ 20 |19 ~ 12| 11 10| 9 | 8 ~ 5  | 4 | 3 | 2 | 1 | 0 |        bit
-//
+/** 獲得pte內容 ,PTE:
+ *   -----------------------------------------------------------
+ *   || base   |   0   |   AP | 0 | Domain | 1 | C | B | 1 | 0 |        Content
+ *   -----------------------------------------------------------
+ *    31  ~ 20 |19 ~ 12| 11 10| 9 | 8 ~ 5  | 4 | 3 | 2 | 1 | 0 |        bit
+ */
 pte_t gen_pte (paddr_t paddr)
 {
     return (paddr & L1_PAGE_PTE_BASE_MASK) | L1_PAGE_PTE_BITS ;
@@ -100,7 +100,7 @@ void mmu_enable(void)
         "stmfd sp! ,{r0}\n\t"
         "mrc p15 ,0 ,r0 ,c1 ,c0 ,0\n\t"
         "orr r0 ,#0x01\n\t"
-        "mcr p15 ,0 ,r0 ,c1 ,c0 ,0\n\t"       // enable mmu
+        "mcr p15 ,0 ,r0 ,c1 ,c0 ,0\n\t"       /* enable mmu */
         "dsb\n\t"
         "ldmfd sp! ,{r0}\n\t"
         :
@@ -146,7 +146,7 @@ void set_pgt_base(void)
     asm volatile(
         "stmfd sp! ,{r0}\n\t"
         "mov r0 ,%0\n\t"
-        "mcr p15 ,0 ,%0 ,c2 ,c0 ,0\n\t"       // 設定 page table base, CP15的c2 register保存
+        "mcr p15 ,0 ,%0 ,c2 ,c0 ,0\n\t" /* 設定 page table base, CP15的c2 register保存 */
         "ldmfd sp! ,{r0}\n\t"
         :
         :"r" (pgtb)
@@ -229,7 +229,7 @@ void *task_pgt_setup (void *pgstart ,void *pgtop)
 {
     void *pgt_base = kblk_alloc(FOR_KERN) ;
 
-    pte_init(0x00000000 ,0x82000000 ,AP_USER_PROHIBIT ,0x00000000 ,(uint32_t)pgt_base) ;
+    pte_init(0x40000000 ,0x60000000 ,AP_USER_PROHIBIT ,0x40000000 ,(uint32_t)pgt_base) ;
     pte_init(0x82000000 ,0x82100000 ,AP_USER_R_ONLY ,0x82000000 ,(uint32_t)pgt_base) ;
     pte_init(0x82100000 ,0xa0000000 ,AP_USER_PROHIBIT ,0x82100000 ,(uint32_t)pgt_base) ;
 

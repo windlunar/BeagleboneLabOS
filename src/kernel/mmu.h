@@ -92,42 +92,43 @@ typedef unsigned int pgt_paddr_t ;  /** page table addr */
 #define page_num_cal(vstart ,vend)   ((ROUNDUP(vend ,PAGE_SIZE)-ROUNDDOWN(vstart ,PAGE_SIZE)) >> 20)   
 
 /****************************************************************************************/
-// 獲得pte內容 ,PTE:
-//  -----------------------------------------------------------
-//  || base   |   0   |   AP | 0 | Domain | 1 | C | B | 1 | 0 |        Content
-//  -----------------------------------------------------------
-//   31  ~ 20 |19 ~ 12| 11 10| 9 | 8 ~ 5  | 4 | 3 | 2 | 1 | 0 |        bit
-//
-// Bit define
-//
-// AP bits
-#define AP_USER_RW          (0x03)  // privilege R/W
-#define AP_USER_R_ONLY      (0x02)  // privilege R/W
-#define AP_USER_PROHIBIT    (0x01)  // privilege R/W
+/** 獲得pte內容 ,PTE:
+ *   -----------------------------------------------------------
+ *   || base   |   0   |   AP | 0 | Domain | 1 | C | B | 1 | 0 |        Content
+ *   -----------------------------------------------------------
+ *    31  ~ 20 |19 ~ 12| 11 10| 9 | 8 ~ 5  | 4 | 3 | 2 | 1 | 0 |        bit
+ * 
+ *  Bit define
+ * 
+ *  AP bits
+ */
+#define AP_USER_RW          (0x03)  /* privilege R/W */
+#define AP_USER_R_ONLY      (0x02)  /* privilege R/W */
+#define AP_USER_PROHIBIT    (0x01)  /* privilege R/W */
 #define AP_BIT_SHIFT          (10)
 
-//domain bits
+/*domain bits */
 #define DOMAIN_BIT_SHIFT       (5)
-#define DEFAULT_DOMAIN      (0x0)   //共有16個domain可選,可控制記憶體區塊權限
+#define DEFAULT_DOMAIN       (0x0)   /*共有16個domain可選,可控制記憶體區塊權限 */
 
-// XN bits :Execute Never
-// 要AP permission檢查一定要設定為 0
+/* XN bits :Execute Never */
+/* 要AP permission檢查一定要設定為 0 */
 #define XN_SHIFT    (4)
 #define XN_DEFAULT  (0)
 
-// CB bits
+/* CB bits */
 #define CACHE_WRITEBUF_BIT_SHIFT    (2)
 #define NO_CACHE_WRITEBUF   (0x0)
 
-//APX
+/* APX */
 #define APX_SHIFT   (15)
 #define APX     (0)
 
-//S bit
+/* S bit */
 #define S_SHIFT     (16)
 #define S_BIT       1
 
-//NG bit
+/* NG bit */
 #define NG_SHIFT     (17)
 #define NG       0
 

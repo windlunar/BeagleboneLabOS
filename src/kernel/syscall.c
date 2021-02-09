@@ -37,7 +37,9 @@ void (*syscall[MAX_SYSCALL_ID])(void *usrTaskContextOld ,void *args)  = {
 
 void syscall_handler(uint32_t syscall_id ,void *usrTaskContextOld ,void *args)
 {
+    switch_mm((uint32_t *)L1_PAGE_TABLE_BASE_PADDR) ;   /** switch to kernel pgt */
     syscall[syscall_id](usrTaskContextOld ,args) ;
+    switch_mm(curr_running_task->pgtbase) ; /** switch back to task pgt */
 }
 
 

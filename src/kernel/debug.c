@@ -75,7 +75,7 @@ void print_free_area_list_from_head()
 {
     struct PAGE_INFO *head = free_page_head ;
 
-    //Just print first 10 nodes for test
+    /* Just print first 10 nodes for test */
     printk("Print free list from head\r\n");
     for(int i =0 ;i<10;i++){
         printk("%p  ",head->pgstart) ;
@@ -112,7 +112,7 @@ void print_inuse_area_list_from_head()
 {
     struct PAGE_INFO *head = inuse_page_head ;
 
-    //Just print first 10 nodes for test
+    /* Just print first 10 nodes for test */
     printk("Print inuse list\r\n");
     for (int i =0 ;i<10;i++) {
         printk("%p  ",head->pgstart) ;
