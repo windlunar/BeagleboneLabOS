@@ -9,58 +9,59 @@
 /***************************************************************************************/
 // Define System call id
 /***************************************************************************************/
+#define MAX_SYSCALL_ID                  20
 
-#define SYSCALL_ID_print_hello          1
-#define SYSCALL_ID_yield                2        
-#define SYSCALL_ID_get_tid              3
-#define SYSCALL_ID_exit                 4
-#define SYSCALL_ID_fork                 5
-#define SYSCALL_ID_do_taskCreate        6
-#define SYSCALL_ID_malloc_blk           7
-#define SYSCALL_ID_mfree_blk            8
-#define SYSCALL_ID_get_mblk_list        9
-#define SYSCALL_ID_get_task_priority    10
-#define SYSCALL_ID_write                11
-#define SYSCALL_ID_read                 12
-#define SYSCALL_ID_open                 13
-#define SYSCALL_ID_getcwd               14
-#define SYSCALL_ID_getsubdir            15
-#define SYSCALL_ID_getfdir              16
-#define SYSCALL_ID_chdir                17
-#define SYSCALL_ID_getfullpath          18
-#define SYSCALL_ID_restart              19
-#define SYSCALL_ID_close                20
+#define SYSCALL_ID_print_hello          0
+#define SYSCALL_ID_yield                1        
+#define SYSCALL_ID_get_tid              2
+#define SYSCALL_ID_exit                 3
+#define SYSCALL_ID_fork                 4
+#define SYSCALL_ID_do_taskCreate        5
+#define SYSCALL_ID_malloc_blk           6
+#define SYSCALL_ID_mfree_blk            7
+#define SYSCALL_ID_get_mblk_list        8
+#define SYSCALL_ID_get_task_priority    9
+#define SYSCALL_ID_write                10
+#define SYSCALL_ID_read                 11
+#define SYSCALL_ID_open                 12
+#define SYSCALL_ID_getcwd               13
+#define SYSCALL_ID_getsubdir            14
+#define SYSCALL_ID_getfdir              15
+#define SYSCALL_ID_chdir                16
+#define SYSCALL_ID_getfullpath          17
+#define SYSCALL_ID_restart              18
+#define SYSCALL_ID_close                19
 
 
 /***************************************************************************************/
 
 void svc_entry(void) ;
-extern void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args);
+extern void syscall_handler(uint32_t syscall_id ,void *usrTaskContextOld ,void *args);
 
 /***************************************************************************************/
 //svc syscall call by syscall_handler
 /***************************************************************************************/
 
-void __print_hello_handler(uint32_t input) ;
-void __yield_handler(uint32_t *usrTaskContextOld);
-void __get_tid_handler(uint32_t *usrTaskContextOld);
-void __exit_handler(uint32_t *usrTaskContextOld);
-void __fork_handler(uint32_t *usrTaskContextOld);
-void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg) ;
-void __malloc_blk_handler(uint32_t *usrTaskContextOld) ;
-void __malloc_mfree_blk_handler(uint32_t *usrTaskContextOld ,void *blk_aval_start) ;
-void __get_mblk_list_handler(uint32_t *usrTaskContextOld) ;
-void __get_task_priority_handler(uint32_t *usrTaskContextOld) ;
-void __write_handler(uint32_t *usrTaskContextOld ,void *args) ;
-void __read_handler(uint32_t *usrTaskContextOld ,void *args) ;
-void __open_handler(uint32_t *usrTaskContextOld ,void *args) ;
-void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args) ;
-void __getsubdir_handler(uint32_t *usrTaskContextOld ,void *args) ;
-void __getfdir_handler(uint32_t *usrTaskContextOld ,void *args) ;
-void __chdir_handler(uint32_t *usrTaskContextOld ,void *args) ;
-void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args) ;
-void __restart_handler(void) ;
-void __close_handler(uint32_t *usrTaskContextOld ,void *args) ;
+void print_hello_handler(void *usrTaskContextOld ,void *args) ;
+void yield_handler(void *usrTaskContextOld ,void *args);
+void get_tid_handler(void *usrTaskContextOld ,void *args);
+void exit_handler(void *usrTaskContextOld ,void *args);
+void fork_handler(void *usrTaskContextOld ,void *args);
+void do_taskCreate_handler(void *usrTaskContextOld ,void *args) ;
+void malloc_blk_handler(void *usrTaskContextOld ,void *args) ;
+void malloc_mfree_blk_handler(void *usrTaskContextOld ,void *args) ;
+void get_mblk_list_handler(void *usrTaskContextOld ,void *args) ;
+void get_task_priority_handler(void *usrTaskContextOld ,void *args) ;
+void write_handler(void *usrTaskContextOld ,void *args) ;
+void read_handler(void *usrTaskContextOld ,void *args) ;
+void open_handler(void *usrTaskContextOld ,void *args) ;
+void getcwd_handler(void *usrTaskContextOld ,void *args) ;
+void getsubdir_handler(void *usrTaskContextOld ,void *args) ;
+void getfdir_handler(void *usrTaskContextOld ,void *args) ;
+void chdir_handler(void *usrTaskContextOld ,void *args) ;
+void getfullpath_handler(void *usrTaskContextOld ,void *args) ;
+void restart_handler(void *usrTaskContextOld ,void *args) ;
+void close_handler(void *usrTaskContextOld ,void *args) ;
 
 /***************************************************************************************/
 //syscall call by user task ,define in syscall_asm.s

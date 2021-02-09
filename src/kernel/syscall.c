@@ -10,106 +10,47 @@
 #include "../driver/timer.h"
 
 
-void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args) ;
+void (*syscall[MAX_SYSCALL_ID])(void *usrTaskContextOld ,void *args)  = {
+    print_hello_handler
+    , yield_handler
+    , get_tid_handler
+    , exit_handler
+    , fork_handler
+    , do_taskCreate_handler
+    , malloc_blk_handler
+    , malloc_mfree_blk_handler
+    , get_mblk_list_handler
+    , get_task_priority_handler
+    , write_handler
+    , read_handler
+    , open_handler
+    , getcwd_handler
+    , getsubdir_handler
+    , getfdir_handler
+    , chdir_handler
+    , getfullpath_handler
+    , restart_handler
+    , close_handler
+} ;
 
-void syscall_handler(uint32_t syscall_id ,uint32_t *usrTaskContextOld ,void *args)
+
+
+void syscall_handler(uint32_t syscall_id ,void *usrTaskContextOld ,void *args)
 {
-    switch (syscall_id) {
-    case SYSCALL_ID_print_hello:
-        __print_hello_handler(*(uint32_t *)args) ;
-        break;
-
-    case SYSCALL_ID_yield:
-        __yield_handler(usrTaskContextOld) ;
-        break;   
-
-    case SYSCALL_ID_get_tid:
-        __get_tid_handler(usrTaskContextOld) ;
-        break;  
-
-    case SYSCALL_ID_exit:
-        __exit_handler(usrTaskContextOld) ;
-        break;  
-
-    case SYSCALL_ID_fork:
-        __fork_handler(usrTaskContextOld) ;
-        break;  
-
-    case SYSCALL_ID_do_taskCreate:
-        __do_taskCreate_handler(usrTaskContextOld ,args) ;
-        break;  
-
-    case SYSCALL_ID_malloc_blk:
-        __malloc_blk_handler(usrTaskContextOld) ;
-        break;  
-
-    case SYSCALL_ID_mfree_blk:
-        __malloc_mfree_blk_handler(usrTaskContextOld ,args) ;
-        break;
-
-    case SYSCALL_ID_get_mblk_list:
-        __get_mblk_list_handler(usrTaskContextOld) ;
-        break;
-
-    case SYSCALL_ID_get_task_priority:
-        __get_task_priority_handler(usrTaskContextOld) ;
-        break;
-
-    case SYSCALL_ID_write:
-        __write_handler(usrTaskContextOld ,args) ;
-        break;
-
-    case SYSCALL_ID_read:
-        __read_handler(usrTaskContextOld ,args) ;
-        break;
-
-    case SYSCALL_ID_open:
-        __open_handler(usrTaskContextOld ,args) ;
-        break;
-
-    case SYSCALL_ID_getcwd:
-        __getcwd_handler(usrTaskContextOld ,args) ;
-        break;
-
-    case SYSCALL_ID_getsubdir:
-        __getsubdir_handler(usrTaskContextOld ,args) ;
-        break;
-
-    case SYSCALL_ID_getfdir:
-        __getfdir_handler(usrTaskContextOld ,args) ;
-        break;
-
-    case SYSCALL_ID_chdir:
-        __chdir_handler(usrTaskContextOld ,args) ;
-        break;
-
-    case SYSCALL_ID_getfullpath:
-        __getfullpath_handler(usrTaskContextOld ,args) ;
-        break;
-
-    case SYSCALL_ID_restart:
-        __restart_handler() ;
-        break;
-
-    case SYSCALL_ID_close:
-        __close_handler(usrTaskContextOld ,args) ;
-        break;
-
-    default:
-        break;
-    }
+    syscall[syscall_id](usrTaskContextOld ,args) ;
 }
 
 
 
-void  __print_hello_handler(uint32_t input)
+void  print_hello_handler(void *usrTaskContextOld ,void *args)
 {
+    int input = (int)args ;
     printk("Hello! This is my first system call,Input value =%d\r\n" ,input) ;
 }
 
 
 
-void __yield_handler(uint32_t *usrTaskContextOld)
+void yield_handler(void *usrTaskContextOld ,void *args)
 {
 	/* Save old context */
 	curr_running_task->task_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
@@ -124,7 +65,7 @@ void __yield_handler(uint32_t *usrTaskContextOld)
 
 
 
-void __get_tid_handler(uint32_t *usrTaskContextOld)
+void get_tid_handler(void *usrTaskContextOld ,void *args)
 {
     struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = curr_running_task->task_id ;
@@ -133,7 +74,7 @@ void __get_tid_handler(uint32_t *usrTaskContextOld)
 
 
 /** 回收資源 ,將task設定為 terminate */
-void __exit_handler(uint32_t *usrTaskContextOld)
+void exit_handler(void *usrTaskContextOld ,void *args)
 {
     printk("task id=%d exit\r\n" ,curr_running_task->task_id) ;
     curr_running_task->task_status = TASK_TERMINATE ;
@@ -162,7 +103,7 @@ void __exit_handler(uint32_t *usrTaskContextOld)
  * 
  * 複製stack空間內所有內容 ,跟 struct TASK_INFO 結構體 
  */
-void __fork_handler(uint32_t *usrTaskContextOld)
+void fork_handler(void *usrTaskContextOld ,void *args)
 {    
 
     struct PAGE_INFO *n_pg = page_alloc();
@@ -184,7 +125,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
     /** Stack pointer要指向stack中相同的相對位址上 */
     ntask->stk_bottom = stktop2bottom(n_pg->task_stk_top) ;
     ntask->stk_top = n_pg->task_stk_top ;
-    ntask->task_context = (struct TASK_CONTEXT *)(ntask->stk_top - (curr_running_task->stk_top - usrTaskContextOld) ) ;
+    ntask->task_context = (struct TASK_CONTEXT *)(ntask->stk_top - (curr_running_task->stk_top - (uint32_t *)usrTaskContextOld) ) ;
     
 
     /** 設定TASK_INFO_t結構體的其他內容 */
@@ -211,7 +152,7 @@ void __fork_handler(uint32_t *usrTaskContextOld)
 
 
 
-void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
+void do_taskCreate_handler(void *usrTaskContextOld ,void *arg)
 {
     struct TASK_ARGS *config = (struct TASK_ARGS *)arg ;
 
@@ -240,7 +181,7 @@ void __do_taskCreate_handler(uint32_t *usrTaskContextOld ,void *arg)
 
 
 
-void __malloc_blk_handler(uint32_t *usrTaskContextOld)
+void malloc_blk_handler(void *usrTaskContextOld ,void *args)
 {
     struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
 
@@ -251,14 +192,14 @@ void __malloc_blk_handler(uint32_t *usrTaskContextOld)
 
 
 
-void __malloc_mfree_blk_handler(uint32_t *usrTaskContextOld ,void *blk_aval_start)
+void malloc_mfree_blk_handler(void *usrTaskContextOld ,void *args)
 {
-    free_blk(blk_aval_start) ;
+    free_blk(args) ;
 }
 
 
 
-void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
+void get_mblk_list_handler(void *usrTaskContextOld ,void *args)
 {
     struct PAGE_INFO *curr_pg = which_page(curr_running_task->stk_bottom) ;
     struct BLK_INFO *head = curr_pg->blk_list_head ;
@@ -272,7 +213,7 @@ void __get_mblk_list_handler(uint32_t *usrTaskContextOld)
 
 
 
-void __get_task_priority_handler(uint32_t *usrTaskContextOld)
+void get_task_priority_handler(void *usrTaskContextOld ,void *args)
 {
     struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
     old_context->r0 = curr_running_task->priority ;    
@@ -281,7 +222,7 @@ void __get_task_priority_handler(uint32_t *usrTaskContextOld)
 
 
 /** 之後再implement讓該task staus轉為block ,等寫完在ready */
-void __write_handler(uint32_t *usrTaskContextOld ,void *args)
+void write_handler(void *usrTaskContextOld ,void *args)
 {
     struct FILE_RDWR_ARGS *write_args = (struct FILE_RDWR_ARGS *)args ;
     int fd = write_args->fd ;
@@ -296,7 +237,7 @@ void __write_handler(uint32_t *usrTaskContextOld ,void *args)
 
 
 
-void __read_handler(uint32_t *usrTaskContextOld ,void *args)
+void read_handler(void *usrTaskContextOld ,void *args)
 {
     struct FILE_RDWR_ARGS *write_args = (struct FILE_RDWR_ARGS *)args ;
     int fd = write_args->fd ;
@@ -311,7 +252,7 @@ void __read_handler(uint32_t *usrTaskContextOld ,void *args)
 
 
 
-void __open_handler(uint32_t *usrTaskContextOld ,void *args)
+void open_handler(void *usrTaskContextOld ,void *args)
 {
     char *path = (char *)args ;
     int fd = -1 ;
@@ -326,7 +267,7 @@ void __open_handler(uint32_t *usrTaskContextOld ,void *args)
 
 
 
-void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args)
+void getcwd_handler(void *usrTaskContextOld ,void *args)
 {
     struct BUF_AND_SZ_ARG *getcwdarg = (struct BUF_AND_SZ_ARG *)args ;
 
@@ -337,7 +278,7 @@ void __getcwd_handler(uint32_t *usrTaskContextOld ,void *args)
 
 
 
-void __getsubdir_handler(uint32_t *usrTaskContextOld ,void *args)
+void getsubdir_handler(void *usrTaskContextOld ,void *args)
 {
     struct BUF_AND_SZ_ARG *bufsz = (struct BUF_AND_SZ_ARG *)args ;
 
@@ -366,7 +307,7 @@ void __getsubdir_handler(uint32_t *usrTaskContextOld ,void *args)
 
 
 
-void __getfdir_handler(uint32_t *usrTaskContextOld ,void *args)
+void getfdir_handler(void *usrTaskContextOld ,void *args)
 {
     struct BUF_AND_SZ_ARG *bufsz = (struct BUF_AND_SZ_ARG *)args ;
 
@@ -396,7 +337,7 @@ void __getfdir_handler(uint32_t *usrTaskContextOld ,void *args)
 
 
 /** 切換至下一層路徑 :路徑名稱 ,上一層路徑 : ".." */
-void __chdir_handler(uint32_t *usrTaskContextOld ,void *args)
+void chdir_handler(void *usrTaskContextOld ,void *args)
 {
     char *subdir_name = (char *)args ;
 
@@ -415,7 +356,7 @@ void __chdir_handler(uint32_t *usrTaskContextOld ,void *args)
 }
 
 
-void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args)
+void getfullpath_handler(void *usrTaskContextOld ,void *args)
 {
     struct BUF_AND_SZ_ARG *arg = (struct BUF_AND_SZ_ARG *)args ;
     char *buf = arg->buf ;
@@ -446,7 +387,7 @@ void __getfullpath_handler(uint32_t *usrTaskContextOld ,void *args)
 
 
 
-void __restart_handler(void)
+void restart_handler(void *usrTaskContextOld ,void *args)
 {
     set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
     enable_watchdog(WATCHDOG_BASE) ;
@@ -454,7 +395,7 @@ void __restart_handler(void)
 
 
 
-void __close_handler(uint32_t *usrTaskContextOld ,void *args)
+void close_handler(void *usrTaskContextOld ,void *args)
 {
     int fd = (int)args ;
     file_close(fd ,(void *)curr_running_task) ;

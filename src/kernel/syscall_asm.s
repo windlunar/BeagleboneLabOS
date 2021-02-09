@@ -18,26 +18,26 @@
 
 /************************************************************************************************/
 //Define syscall id
-.equ	 SYSCALL_ID_print_hello 		,   	1
-.equ	 SYSCALL_ID_yield 				,   	2
-.equ	 SYSCALL_ID_get_tid				,		3
-.equ	 SYSCALL_ID_exit				,		4
-.equ	 SYSCALL_ID_fork				,		5
-.equ	 SYSCALL_ID_do_taskCreate		,		6
-.equ	 SYSCALL_ID_malloc_blk			,		7
-.equ	 SYSCALL_ID_mfree_blk			,		8
-.equ	 SYSCALL_ID_get_mblk_list		,		9
-.equ	 SYSCALL_ID_get_task_priority	,		10
-.equ	 SYSCALL_ID_write				,		11
-.equ	 SYSCALL_ID_read				,		12
-.equ	 SYSCALL_ID_open				,		13
-.equ	 SYSCALL_ID_getcwd				,		14
-.equ	 SYSCALL_ID_getsubdir			,		15
-.equ	 SYSCALL_ID_getfdir             ,		16
-.equ	 SYSCALL_ID_chdir               ,		17
-.equ	 SYSCALL_ID_getfullpath         ,		18
-.equ	 SYSCALL_ID_restart				,		19
-.equ	 SYSCALL_ID_close               ,		20
+.equ	 SYSCALL_ID_print_hello 		,   	0
+.equ	 SYSCALL_ID_yield 				,   	1
+.equ	 SYSCALL_ID_get_tid				,		2
+.equ	 SYSCALL_ID_exit				,		3
+.equ	 SYSCALL_ID_fork				,		4
+.equ	 SYSCALL_ID_do_taskCreate		,		5
+.equ	 SYSCALL_ID_malloc_blk			,		6
+.equ	 SYSCALL_ID_mfree_blk			,		7
+.equ	 SYSCALL_ID_get_mblk_list		,		8
+.equ	 SYSCALL_ID_get_task_priority	,		9
+.equ	 SYSCALL_ID_write				,		10
+.equ	 SYSCALL_ID_read				,		11
+.equ	 SYSCALL_ID_open				,		12
+.equ	 SYSCALL_ID_getcwd				,		13
+.equ	 SYSCALL_ID_getsubdir			,		14
+.equ	 SYSCALL_ID_getfdir             ,		15
+.equ	 SYSCALL_ID_chdir               ,		16
+.equ	 SYSCALL_ID_getfullpath         ,		17
+.equ	 SYSCALL_ID_restart				,		18
+.equ	 SYSCALL_ID_close               ,		19
 /************************************************************************************************/
 
 

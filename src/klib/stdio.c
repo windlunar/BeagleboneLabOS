@@ -51,8 +51,11 @@ int uprint(const char *fmt ,__builtin_va_list args)
 
 
     while (1) {
+        /** 
+         * 如果遇到結束字元則跳出
+         * *fmt++ : pointer fmt+1 ,但取值為s移動前指向的值
+         */
         while ((character = *(uint8_t  *)fmt++) != '%') {
-            /** 如果遇到結束字元則跳出*/
             if (character == '\0') {
                 return 0 ;
             }

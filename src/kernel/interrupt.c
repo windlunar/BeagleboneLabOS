@@ -272,10 +272,10 @@ void set_exception_entry(uint32_t *exept_vec_base)
 void __attribute__((interrupt("PABT"))) prefetch_abort_handler(void)
 {
 	printk("In prefetch_abort_handler\r\n");
-	for(int i=0 ;i<2560 ;i++)
-    {
-        printk("addr =%p ,context =%x\r\n" ,(curr_running_task->pgtbase)+i ,*((curr_running_task->pgtbase)+i)) ;
-    }
+	//for(int i=0 ;i<2560 ;i++)
+    //{
+    //    printk("addr =%p ,context =%x\r\n" ,(curr_running_task->pgtbase)+i ,*((curr_running_task->pgtbase)+i)) ;
+    //}
     printk("\r\ntask_info addr =%p" ,curr_running_task) ;
     printk(" ,base addr =%p" ,curr_running_task->pgtbase) ;
     printk(" ,task_context addr =%p\r\n" ,curr_running_task->task_context) ;
