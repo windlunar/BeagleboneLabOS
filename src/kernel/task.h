@@ -59,20 +59,20 @@ extern int32_t taskid;
 // r0 -----------------kernel init stack top
 struct SCHED_CONTEXT
 {
-    uint32_t r0;
-    uint32_t r1;
-    uint32_t r2;
-    uint32_t r3;
-    uint32_t r4;
-    uint32_t r5;
-    uint32_t r6;
-    uint32_t r7;
-    uint32_t r8;
-    uint32_t r9;
-    uint32_t r10;
-    uint32_t r11;
-    uint32_t r12;
-    uint32_t lr;
+	uint32_t r0;
+	uint32_t r1;
+	uint32_t r2;
+	uint32_t r3;
+	uint32_t r4;
+	uint32_t r5;
+	uint32_t r6;
+	uint32_t r7;
+	uint32_t r8;
+	uint32_t r9;
+	uint32_t r10;
+	uint32_t r11;
+	uint32_t r12;
+	uint32_t lr;
 
 };
 extern struct SCHED_CONTEXT *schedFuncContextSPtr ; 
@@ -99,47 +99,47 @@ extern struct SCHED_CONTEXT *schedFuncContextSPtr ;
 // ************************************************
 struct TASK_CONTEXT
 {
-    uint32_t r0;
-    uint32_t r1;
-    uint32_t r2;
-    uint32_t r3;
-    uint32_t r4;
-    uint32_t r5;
-    uint32_t r6;
-    uint32_t r7;
-    uint32_t r8;
-    uint32_t r9_return_lr;
-    uint32_t r10;
-    uint32_t r11;
-    uint32_t r12_spsr;
-    uint32_t lr;
+	uint32_t r0;
+	uint32_t r1;
+	uint32_t r2;
+	uint32_t r3;
+	uint32_t r4;
+	uint32_t r5;
+	uint32_t r6;
+	uint32_t r7;
+	uint32_t r8;
+	uint32_t r9_return_lr;
+	uint32_t r10;
+	uint32_t r11;
+	uint32_t r12_spsr;
+	uint32_t lr;
 
 };
 
 
 struct TASK_INFO
 {
-    struct TASK_INFO *next_ptr ;
-    struct TASK_INFO *prev_ptr ;   
-    uint32_t *stk_bottom ;              // task 的 stack空間 的pointer
-    uint32_t *stk_top ;
-    void (*taskCallBack)() ;            // task function pointer
-    int32_t task_id;
-    int32_t task_status ;
-    struct TASK_CONTEXT *task_context ; // task context ,存放在stack中
-    int32_t priority ; 
-    struct FILE *openfiles[MAX_FD] ;   // 打開的檔案
-    struct DIR_NODE *cwdn ;            // current working dir node structure
-    uint32_t *pgtbase ;
+	struct TASK_INFO *next_ptr ;
+	struct TASK_INFO *prev_ptr ;   
+	uint32_t *stk_bottom ;              // task 的 stack空間 的pointer
+	uint32_t *stk_top ;
+	void (*taskCallBack)() ;            // task function pointer
+	int32_t task_id;
+	int32_t task_status ;
+	struct TASK_CONTEXT *task_context ; // task context ,存放在stack中
+	int32_t priority ; 
+	struct FILE *openfiles[MAX_FD] ;   // 打開的檔案
+	struct DIR_NODE *cwdn ;            // current working dir node structure
+	uint32_t *pgtbase ;
 };
 
 
 struct TASK_ARGS
 {
-    // task function pointer
-    void (*taskCallBack)() ;
+	// task function pointer
+	void (*taskCallBack)() ;
 
-    int32_t prio ; //
+	int32_t prio ; //
 
 };
 

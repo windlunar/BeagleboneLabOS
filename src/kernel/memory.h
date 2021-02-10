@@ -47,18 +47,18 @@ extern uint32_t *kernal_end ;
 
 
 struct PAGE_INFO{
-    struct PAGE_INFO *next ;
-    struct PAGE_INFO *prev ;
-    uint32_t page_status;
-    uint32_t page_id ;
-    uint32_t *pgstart ;
-    uint32_t *task_stk_top ;    /** 指向可用的stack top */
-    uint32_t *top ;
-    uint32_t *free_start ;
+	struct PAGE_INFO *next ;
+	struct PAGE_INFO *prev ;
+	uint32_t page_status;
+	uint32_t page_id ;
+	uint32_t *pgstart ;
+	uint32_t *task_stk_top ;    /** 指向可用的stack top */
+	uint32_t *top ;
+	uint32_t *free_start ;
 
-    struct BLK_INFO *blk_list_head ;    /** 在 page 中可用的起始位址 head */
-    uint32_t no_free_blks ;
-    uint32_t blk_not_init ;
+	struct BLK_INFO *blk_list_head ;    /** 在 page 中可用的起始位址 head */
+	uint32_t no_free_blks ;
+	uint32_t blk_not_init ;
 };
 
 extern struct PAGE_INFO *free_page_head;
@@ -71,13 +71,13 @@ extern struct PAGE_INFO *page_list[PAGE_NUM] ;
 
 struct BLK_INFO
 {
-    struct PAGE_INFO *owner ;
-    struct BLK_INFO *next ;
-    struct BLK_INFO *prev ;
-    uint32_t *start ;
-    uint32_t *top ; /* 可用的最後四個bytes(指向四個bytes中位址最小的) */
-    uint32_t status ;
-    uint32_t id ;
+	struct PAGE_INFO *owner ;
+	struct BLK_INFO *next ;
+	struct BLK_INFO *prev ;
+	uint32_t *start ;
+	uint32_t *top ; /* 可用的最後四個bytes(指向四個bytes中位址最小的) */
+	uint32_t status ;
+	uint32_t id ;
 };
 
 /** 主要 */

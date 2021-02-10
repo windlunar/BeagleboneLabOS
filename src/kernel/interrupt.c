@@ -19,8 +19,8 @@ static void (*irq_handler_array[IRQ_NUM])(void);
 
 void SYSTEM_INT_Enable(int32_t interruptID)
 {             
-    int32_t interrupt_group = interruptID >> 5 ;
-    *(INTC_BASE_PTR + INTC_MIR_CLEAR_BASE + 0x20 * interrupt_group) = 0x01 << (interruptID & 0x1F) ;
+	int32_t interrupt_group = interruptID >> 5 ;
+	*(INTC_BASE_PTR + INTC_MIR_CLEAR_BASE + 0x20 * interrupt_group) = 0x01 << (interruptID & 0x1F) ;
 
 }
 
@@ -28,8 +28,8 @@ void SYSTEM_INT_Enable(int32_t interruptID)
 
 void SYSTEM_INT_disable(int32_t interruptID)
 {             
-    int32_t interrupt_group = interruptID >> 5 ;
-    *(INTC_BASE_PTR + INTC_MIR_SET_BASE + 0x20 * interrupt_group) = 0x01 << (interruptID & 0x1F) ;
+	int32_t interrupt_group = interruptID >> 5 ;
+	*(INTC_BASE_PTR + INTC_MIR_SET_BASE + 0x20 * interrupt_group) = 0x01 << (interruptID & 0x1F) ;
 
 }
 
@@ -37,7 +37,7 @@ void SYSTEM_INT_disable(int32_t interruptID)
 
 uint32_t getActivateIrqNum(void)
 {
-    return ( *(INTC_BASE_PTR + INTC_SIR_IRQ) &  IRQ_NUM_MASK);
+	return ( *(INTC_BASE_PTR + INTC_SIR_IRQ) &  IRQ_NUM_MASK);
 }
 
 
@@ -45,7 +45,7 @@ uint32_t getActivateIrqNum(void)
 void 
 setIntRouteAndPriority(uint32_t interruptID ,uint32_t priority ,uint32_t route)
 {
-    *(INTC_ILR_n_BASE_PTR + interruptID * 0x04) = ( (priority << 0x02) & 0xfc ) | route ;
+	*(INTC_ILR_n_BASE_PTR + interruptID * 0x04) = ( (priority << 0x02) & 0xfc ) | route ;
 }
 
 
@@ -53,51 +53,51 @@ setIntRouteAndPriority(uint32_t interruptID ,uint32_t priority ,uint32_t route)
 void 
 setIntRoute(uint32_t interruptID ,uint32_t route)
 {
-    *(INTC_ILR_n_BASE_PTR + interruptID * 0x04) |= route ;
+	*(INTC_ILR_n_BASE_PTR + interruptID * 0x04) |= route ;
 }
 
 
 
 void cpsrEnableIRQ(void)
 {
-    asm volatile("mrs r0, CPSR\n\t"
-        		 "bic r0, r0, #0x80\n\t"
-        		 "msr CPSR_c, r0");
+	asm volatile("mrs r0, CPSR\n\t"
+				 "bic r0, r0, #0x80\n\t"
+				 "msr CPSR_c, r0");
 }
 
 
 
 void cpsrDisableIRQ(void)
 {
-    asm volatile("mrs r0, CPSR\n\t"
-        		 "orr r0, r0, #0x80\n\t"
-        		 "msr CPSR_c, r0");
+	asm volatile("mrs r0, CPSR\n\t"
+				 "orr r0, r0, #0x80\n\t"
+				 "msr CPSR_c, r0");
 }
 
 
 
 void cpsrDisableFIQ(void)
 {
-    /* Disable FIQ in CPSR */
-    asm volatile("mrs r0, CPSR\n\t"
-        		 "orr r0, r0, #0x40\n\t"
-        		 "msr CPSR_c, r0");
+	/* Disable FIQ in CPSR */
+	asm volatile("mrs r0, CPSR\n\t"
+				 "orr r0, r0, #0x40\n\t"
+				 "msr CPSR_c, r0");
 }
 
 
 
 void cpsrEnableFIQ(void)
 {
-    /* Enable FIQ in CPSR */
-    asm volatile("mrs r0, CPSR\n\t"
-        "bic r0, r0, #0x40\n\t"
-        "msr CPSR_c, r0");
+	/* Enable FIQ in CPSR */
+	asm volatile("mrs r0, CPSR\n\t"
+		"bic r0, r0, #0x40\n\t"
+		"msr CPSR_c, r0");
 }
 
 
 
 void setNewIrqAgr(){
-    *(INTC_BASE_PTR + INTC_CONTROL) |= NEW_IRQ_AGREE ;
+	*(INTC_BASE_PTR + INTC_CONTROL) |= NEW_IRQ_AGREE ;
 }
 
 
@@ -187,7 +187,7 @@ void disableINT_NUM(uint8_t irq_num)
 void irq_isr_bind(uint8_t irq_num, void (*handler)(void))
 {
 	irq_handler_array[irq_num] = handler;
-    *(INTC_ILR_n_BASE_PTR + irq_num) = (0 << 2) | (0 << 0) ;
+	*(INTC_ILR_n_BASE_PTR + irq_num) = (0 << 2) | (0 << 0) ;
 	eableINT_NUM(irq_num);
 }
 
@@ -273,19 +273,19 @@ void __attribute__((interrupt("PABT"))) prefetch_abort_handler(uint32_t r0)
 {
 	printk("In prefetch_abort_handler\r\n");
 
-    printk("task_info addr :%p\r\n" ,curr_running_task) ;
-    printk("pgt base addr :%p\r\n" ,curr_running_task->pgtbase) ;
+	printk("task_info addr :%p\r\n" ,curr_running_task) ;
+	printk("pgt base addr :%p\r\n" ,curr_running_task->pgtbase) ;
 	printk("lr_abort :%x\r\n\r\n" ,r0) ;
 
 	struct TASK_CONTEXT *ctx = curr_running_task->task_context ;
-    printk("task_context sp :%p\r\n" ,ctx->r0) ;
+	printk("task_context sp :%p\r\n" ,ctx->r0) ;
 	printk("r0 :%x   r1 :%x   r2 :%x   r3 :%x\r\n" ,ctx->r0 ,ctx->r1 ,ctx->r2 ,ctx->r3) ;
 	printk("r4 :%x   r5 :%x   r7 :%x   r7 :%x\r\n" ,ctx->r4 ,ctx->r5 ,ctx->r6 ,ctx->r7) ;
 	printk("r8 :%x   r9 :%x   r10 :%x   r11 :%x\r\n" ,ctx->r8 ,ctx->r9_return_lr ,ctx->r10 ,ctx->r11) ;
 	printk("r12 :%x   r14 :%x\r\n" ,ctx->r12_spsr ,ctx->lr) ;
 
 	set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
-    enable_watchdog(WATCHDOG_BASE) ;
+	enable_watchdog(WATCHDOG_BASE) ;
 	for(;;) ;
 }
 
@@ -295,18 +295,18 @@ void __attribute__((interrupt("DABT"))) data_abort_handler(uint32_t r0)
 {
 	printk("In data_abort_handler\r\n\r\n");
 
-    printk("task_info addr :%p\r\n" ,curr_running_task) ;
-    printk("pgt base addr :%p\r\n" ,curr_running_task->pgtbase) ;
+	printk("task_info addr :%p\r\n" ,curr_running_task) ;
+	printk("pgt base addr :%p\r\n" ,curr_running_task->pgtbase) ;
 	printk("lr_abort :%x\r\n\r\n" ,r0) ;
 
 	struct TASK_CONTEXT *ctx = curr_running_task->task_context ;
-    printk("task_context sp :%p\r\n" ,ctx->r0) ;
+	printk("task_context sp :%p\r\n" ,ctx->r0) ;
 	printk("r0 :%x   r1 :%x   r2 :%x   r3 :%x\r\n" ,ctx->r0 ,ctx->r1 ,ctx->r2 ,ctx->r3) ;
 	printk("r4 :%x   r5 :%x   r7 :%x   r7 :%x\r\n" ,ctx->r4 ,ctx->r5 ,ctx->r6 ,ctx->r7) ;
 	printk("r8 :%x   r9 :%x   r10 :%x   r11 :%x\r\n" ,ctx->r8 ,ctx->r9_return_lr ,ctx->r10 ,ctx->r11) ;
 	printk("r12 :%x   r14 :%x\r\n" ,ctx->r12_spsr ,ctx->lr) ;
 
 	set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
-    enable_watchdog(WATCHDOG_BASE) ;
+	enable_watchdog(WATCHDOG_BASE) ;
 	for(;;) ;
 }

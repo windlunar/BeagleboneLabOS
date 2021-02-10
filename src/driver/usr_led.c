@@ -9,7 +9,7 @@ volatile uint32_t read_val;
 
 
 void usrLedInitAsm(){
-    
+	
 	/** CM_PER_GPIO1_CLKCTRL register bit[1:0] : 
 	 * 0x2 = MODULEMODE : ENABLE : Module is explicitly enabled.
 	 * 
@@ -27,7 +27,7 @@ void usrLedInitAsm(){
 
 
 void usrLedBlinkAsm(){
-    WRITE_REG32((unsigned int)&(GPIO1_PTR->GPIO_SETDATAOUT), (15 << 21));
+	WRITE_REG32((unsigned int)&(GPIO1_PTR->GPIO_SETDATAOUT), (15 << 21));
 	for (read_val = 0; read_val < 1000000; read_val ++) ;
 
 	WRITE_REG32((unsigned int)&(GPIO1_PTR->GPIO_CLEARDATAOUT) ,15 << 21);
@@ -37,7 +37,7 @@ void usrLedBlinkAsm(){
 
 
 void usrLedInit(){
-    
+	
 	/** CM_PER_GPIO1_CLKCTRL register bit[1:0] : 0x2 = 
 	 * MODULEMODE : ENABLE : Module is explicitly enabled.
 	 * 
@@ -51,10 +51,10 @@ void usrLedInit(){
 
 
 void usrLedBlink(){
-    GPIO1_PTR->GPIO_SETDATAOUT = (15<<21) ;
-    for (read_val = 0; read_val < 500000; read_val ++) ;
+	GPIO1_PTR->GPIO_SETDATAOUT = (15<<21) ;
+	for (read_val = 0; read_val < 500000; read_val ++) ;
 
-    GPIO1_PTR->GPIO_CLEARDATAOUT = (15 << 21) ;
+	GPIO1_PTR->GPIO_CLEARDATAOUT = (15 << 21) ;
 	for (read_val = 0; read_val < 500000; read_val ++) ;
 }
 

@@ -132,7 +132,7 @@ int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int3
 	task->taskCallBack = taskFunc ;
 
 	/**設定task的狀態為ready */
-    task->task_status = TASK_READY ;
+	task->task_status = TASK_READY ;
 
 	/** Init open file */
 	for (int i=0 ; i<MAX_FD; i++) {
@@ -159,22 +159,22 @@ int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int3
 // ----------------------- offset = 0
 int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 {
-    struct PAGE_INFO *pg = page_alloc();
-    pg->page_status = FOR_TASK ; 
+	struct PAGE_INFO *pg = page_alloc();
+	pg->page_status = FOR_TASK ; 
 	_memset((void *)pg->pgstart, 0, TASK_STACK_SIZE) ;
 
-    struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->pgstart) ;
+	struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->pgstart) ;
 
-    taskCreate(ntask ,taskFunc ,(void *)pg->pgstart ,prio);
+	taskCreate(ntask ,taskFunc ,(void *)pg->pgstart ,prio);
 
-    blks_init(pg) ;
+	blks_init(pg) ;
 
-    open_console_in_out(ntask) ;
+	open_console_in_out(ntask) ;
 
-    //設定路徑
-    ntask->cwdn = root ;
+	//設定路徑
+	ntask->cwdn = root ;
 
-    task_enqueue(ntask) ; 
+	task_enqueue(ntask) ; 
 
 	ntask->pgtbase = (uint32_t *)task_pgt_setup(pg->pgstart ,pg->top) ;
 }
@@ -183,8 +183,8 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 
 void set_page_free_start(uint32_t mv_bytes ,struct PAGE_INFO *pg)
 {
-    pg->free_start = (uint32_t *)((uint32_t)pg->free_start + mv_bytes) ;  
-    pg->blk_list_head = (struct BLK_INFO *)pg->free_start ;	
+	pg->free_start = (uint32_t *)((uint32_t)pg->free_start + mv_bytes) ;  
+	pg->blk_list_head = (struct BLK_INFO *)pg->free_start ;	
 }
 
 

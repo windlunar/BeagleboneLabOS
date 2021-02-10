@@ -45,7 +45,7 @@ void lsdir()
 
 int cd(char *subdir)
 {
-    return __chdir(subdir) ;
+	return __chdir(subdir) ;
 }
 
 

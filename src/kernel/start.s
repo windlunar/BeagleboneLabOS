@@ -176,28 +176,28 @@ _start:
 
 	/* 設定 svc stack top */	
 	ldr sp, =kernel_stack_top	
-    add r1, sp, #NON_KSTACK_SIZE		/*Now r1 = kernel_stack_top +0x1000 */
+	add r1, sp, #NON_KSTACK_SIZE		/*Now r1 = kernel_stack_top +0x1000 */
 
-    /* save svc cpsr */
-    mrs r3, cpsr
+	/* save svc cpsr */
+	mrs r3, cpsr
 
 
 	/* 設定 irq stack top */
-    mov r2, #0x12 		
-    msr cpsr_cxsf, r2
-    mov sp, r1							/* irq's sp = kernel_stack_top +0x1000 */
-    add r1, sp, #NON_KSTACK_SIZE		/* Now r1 = kernel_stack_top +0x2000 */
+	mov r2, #0x12 		
+	msr cpsr_cxsf, r2
+	mov sp, r1							/* irq's sp = kernel_stack_top +0x1000 */
+	add r1, sp, #NON_KSTACK_SIZE		/* Now r1 = kernel_stack_top +0x2000 */
 
 
 	/* 設定 abort(prefetch_abort and data_abort) stack top */
-    mov r2, #0x17
-    msr cpsr_cxsf, r2
-    mov sp, r1							/* abort's sp = kernel_stack_top +0x2000 */
-    add r1, sp, #NON_KSTACK_SIZE		/* Now r1 = kernel_stack_top +0x3000 */
+	mov r2, #0x17
+	msr cpsr_cxsf, r2
+	mov sp, r1							/* abort's sp = kernel_stack_top +0x2000 */
+	add r1, sp, #NON_KSTACK_SIZE		/* Now r1 = kernel_stack_top +0x3000 */
 
 
 	/* 回到 svc mode */
-    msr cpsr_cxsf, r3
+	msr cpsr_cxsf, r3
 
 
 	/* Branch to kernel entry */

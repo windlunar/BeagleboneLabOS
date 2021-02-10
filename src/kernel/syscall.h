@@ -94,8 +94,8 @@ extern void syscall_close();
 
 struct BUF_AND_SZ_ARG
 {
-    char *buf ;
-    uint32_t n_size ;
+	char *buf ;
+	uint32_t n_size ;
 };
 
 /***************************************************************************************/

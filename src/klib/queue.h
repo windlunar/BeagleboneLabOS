@@ -13,11 +13,11 @@
 
 
 struct QUEUE{
-    int size ; 
-    int head ;
-    int end ;
-    int n_data;
-    uint8_t *data;
+	int size ; 
+	int head ;
+	int end ;
+	int n_data;
+	uint8_t *data;
 };
 
 
