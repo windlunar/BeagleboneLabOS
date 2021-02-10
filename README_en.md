@@ -18,6 +18,7 @@ Feature:
 5. Simple memory management.<br>
 6. Simple command line interface.<br>
 7. A simple file system located in RAM.<br>
+8. IPC.
 
 System call:
 =
@@ -172,7 +173,6 @@ And the elf will be uploaded to beaglebone's memory ,and place to 0x81000000.
 
 
 <br>
-About 50 seconds latter ,beaglebone black will reboot automatically because of watchdog.
 
 
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/bbb.jpg)
