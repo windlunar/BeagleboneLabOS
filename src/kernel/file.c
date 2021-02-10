@@ -29,8 +29,7 @@ int file_in_ram_init()
 	create_file_under_node(ipc ,FILE_IPC0 ,IPC_TYPE) ;
 	ipc_buf_alloc() ;
 	
-	/* test */
-
+	return 0 ;
 }
 
 

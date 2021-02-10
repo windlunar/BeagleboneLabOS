@@ -4,7 +4,8 @@
 #include "../klib/usyscall.h"
 
 
-void ipc0_test(void){
+void ipc0_test(void) {
+	uprintf("Test ipc0.\r\n") ;
 	uprintf("tid=%d \r\n" ,__gettid());
 
 	int fd = __open(IPC0) ; 
@@ -16,7 +17,7 @@ void ipc0_test(void){
 
 	uprintf("Successfully open ipc0 ,fd =%d\r\n",fd) ;
 	put_str("Send :Hello Message\r\n\0") ;
-	__write(fd ,"Send :Hello Message\r\n\0",23) ;
+	__write(fd ,"Hello Message\r\n\0",17) ;
 	__close(fd) ;
 	__exit();
 }
@@ -26,10 +27,10 @@ void ipc0_test(void){
 int ipc_test_main(void)
 {
 	uprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
-	uprintf("Test ipc0.\r\n") ;
 
 	__do_taskCreate(&ipc0_test ,HIGHEST_PRIORITY) ;
 
+	uprintf("+++++++++++++++++++++++++++++++++++++++++\r\n") ;
 	uprintf("tid=%d \r\n" ,__gettid());
 
 	int fd = __open(IPC0) ; 
@@ -42,8 +43,11 @@ int ipc_test_main(void)
 
 	char rbuf[32] ;
 	_memset(&rbuf[0] ,0 ,sizeof(rbuf)) ;
-	int r =__read(fd ,&rbuf[0] ,23) ;
-	uprintf("r=%d\r\n" ,r) ;
+	int r =__read(fd ,&rbuf[0] ,17) ;
+
+	if(r <= 0)
+		uprintf("Read Error!\r\n") ;
+
 	put_str("Get :") ;
 	put_str(rbuf) ;
 
