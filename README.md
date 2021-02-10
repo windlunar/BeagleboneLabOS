@@ -130,7 +130,6 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 從sd卡載入:
 =
 
-<br>
 14.輸入下面的指令可以看到 boot 分割區下的檔案 ,應該可以看到一個名叫 bos 的檔案
 
 	fatls mmc 0:1 
@@ -153,7 +152,6 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 透過uart上傳:
 =
 
-<br>
 14.輸入下面的指令將 kernel 從電腦上載到 beaglebone black 的記憶體內 ,放置位址從 0x81000000開始.
 
 	loadx 0x81000000
