@@ -119,12 +119,12 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 ![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/minicom.png)
 
 <br>        
-12.壓住 Beaglebone black的 "S2" 按鈕 (在 beaglebone black 的 usb port 那一側) ,beaglebone black上電(透過 micro usb 或是5V插孔供電). 這時候 Beaglebone black 應該會從 SD card 的 U-boot 開機 ("S2"按鈕要一直壓著)<br>
+12.壓住 Beaglebone black的 "S2" 按鈕 (在 beaglebone black 的 usb port 那一側) , beaglebone black 上電 (透過 micro usb 或是5V插孔供電). 這時 Beaglebone black 會從 SD card 的 U-boot 開機 ("S2"按鈕要一直壓著)<br>
 
 <br>
 13.當看到 "Press SPACE to abort autoboot in 2 seconds" 這行時按空白鍵 ,這時會進去 Uboot 自己的 command line.<br>
 <br>
-這時可以選擇從 sd 卡載入 kernel , 或是透過 uart 將 kernel 從電腦端傳到 beaglebone black.
+這時可以選擇直接從 sd 卡載入 kernel , 或是透過 uart 將 kernel 從電腦端傳到 beaglebone black.
 
 
 從sd卡載入:
