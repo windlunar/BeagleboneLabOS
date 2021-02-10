@@ -80,15 +80,14 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 <br><br>
 使用 sd卡燒錄軟體將 bos-sd.img 燒進sd卡中
 
-
 <br><br>
-5.安裝編譯環境 ,這是我使用的 arm gcc版本: "gcc-arm-none-eabi-9-2020-q2-update" 
-<br>
+5.安裝編譯環境 : "gcc-arm-none-eabi-9-2020-q2-update" 
+<br><br>
 確定該編譯器安裝在 ubuntu系統的 /opt 下<br> 
-如果不是的話可以到這個project的 obj/MakeFile中更改<br>
-/opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1 成實際的路徑
+如果不是的話可以到 obj/MakeFile 中更改此行為實際路徑<br>
+	/opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1 成實際的路徑
 
-<br><br>
+<br>
 6.安裝 "minicom" ,類似putty的終端軟體 ,或使用putty,等其他終端軟體
 
 	sudo apt-get install minicom
