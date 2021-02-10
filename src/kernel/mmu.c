@@ -224,6 +224,7 @@ void pgt_base_setup(uint32_t *base)
 }
 
 
+
 /** page table要align 16K ,所以分配16K的block */
 void *task_pgt_setup (void *pgstart ,void *pgtop)
 {
@@ -236,7 +237,7 @@ void *task_pgt_setup (void *pgstart ,void *pgtop)
     pte_init((paddr_t)pgstart 
             ,(paddr_t)pgtop 
             ,AP_USER_RW 
-            ,(vaddr_t)pgstart
+            ,(vaddr_t)(pgstart)
             ,(uint32_t)(pgt_base)) ;
 
     return pgt_base ;

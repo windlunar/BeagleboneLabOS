@@ -1,7 +1,9 @@
 
 #include "../klib/mem.h"
 #include "../kernel/printk.h"
+#include "../kernel/memory.h"
 
+/*************************************************************************/
 
 void _memset(void *start ,uint8_t value ,uint32_t SizeofBytes)
 {
@@ -12,6 +14,7 @@ void _memset(void *start ,uint8_t value ,uint32_t SizeofBytes)
         startPtr += 1 ;
     }
 }
+
 
 
 void _showmm(void *start ,uint32_t SizeofBytes)
@@ -29,6 +32,7 @@ void _showmm(void *start ,uint32_t SizeofBytes)
         startPtr += 1 ;
     }    
 }
+
 
 
 void _memcpy(void *dest ,void *src ,uint32_t nbytes)

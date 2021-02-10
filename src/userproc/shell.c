@@ -18,6 +18,7 @@
 void main_shell()
 {
 	draw_console();
+
 	uprintf("\r\nWelcome to Beaglebone black OS!\r\n") ;
 	uprintf("\r\nThe command line is the first process\r\n") ;
 

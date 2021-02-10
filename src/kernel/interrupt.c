@@ -269,16 +269,21 @@ void set_exception_entry(uint32_t *exept_vec_base)
 
 /****************************************************************************************/
 
-void __attribute__((interrupt("PABT"))) prefetch_abort_handler(void)
+void __attribute__((interrupt("PABT"))) prefetch_abort_handler(uint32_t r0)
 {
 	printk("In prefetch_abort_handler\r\n");
-	//for(int i=0 ;i<2560 ;i++)
-    //{
-    //    printk("addr =%p ,context =%x\r\n" ,(curr_running_task->pgtbase)+i ,*((curr_running_task->pgtbase)+i)) ;
-    //}
-    printk("\r\ntask_info addr =%p" ,curr_running_task) ;
-    printk(" ,base addr =%p" ,curr_running_task->pgtbase) ;
-    printk(" ,task_context addr =%p\r\n" ,curr_running_task->task_context) ;
+
+    printk("task_info addr :%p\r\n" ,curr_running_task) ;
+    printk("pgt base addr :%p\r\n" ,curr_running_task->pgtbase) ;
+	printk("lr_abort :%x\r\n\r\n" ,r0) ;
+
+	struct TASK_CONTEXT *ctx = curr_running_task->task_context ;
+    printk("task_context sp :%p\r\n" ,ctx->r0) ;
+	printk("r0 :%x   r1 :%x   r2 :%x   r3 :%x\r\n" ,ctx->r0 ,ctx->r1 ,ctx->r2 ,ctx->r3) ;
+	printk("r4 :%x   r5 :%x   r7 :%x   r7 :%x\r\n" ,ctx->r4 ,ctx->r5 ,ctx->r6 ,ctx->r7) ;
+	printk("r8 :%x   r9 :%x   r10 :%x   r11 :%x\r\n" ,ctx->r8 ,ctx->r9_return_lr ,ctx->r10 ,ctx->r11) ;
+	printk("r12 :%x   r14 :%x\r\n" ,ctx->r12_spsr ,ctx->lr) ;
+
 	set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
     enable_watchdog(WATCHDOG_BASE) ;
 	for(;;) ;
@@ -286,16 +291,21 @@ void __attribute__((interrupt("PABT"))) prefetch_abort_handler(void)
 
 
 
-void __attribute__((interrupt("DABT"))) data_abort_handler(void)
+void __attribute__((interrupt("DABT"))) data_abort_handler(uint32_t r0)
 {
-	printk("In data_abort_handler\r\n");
-	//for(int i=0 ;i<2560 ;i++)
-    //{
-    //    printk("addr =%p ,context =%x\r\n" ,(curr_running_task->pgtbase)+i ,*((curr_running_task->pgtbase)+i)) ;
-    //}
-    printk("\r\ntask_info addr =%p" ,curr_running_task) ;
-    printk(" ,base addr =%p" ,curr_running_task->pgtbase) ;
-    printk(" ,task_context addr =%p\r\n" ,curr_running_task->task_context) ;
+	printk("In data_abort_handler\r\n\r\n");
+
+    printk("task_info addr :%p\r\n" ,curr_running_task) ;
+    printk("pgt base addr :%p\r\n" ,curr_running_task->pgtbase) ;
+	printk("lr_abort :%x\r\n\r\n" ,r0) ;
+
+	struct TASK_CONTEXT *ctx = curr_running_task->task_context ;
+    printk("task_context sp :%p\r\n" ,ctx->r0) ;
+	printk("r0 :%x   r1 :%x   r2 :%x   r3 :%x\r\n" ,ctx->r0 ,ctx->r1 ,ctx->r2 ,ctx->r3) ;
+	printk("r4 :%x   r5 :%x   r7 :%x   r7 :%x\r\n" ,ctx->r4 ,ctx->r5 ,ctx->r6 ,ctx->r7) ;
+	printk("r8 :%x   r9 :%x   r10 :%x   r11 :%x\r\n" ,ctx->r8 ,ctx->r9_return_lr ,ctx->r10 ,ctx->r11) ;
+	printk("r12 :%x   r14 :%x\r\n" ,ctx->r12_spsr ,ctx->lr) ;
+
 	set_wdt_count(WATCHDOG_BASE, 0xfffffff0) ;
     enable_watchdog(WATCHDOG_BASE) ;
 	for(;;) ;

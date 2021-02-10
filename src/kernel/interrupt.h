@@ -43,8 +43,8 @@ void set_exception_entry(uint32_t *exept_vec_base);
 
 /****************************************************************************************/
 
-void __attribute__((interrupt("ABORT"))) prefetch_abort_handler(void) ;
-void __attribute__((interrupt("ABORT"))) data_abort_handler(void) ;
+void __attribute__((interrupt("ABORT"))) prefetch_abort_handler(uint32_t r0) ;
+void __attribute__((interrupt("ABORT"))) data_abort_handler(uint32_t r0) ;
 
 /****************************************************************************************/
 

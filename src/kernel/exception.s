@@ -203,6 +203,7 @@ svc_entry:
 .global prefetch_abort_entry
 .align	2
 prefetch_abort_entry:
+	mov	r0	,lr
 	b 	prefetch_abort_handler
 
 
@@ -214,4 +215,5 @@ prefetch_abort_entry:
 .global data_abort
 .align	2
 data_abort:
+	mov	r0	,lr
 	b 	data_abort_handler
