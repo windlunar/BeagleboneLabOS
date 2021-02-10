@@ -15,9 +15,9 @@ Feature:
 3. Priority-based, round-robin multitasking. 預設有 0~4 ,5 個 priority.<br>
 4. MMU Enable.<br>
 5. 簡易的 Memory分配機制.<br>
-6. 簡易的 IPC (task之間互相溝通).<br>
+6. 簡易的 IPC (task 之間互相溝通).<br>
 7. 有一個存在於記憶體中的類似檔案系統的小系統<br>
-8. 有一個簡易的command line用於測試.<br>
+8. 有一個簡易的 command line 用於測試.<br>
 
 System call:
 =
@@ -66,7 +66,6 @@ Commands:
 環境準備:
 =
 
-<br><br>
 如要自行編譯 u-boot 與製作 boot ,rootfs 分割區的話可以參考下面這本書:
 <br>
 https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition
