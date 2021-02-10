@@ -91,14 +91,14 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 
 	/opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1
 <br>
-<br>
+
 6.安裝 "minicom" ,類似putty的終端軟體 ,或使用putty,等其他終端軟體
 
 	sudo apt-get install minicom
 
 
-7. 選擇任意一個喜歡的資料夾.<br><br>
-8. clone 這個 project:
+7.選擇任意一個喜歡的資料夾.<br><br>
+8.clone 這個 project:
 
 	git clone https://github.com/windlunar/arm-os-from-scratch
 
