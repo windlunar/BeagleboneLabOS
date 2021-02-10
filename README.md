@@ -10,14 +10,14 @@ Hi ,<br><br>
 
 Feature:
 =
-1. 區分 kernel 模式與使用者模式 (user mode) ,一般的 task (process) 運行在使用者模式 ,呼叫 system call 之後轉到 kernel 模式運行<br>
+1. 區分 kernel (svc mode) 模式與使用者模式 (user mode) ,一般的 task (process) 運行在使用者模式 ,呼叫 system call 之後轉到 kernel 模式運行<br>
 2. 基於 Time sharing 切換不同 task.<br>
 3. Priority-based, round-robin multitasking. 預設有 0~4 ,5 個 priority.<br>
 4. MMU Enable.<br>
-5. 簡易的 Memory分配機制.<br>
-6. 簡易的 IPC (task 之間互相溝通).<br>
-7. 有一個存在於記憶體中的類似檔案系統的小系統<br>
-8. 有一個簡易的 command line 用於測試.<br>
+5. 簡易的 memory allocation.<br>
+6. 簡易的 ipc (task 之間互相溝通).<br>
+7. 一個存在於記憶體中的類似檔案系統的小系統<br>
+8. 一個簡易的 command line 用於測試.<br>
 
 System call:
 =
@@ -85,7 +85,7 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 5.安裝編譯環境 : "gcc-arm-none-eabi-9-2020-q2-update" 
 <br><br>
 確定該編譯器安裝在 ubuntu 系統的 /opt 下.<br> 
-如果不是的話可以到 obj/MakeFile 中此行更改為實際路徑.<br>
+如果不是的話可以到 obj/MakeFile 中, 將此行更改為實際路徑.<br>
 
 	/opt/gcc-arm-none-eabi-9-2020-q2-update/lib/gcc/arm-none-eabi/9.3.1
 <br>
