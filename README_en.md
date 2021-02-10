@@ -11,10 +11,13 @@ Beaglebone black is the testing hardware.
 Feature:
 =
 
-1. Time slice ,priority-based multitasking multitasking.<br>
-2. Simple memory management function.<br>
-3. Simple command line interface.<br>
-4. A simple file system located in RAM.
+1. Task execute at user mode ,kernel at svc mode<br>
+2. Base on time sharing to switch to another task.<br>
+3. Priority-based round-robin multitasking.<br>
+4. MMU Enable.<br>
+5. Simple memory management.<br>
+6. Simple command line interface.<br>
+7. A simple file system located in RAM.<br>
 
 System call:
 =
@@ -35,6 +38,8 @@ System call:
 14. __getfdir :<br>
 15. __chdir :<br>
 16. __getfullpath :<br>
+17. __restart :reboot<br>
+18. __close :close file<br>
 <br>
 Simple command line interface:
 =
@@ -42,17 +47,13 @@ Simple command line interface:
 Commands:
 <br>
 
-1. test :Press '1' for fork function test ,'2' for multitasking test ,'3' for priority-based multitasking test ,'4' for tty0 open test.<br>
+1. test :Press '1' for fork function test ,'2' for multitasking test ,'3' for priority-based multitasking test ,'4' for tty0 open test ,'5' for ipc test<br>
 2. help :List available command.<br>
 3. info :Print some info.<br>
-
-![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/cmd.png)
-
-![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/info.png)
-
-![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/fork_test.png)
-
-![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/test.png)
+4. ls :List file.<br>
+5. cd :Change dir.<br>
+6. pwd :show current dir.<br>
+7. reboot :Restart system.<br>
 
 
 Setup:
@@ -91,14 +92,14 @@ The script format-sdcard.sh comes from this book:
 https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-Edition
 
 <br>
-一樣在  arm-os-from-scratch/u-boot 資料夾下:
+At  arm-os-from-scratch/u-boot folder:
 
-        cp MLO u-boot.img /media/<你的使用者名稱>/boot
+        cp MLO u-boot.img /media/<Your user name>/boot
 
 
 
 <br>
-2.Install "gcc-arm-none-eabi-6-2017-q2-update" to compile source code
+2.Install "gcc-arm-none-eabi-9-2020-q2-update" to compile source code
 <br><br>
 3.Install "minicom"
 

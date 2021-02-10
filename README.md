@@ -39,7 +39,8 @@ System call:
 14. __getfdir :獲得當前目錄的所有file<br>
 15. __chdir :改變當前目錄<br>
 16. __getfullpath :獲得當前目錄的完整路徑<br>
-
+17. __restart :重新啟動<br>
+18. __close :關閉file<br>
 
 簡易的 command line:
 =
@@ -47,20 +48,13 @@ System call:
 Commands:
 <br>
 
-1. test :執行之後鍵盤按1或2或3或4, 測試 fork 與 multitasking ,priority multitasking ,tty0 open tese.<br>
+1. test :執行之後鍵盤按1或2或3或4或5, 測試 fork 與 multitasking ,priority multitasking ,tty0 open test ,ipc test.<br>
 2. help :列出可用的指令.<br>
 3. info :印出一些資訊.<br>
 4. ls :列出當前目錄下的子目錄與檔案.<br>
 5. cd :切換目錄.<br>
 6. pwd :列出當前路徑.<br>
-
-![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/cmd.png)
-
-![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/info.png)
-
-![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/fork_test.png)
-
-![image](https://github.com/windlunar/arm-os-from-scratch/blob/master/pictures/test.png)
+7. reboot :重新啟動.<br>
 
 
 環境準備:
@@ -74,7 +68,7 @@ https://github.com/PacktPublishing/Mastering-Embedded-Linux-Programming-Second-E
 
 <br>
 或是用已經製作好的：<br>
-將sdcard-img資料夾內的bos-boot16M-rootfs48M.zip解壓縮後 ,會得到 bos-boot16M-rootfs48M.img 映像檔,
+將sdcard-img資料夾內的bos-sd.zip解壓縮後 ,會得到 bos-sd.img 映像檔,
 <br><br>
 該映像檔有兩個分割區 ,boot分割區放 MLO,u-boot.img 與 OS的elf檔bos ,另一個分割區為root ,為保留用目前沒有使用到
 <br><br>
