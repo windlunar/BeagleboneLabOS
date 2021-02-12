@@ -8,7 +8,7 @@
 volatile uint32_t read_val;
 
 
-void usrLedInitAsm(){
+void init_usrled_asm(){
 	
 	/** CM_PER_GPIO1_CLKCTRL register bit[1:0] : 
 	 * 0x2 = MODULEMODE : ENABLE : Module is explicitly enabled.
@@ -26,7 +26,7 @@ void usrLedInitAsm(){
 
 
 
-void usrLedBlinkAsm(){
+void blink_usrled_asm(){
 	WRITE_REG32((unsigned int)&(GPIO1_PTR->GPIO_SETDATAOUT), (15 << 21));
 	for (read_val = 0; read_val < 1000000; read_val ++) ;
 
@@ -36,7 +36,7 @@ void usrLedBlinkAsm(){
 
 
 
-void usrLedInit(){
+void usrled_init(){
 	
 	/** CM_PER_GPIO1_CLKCTRL register bit[1:0] : 0x2 = 
 	 * MODULEMODE : ENABLE : Module is explicitly enabled.
@@ -50,7 +50,7 @@ void usrLedInit(){
 
 
 
-void usrLedBlink(){
+void usrled_blink(){
 	GPIO1_PTR->GPIO_SETDATAOUT = (15<<21) ;
 	for (read_val = 0; read_val < 500000; read_val ++) ;
 
@@ -60,7 +60,7 @@ void usrLedBlink(){
 
 
 
-void usrLedToggle(uint32_t usr_led_num)
+void toggle_usrled(uint32_t usr_led_num)
 {
 	GPIO1_PTR->GPIO_DATAOUT ^= (1 << (21 + usr_led_num));
 }

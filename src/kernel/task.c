@@ -7,21 +7,33 @@
 struct SCHED_CONTEXT *schedFuncContextSPtr = (struct SCHED_CONTEXT *)KSTACK_SCHED_CONTEXT_SP ; 
 
 
-struct TASK_READY_LIST_HEAD{
-
+struct TASK_READY_LIST_HEAD
+{
 	struct TASK_INFO *head ;
-
 } ;
 
 struct TASK_READY_LIST_HEAD task_ready_list[MAXNUM_PRIORITY] ;
 struct TASK_INFO *curr_running_task = NULL ;
 
 
-int32_t taskid = -1 ;
-int32_t prio = -1 ;
+int32_t taskid ;
+int32_t prio ;
 
 
-
+/**
+ * arg : void
+ * return : TASK_INFO structure
+ * 
+ * Choose a task from ready queue ,dequeue from ready list and put it to the tail of list
+ * By default ,it has 5 ready list(queue) ,uses an array of pointers ,each pointer in array
+ * point to a ready list's head.
+ * The index of array represent the priority of the ready list which it points to.
+ * 
+ * This function will check the the ready list array of pointers from index 0 which has the
+ * largest priority.Hence ,the larger priority whill first been executed. If the head is 
+ * not empty(means at least one task in ready list) then  deque from the list ,put it to 
+ * the end of the list ,set the task status to RUNNING ,and return the TASK_INFO structure. 
+ */ 
 struct TASK_INFO *choose_task(void)
 {
 	for (int i=0 ; i<MAXNUM_PRIORITY; i++) {
@@ -45,7 +57,7 @@ struct TASK_INFO *choose_task(void)
 
 
 
-void sched_first_run (void)
+void run_first_sched (void)
 {
 	/** choose a task to run */
 	curr_running_task = choose_task() ;
@@ -59,6 +71,14 @@ void sched_first_run (void)
 
 
 
+/**
+ * arg : void
+ * return : void
+ * 
+ * Choose a task from ready queue ,switch the page table ,and then run the task by 
+ * passing the context(the context structure will be stored at task's stack ,and the 
+ * stack pointer will point to the start address of this context structure.)
+ */ 
 void sched (void)
 {
 	/** choose a task to run */
@@ -72,7 +92,18 @@ void sched (void)
 }
 
 
-
+/**
+ * arg : void
+ * return : void
+ * 
+ * lr(R14) register stores the return address ,the program will return to address which 
+ * stored in R14 by execute "bx	lr" instruction.
+ * So just make lr var as the start address of function. Then plase the context sturcture
+ * to the stack ,make stack pointer points to the struct's start address ,and pop the 
+ * context from stack.Finally ,after execute "bx lr" the program will jump to the function.
+ * In this case ,it will jump to sched function by calling "switch_task". 
+ * 
+ */ 
 void set_sched_context(void)
 {
 	schedFuncContextSPtr->lr = (uint32_t)sched ;	
@@ -82,7 +113,7 @@ void set_sched_context(void)
 
 void set_first_sched(void)
 {
-	schedFuncContextSPtr->lr = (uint32_t)sched_first_run ;	
+	schedFuncContextSPtr->lr = (uint32_t)run_first_sched ;	
 }
 
 
@@ -91,26 +122,36 @@ void task_init()
 {
 	for (int i=0 ; i<MAXNUM_PRIORITY; i++) {
 		task_ready_list[i].head = NULL ;
-	}	
+	}
+
+	taskid = -1 ;
+	prio = -1 ;
 }
 
 
 /**
- * arg1 : task 結構體
- * arg2 : user task function pointer
- * arg3 : user task的 stack起始位址(low addr開始)
- * arg4 : task priority
+ * arg1 : TASK_INFO structure.
+ * arg2 : The function pointer that points to a specific task.
+ * arg3 : The stack bottom of task.
+ * arg4 : Task priority
  * 
  * return : task id
  * 
- * task的context結構體(struct TASK_CONTEXT)如下
- * r0 ,r1 ,r2 ,r3 ,r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr 
- * 將 sp指向 該結構起始位址 r0 ,那麼在pop的時候, 就會將其內容依序pop回暫存器中
- * 預設 r9 存放 user task 返回位址
- * lr 存放該 user自己本身的 lr值(如返回其他函數用)
- * 所以要把 task 的 entry位址放在 struct TASK_CONTEXT 的 r9_return_lr上
+ * The context struct of task(struct TASK_CONTEXT) is defined in task.h.
+ * Starts from:
+ * r0 ,r1 ,r2 ,r3 ,r4, r5, r6, r7, r8, r9, r10 ,fp ,ip ,lr
+ * 
+ * For running or switching the task ,this context structure will be place inside task's 
+ * stack. Then make user mode's SP points to the context struct ,and restore(pop) the 
+ * context from stack.
+ * 
+ * By default R9 stores the return address from kernal mode.(lr stores the return address
+ * from the function called by task itself.)
+ * Hence ,make R9(r9_return_lr) points to the entry of target function.
+ * Then , asign a an id to task ,setting the priority ,stack top ,place context struct to
+ * stack.
  */
-int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int32_t prio)
+int32_t create_task(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int32_t prio)
 {
 	uint32_t *task_stack = (uint32_t *)stack ;
 
@@ -157,7 +198,7 @@ int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int3
 // ----------------------- offset = sizeof(struct TASK_INFO)
 // struct TASK_INFO
 // ----------------------- offset = 0
-int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
+int32_t do_task_create(int32_t prio ,void (*taskFunc)())
 {
 	struct PAGE_INFO *pg = page_alloc();
 	pg->page_status = FOR_TASK ; 
@@ -165,7 +206,7 @@ int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)())
 
 	struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->pgstart) ;
 
-	taskCreate(ntask ,taskFunc ,(void *)pg->pgstart ,prio);
+	create_task(ntask ,taskFunc ,(void *)pg->pgstart ,prio);
 
 	blks_init(pg) ;
 

@@ -45,7 +45,7 @@ irq_entry:
 	 * 分支處理timer0 irq(as os tick)跟其他中斷
 	 */
 	stmfd 	sp!,	{r0 ,r1 ,r2 ,r3 ,r4 ,r5 ,r6 ,r7 ,r8 ,r9 ,r10 ,r11 ,r12 ,lr}
-	bl 		getActivateIrqNum		/* 回傳值在r0 */
+	bl 		get_act_irqnum		/* 回傳值在r0 */
 	cmp 	r0, #66					/* 判斷是不是 os_tick中斷 */
 	bne 	non_ostick_irq			/* 不是的話就跳去處理一般中斷 */
 	ldmfd 	sp!,	{r0 ,r1 ,r2 ,r3 ,r4 ,r5 ,r6 ,r7 ,r8 ,r9 ,r10 ,r11 ,r12 ,lr}
@@ -101,7 +101,7 @@ irq_entry:
 
 
 	/* 在svc mode中處理irq中斷 ,應該傳入 user task的context(sp) 結構 address = r0 */
-	bl 		timer0_ISR
+	bl 		timer0_isr
 
 
 non_ostick_irq:

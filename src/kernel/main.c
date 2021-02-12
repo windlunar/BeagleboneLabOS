@@ -24,6 +24,11 @@
 
 int kernal_entry(void)
 {
+	printk("\r\nKernel Init start...\r\n") ;
+	printk("\r\nInit bss...\r\n") ;
+	bss_init() ;
+
+
 	/**
 	 * mmu
 	 */ 	
@@ -36,22 +41,18 @@ int kernal_entry(void)
 	/**
 	 * Init Timer
 	 */ 
-	printk("\r\nKernel Init start...\r\n") ;
-
-	printk("sp : %x ---CP15_c1 : %x\r\n" ,READ_SP() ,READ_CP15_c1());
-	printk("CPSR register %x\r\n", READ_CPSR());
-	printk("Exception Vector Base = %x\r\n",getIntVectorAddr());
+	printk("sp : %x ---CPSR : %x\r\n" ,READ_SP() ,READ_CPSR());
+	printk("Exception Vector Base = %x\r\n",get_ivt_base());
 	printk("kernel_end address :%x\r\n" ,KERNEL_END_VADDR) ;
-	printk("First page of memeory address start at :%p\r\n" ,KERN_VADDR_PTR) ;
 
-	usrLedInit();
+	usrled_init();
 	printk("\nInitialize user leds...\r\n") ;
 
-	interrupt_init();
+	irq_init();
 	printk("Init interrupt.\r\n");
 
-	OsTickInit(DMTIMER0_BASE_PTR_t);
-	enableOsTick(IRQ_NUM_TIMER0) ;
+	ostick_init(DMTIMER0_BASE_PTR_t);
+	enable_ostick(IRQ_NUM_TIMER0) ;
 	printk("Init Timer0 to switch tasks.\r\n");
 
 
@@ -78,7 +79,7 @@ int kernal_entry(void)
 	task_init() ;
 	
 	/** Init the first Task */
-	do_ktaskCreate(LOWEST_PRIORITY ,&main_shell) ;
+	do_task_create(LOWEST_PRIORITY ,&main_shell) ;
 
 
 	/**
@@ -93,7 +94,7 @@ int kernal_entry(void)
 
 
 	/** 
-	 * Jump to sched_first_run() in task.c.
+	 * Jump to run_first_sched() in task.c.
 	 * Never back
 	 */ 
 	call_sched((uint32_t)schedFuncContextSPtr) ;

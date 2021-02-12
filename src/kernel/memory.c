@@ -1,10 +1,17 @@
 
 #include "memory.h"
 #include "task.h"
+#include "../klib/mem.h"
 
 uint32_t *kernal_end = (&_end) ;
+uint8_t *kernal_sbss = (&_sbss) ;
+uint8_t *kernal_ebss = (&_ebss) ;
 
-
+void bss_init(void)
+{
+	uint32_t n_bytes = kernal_ebss - kernal_sbss ;
+	_memset((void *)kernal_sbss , 0 ,n_bytes) ;
+}
 /****************************************************************************************/
 
 struct PAGE_INFO kpage;

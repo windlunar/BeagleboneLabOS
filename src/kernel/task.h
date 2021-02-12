@@ -41,22 +41,24 @@ extern int32_t taskid;
 /*************************************************************************/
 
 #define KSTACK_SCHED_CONTEXT_SP	( (KSTACK_TOP_PADDR)-(4*13) )
-// -----------------
-// ......
-// lr
-// r12
-// r11
-// r10
-// r9
-// r8
-// r7
-// r6
-// r5
-// r4
-// r3
-// r2
-// r1 -----------------kernel stack top + 4*1
-// r0 -----------------kernel init stack top
+
+/************************************************
+ *  ......
+ *  lr
+ * r12
+ * r11
+ *  r10
+ *  r9
+ *  r8
+ *  r7
+ *  r6
+ *  r5
+ *  r4
+ *  r3
+ *  r2
+ *  r1 -----------------kernel stack top + 4*1
+ *  r0 -----------------kernel init stack top
+************************************************/
 struct SCHED_CONTEXT
 {
 	uint32_t r0;
@@ -79,24 +81,24 @@ extern struct SCHED_CONTEXT *schedFuncContextSPtr ;
 
 
 
-// ************************************************
-//
-//                 SP------>lr
-//                          r12
-// push=STMFD SP!           r11
-//        |                 r10
-//        |                 r9      ^
-//        |                 r8      |
-//        |                 r7      |
-//        |                 r6      |
-//        |                 r5      |
-//        |                 r4      |
-//        V                 r3      |
-//                          r2  pop=LDMFD SP!      
-//                          r1              
-//                          r0 <------SP
-//
-// ************************************************
+/************************************************
+ * 
+ *                  SP------>lr
+ *                           r12
+ *  push=STMFD SP!           r11
+ *         |                 r10
+ *         |                 r9      ^
+ *         |                 r8      |
+ *         |                 r7      |
+ *         |                 r6      |
+ *         |                 r5      |
+ *         |                 r4      |
+ *         V                 r3      |
+ *                           r2  pop=LDMFD SP!      
+ *                           r1              
+ *                           r0 <------SP
+ * 
+ ************************************************/
 struct TASK_CONTEXT
 {
 	uint32_t r0;
@@ -150,7 +152,7 @@ extern struct TASK_INFO *curr_running_task ;
 
 /*************************************************************************/
 
-void sched_first_run(void);
+void run_first_sched(void);
 void sched (void) ;
 void set_sched_context(void) ;
 void set_first_sched(void);
@@ -160,8 +162,8 @@ void switch_task(uint32_t *sp);
 struct TASK_INFO *choose_task(void) ;
 
 void task_init() ;
-int32_t taskCreate(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int32_t prio);
-int32_t do_ktaskCreate(int32_t prio ,void (*taskFunc)());
+int32_t create_task(struct TASK_INFO *task ,void (*taskFunc)() ,void *stack ,int32_t prio);
+int32_t do_task_create(int32_t prio ,void (*taskFunc)());
 void open_console_in_out(struct TASK_INFO *task) ;
 void task_enqueue(struct TASK_INFO *task) ;
 struct TASK_INFO *task_dequeue(int32_t prio) ;

@@ -12,6 +12,14 @@
 extern uint32_t _end ;	
 extern uint32_t *kernal_end ;
 
+extern uint8_t _sbss ;	
+extern uint8_t _ebss ;
+extern uint8_t *kernal_sbss ;
+extern uint8_t *kernal_ebss ;
+
+void bss_init(void) ;
+
+/****************************************************************************************/
 
 #define KERNEL_END_PADDR    (uint32_t)kernal_end
 #define KERNEL_END_VADDR    (KERNEL_END_PADDR)

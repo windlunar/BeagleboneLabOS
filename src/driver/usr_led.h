@@ -6,11 +6,11 @@
 #include "../common.h"
 
 
-void usrLedInitAsm() ;
-void usrLedBlinkAsm() ;
-void usrLedInit() ;
-void usrLedBlink() ;
-void usrLedToggle(uint32_t usr_led_num);
+void init_usrled_asm() ;
+void blink_usrled_asm() ;
+void usrled_init() ;
+void usrled_blink() ;
+void toggle_usrled(uint32_t usr_led_num);
 
 
 #endif

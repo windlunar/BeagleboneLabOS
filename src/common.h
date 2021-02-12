@@ -34,7 +34,7 @@ extern void __attribute__((optimize("O0"))) delay(uint32_t nr_of_nops);
 
 /***************************************************************************************/
 
-static inline void dataSyncBarrier(void)
+static inline void data_sync_barrier(void)
 {
 	asm volatile("dsb\n");
 }

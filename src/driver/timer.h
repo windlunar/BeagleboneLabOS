@@ -8,7 +8,9 @@
 
 #include "../common.h"
 
-/*****************************************************************************************/
+/********************************************************************************
+ * Timer
+ *******************************************************************************/ 
 
 typedef struct{
 	uint32_t TIDR ;           /* offset = 0x00 */
@@ -59,22 +61,30 @@ typedef struct{
 #define DMTIMER2_BASE    (0x48040000)
 #define DMTIMER2_BASE_PTR_t           ((volatile DMTIMER_T *)DMTIMER2_BASE)
 
-/*****************************************************************************************/
 
 void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs);
-void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr);
-void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(void));
-void disnableTimerAndUnbindISR(int32_t IRQ_ID);
+void timer_disable(volatile DMTIMER_T *DMTIMER_struct_ptr);
+void enable_timer_bind_isr(int32_t irq_id ,void (*handler)(void));
+void disable_timer_unbind_isr(int32_t irq_id);
+void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr) ;
+
+/********************************************************************************
+ * OS Tick
+ *******************************************************************************/ 
+
+void ostick_init(volatile DMTIMER_T *DMTIMER_struct_ptr);
+void enable_ostick(uint8_t irq_id) ;
+void reload_ostick(uint32_t msecs) ;
+
+/********************************************************************************
+ * Other
+ *******************************************************************************/ 
 
 void __attribute__((optimize("O0"))) delay(uint32_t num);
 
-void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr) ;
-void reloadOsTick(uint32_t msecs) ;
-
-void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr);
-void enableOsTick(uint8_t irq_num) ;
-
-/*****************************************************************************************/
+/********************************************************************************
+ * Watchdog
+ *******************************************************************************/ 
 
 #define WATCHDOG_BASE       (0x44E35000)
 #define WDT_WCRR            (0x28)
@@ -101,5 +111,6 @@ void reload_watchdog(uint32_t base) ;
 void disable_watchdog(unsigned int baseAdd) ;
 void enable_watchdog(uint32_t base) ;
 void set_wdt_count(uint32_t base, uint32_t countVal) ;
+
 
 #endif

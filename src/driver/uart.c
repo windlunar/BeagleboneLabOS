@@ -24,7 +24,7 @@ void uart_Init(UART_REG_T *uartChannel ,STOP_BIT_T stopBit, PARITY_T parity, FLO
  * no need to call this function 
  * after bootup.
  */                       
-void uart_set_Baudrate(UART_REG_T *uartChannel, uint32_t baudrate){}
+void uart_set_baudrate(UART_REG_T *uartChannel, uint32_t baudrate){}
 
 
 

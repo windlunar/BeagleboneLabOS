@@ -28,35 +28,34 @@ void print_cpsr(){
 
 
 
-void stackDisplay(uint32_t stackTop ,int num){
-	uint32_t *stackTopAddr = (uint32_t *)stackTop ;
-	for(int i = 0 ; i < num ; i++){
-		printk("MEM ADDR : %p --- CONTENT : %x\r\n", stackTopAddr-i,*(stackTopAddr-i)) ;
+void stk_display(uint32_t stk_top ,int num){
+	uint32_t *stktop_ptr = (uint32_t *)stk_top ;
+	for (int i = 0 ; i < num ; i++) {
+		printk("MEM ADDR : %p --- CONTENT : %x\r\n", stktop_ptr-i,*(stktop_ptr-i)) ;
 	}
 }
 
 
 
-int32_t readCpsrMode(){
+int32_t get_cpsr_mode(){
 	int32_t cpsr = READ_CPSR() ;
 	int32_t mode = cpsr & 0x1F ;
 
-	switch (mode)
-	{
-	case 0x10:
-		printk("In user mode. cpsr mode bits :%x\r\n",mode) ;
-		break;
-	case 0x1f:
-		printk("In system mode. cpsr mode bits :%x\r\n",mode) ;
-		break;
-	case 0x12:
-		printk("In irq mode. cpsr mode bits :%x\r\n",mode) ;
-		break;
-	case 0x13:
-		printk("In kernel mode. cpsr mode bits :%x\r\n",mode) ;
-		break;
-	default:
-		break;
+	switch (mode) {
+		case 0x10:
+			printk("In user mode. cpsr mode bits :%x\r\n",mode) ;
+			break;
+		case 0x1f:
+			printk("In system mode. cpsr mode bits :%x\r\n",mode) ;
+			break;
+		case 0x12:
+			printk("In irq mode. cpsr mode bits :%x\r\n",mode) ;
+			break;
+		case 0x13:
+			printk("In kernel mode. cpsr mode bits :%x\r\n",mode) ;
+			break;
+		default:
+			break;
 	}
 
 	return mode ;

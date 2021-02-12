@@ -47,7 +47,7 @@ void yield_handler(void *usrTaskContextOld ,void *args);
 void get_tid_handler(void *usrTaskContextOld ,void *args);
 void exit_handler(void *usrTaskContextOld ,void *args);
 void fork_handler(void *usrTaskContextOld ,void *args);
-void do_taskCreate_handler(void *usrTaskContextOld ,void *args) ;
+void task_create_handler(void *usrTaskContextOld ,void *args) ;
 void malloc_blk_handler(void *usrTaskContextOld ,void *args) ;
 void malloc_mfree_blk_handler(void *usrTaskContextOld ,void *args) ;
 void get_mblk_list_handler(void *usrTaskContextOld ,void *args) ;

@@ -46,7 +46,7 @@ first_run:
 	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	
 	mov		r0 ,#(ostick_msec)
-	bl 		reloadOsTick
+	bl 		reload_ostick
 
 	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	
@@ -87,7 +87,7 @@ switch_task:
 	/* 在這邊 reload ostimer counter */
 	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	mov		r0 ,#(ostick_msec)
-	bl 		reloadOsTick
+	bl 		reload_ostick
 	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	
 

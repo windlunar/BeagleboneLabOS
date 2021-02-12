@@ -10,6 +10,10 @@
 #include "../kernel/interrupt_regs.h"
 
 
+/********************************************************************************
+ * Timer
+ *******************************************************************************/ 
+
 void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
 {
 	CM_PER_BASE_PTR->CM_PER_TIMER2_CLKCTRL |= (1 << 1) ;
@@ -31,7 +35,49 @@ void timer_init(volatile DMTIMER_T *DMTIMER_struct_ptr ,uint32_t msecs)
 
 
 
-void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr)
+/** Start */
+void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr)
+{
+	DMTIMER_struct_ptr->TCLR |= (1 << 0); 
+}
+
+
+
+void timer_disable(volatile DMTIMER_T *DMTIMER_struct_ptr)
+{
+	DMTIMER_struct_ptr->TCLR = (0 << 1) | (0 << 0);
+	DMTIMER_struct_ptr->TLDR = 0;
+	DMTIMER_struct_ptr->IRQENABLE_CLR = (1 << 1);
+}
+
+
+
+void enable_timer_bind_isr(int32_t irq_id ,void (*handler)(void))
+{
+	irq_isr_bind(irq_id, handler) ;
+	enable_irq_id(irq_id);
+}
+
+
+
+void disable_timer_unbind_isr(int32_t irq_id)
+{
+	disable_irq_id(irq_id);
+	irq_isr_unbind(irq_id);
+}
+
+
+
+void __attribute__((optimize("O0"))) delay(uint32_t num)
+{
+	for (uint32_t count = 0 ;count < num ;count++) ;
+}
+
+/********************************************************************************
+ * OS Tick
+ *******************************************************************************/ 
+
+void ostick_init(volatile DMTIMER_T *DMTIMER_struct_ptr)
 {
 	/** 
 	 * Component interrupt request enable. Write 1 to set (enable interrupt)
@@ -57,7 +103,7 @@ void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr)
 
 	/** 
 	 * load ,TIMER_COUNTER ,Value of TIMER counter
-	 * 改在 task_asm 呼叫 reloadOsTick(r0)來 load 值
+	 * 改在 task_asm 呼叫 reload_ostick(r0)來 load 值
 	 * DMTIMER_struct_ptr->TCRR = ~0 - (32768 * msecs / 1000); 
 	 */
 
@@ -69,59 +115,23 @@ void OsTickInit(volatile DMTIMER_T *DMTIMER_struct_ptr)
 
 
 
-void reloadOsTick(uint32_t msecs)
+void enable_ostick(uint8_t irq_id)
+{
+	*(INTC_ILR_n_BASE_PTR + irq_id) = (0 << 2) | (0 << 0) ;
+	enable_irq_id(irq_id);
+}
+
+
+
+void reload_ostick(uint32_t msecs)
 {
 	/** load ,TIMER_COUNTER ,Value of TIMER counter */
 	DMTIMER0_BASE_PTR_t->TCRR = ~0 - (32768 * msecs / 1000); 
 }
 
-
-
-/** Start */
-void timer_start(volatile DMTIMER_T *DMTIMER_struct_ptr)
-{
-	DMTIMER_struct_ptr->TCLR |= (1 << 0); 
-}
-
-
-
-void timerDisable(volatile DMTIMER_T *DMTIMER_struct_ptr)
-{
-	DMTIMER_struct_ptr->TCLR = (0 << 1) | (0 << 0);
-	DMTIMER_struct_ptr->TLDR = 0;
-	DMTIMER_struct_ptr->IRQENABLE_CLR = (1 << 1);
-}
-
-
-
-void enableTimerAndBindISR(int32_t IRQ_ID ,void (*handler)(void))
-{
-	irq_isr_bind(IRQ_ID, handler) ;
-}
-
-
-
-void enableOsTick(uint8_t irq_num)
-{
-	*(INTC_ILR_n_BASE_PTR + irq_num) = (0 << 2) | (0 << 0) ;
-	eableINT_NUM(irq_num);
-}
-
-
-
-void disnableTimerAndUnbindISR(int32_t IRQ_ID)
-{
-	irq_isr_unbind(IRQ_ID);
-}
-
-
-
-void __attribute__((optimize("O0"))) delay(uint32_t num)
-{
-	for (uint32_t count = 0 ;count < num ;count++) ;
-}
-
-/********************************************************************************/
+/********************************************************************************
+ * Watchdog
+ *******************************************************************************/ 
 
 void reload_watchdog(uint32_t base)
 {

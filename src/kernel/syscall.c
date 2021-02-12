@@ -16,7 +16,7 @@ void (*syscall[MAX_SYSCALL_ID])(void *usrTaskContextOld ,void *args)  = {
 	, get_tid_handler
 	, exit_handler
 	, fork_handler
-	, do_taskCreate_handler
+	, task_create_handler
 	, malloc_blk_handler
 	, malloc_mfree_blk_handler
 	, get_mblk_list_handler
@@ -154,7 +154,7 @@ void fork_handler(void *usrTaskContextOld ,void *args)
 
 
 
-void do_taskCreate_handler(void *usrTaskContextOld ,void *arg)
+void task_create_handler(void *usrTaskContextOld ,void *arg)
 {
 	struct TASK_ARGS *config = (struct TASK_ARGS *)arg ;
 
@@ -165,7 +165,7 @@ void do_taskCreate_handler(void *usrTaskContextOld ,void *arg)
 	/** 把 TASK_INFO 結構放在該 memo區域的起始位址 */
 	struct TASK_INFO *ntask = (struct TASK_INFO *)(pg->pgstart) ;
 
-	taskCreate(ntask ,config->taskCallBack ,stktop2bottom(pg->task_stk_top) ,config->prio);
+	create_task(ntask ,config->taskCallBack ,stktop2bottom(pg->task_stk_top) ,config->prio);
 
 	struct TASK_CONTEXT *old_context = (struct TASK_CONTEXT *)usrTaskContextOld ;
 	old_context->r0 = ntask->task_id ;
@@ -223,7 +223,6 @@ void get_task_priority_handler(void *usrTaskContextOld ,void *args)
 
 
 
-/** 之後再implement讓該task staus轉為block ,等寫完在ready */
 void write_handler(void *usrTaskContextOld ,void *args)
 {
 	struct FILE_RDWR_ARGS *write_args = (struct FILE_RDWR_ARGS *)args ;
