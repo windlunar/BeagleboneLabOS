@@ -71,20 +71,20 @@ syscall_yield:
 	push {r0 ,lr}
 	mov r0, #SYSCALL_ID_yield
 
+
 	/**
-	* 在這邊 reload ostimer counter ,tick =1ms (mov r0 #1)
-	* 而不要在初始化 timer就load的話
-	* 看起來可以解決卡住跳不出去的問題
+	* Reload os timer counter
 	*/
 	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 	mov		r0 ,#(ostick_msec)
 	bl 		reload_ostick
 	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 
+
 	svc 0x00
 	pop	{r0 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx lr	//返回 user proc
+	bx lr
 
 
 
@@ -102,7 +102,7 @@ syscall_get_tid:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr							/* 返回 user proc */
+	bx 		lr							/* Back to user proc */
 	
 
 /*****************************************************************************************/
@@ -120,7 +120,7 @@ syscall_exit:
 
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr							/* 返回 user proc */
+	bx 		lr							/* Back to user proc */
 
 
 
@@ -138,7 +138,7 @@ syscall_fork:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -157,7 +157,7 @@ syscall_do_taskCreate:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -175,7 +175,7 @@ syscall_malloc_blk:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -194,7 +194,7 @@ syscall_mfree_blk:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 /*****************************************************************************************/
@@ -211,7 +211,7 @@ syscall_get_mblk_list:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -232,7 +232,7 @@ syscall_get_task_priority:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -249,7 +249,7 @@ syscall_write:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 /*****************************************************************************************/
@@ -265,7 +265,7 @@ syscall_read:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -282,7 +282,7 @@ syscall_open:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -300,7 +300,7 @@ syscall_getcwd:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -317,7 +317,7 @@ syscall_getsubdir:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -335,7 +335,7 @@ syscall_getfdir:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -352,7 +352,7 @@ syscall_chdir:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 /*****************************************************************************************/
@@ -368,7 +368,7 @@ syscall_getfullpath:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 
@@ -385,7 +385,7 @@ syscall_restart:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr						/* 返回 user task */
+	bx 		lr						/* Back to user task */
 
 
 /*****************************************************************************************/
@@ -401,4 +401,4 @@ syscall_close:
 	svc 	0x00
 	pop		{r2 ,lr}
 	msr     CPSR_c, #CPSR_M_USR
-	bx 		lr							/* 返回 user task */
+	bx 		lr							/* Back to user task */

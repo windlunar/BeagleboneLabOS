@@ -29,19 +29,21 @@ first_run:
 	orr 	r10, r10, #0xC0 // disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
 	msr 	cpsr, r10
 
+
 	/** 
-	 * Load user stack 
-	 * r0為傳入的第一個參數, 也就是user stack pointer
+	 * Load user context ,assign r0 to stack pointer. 
+	 * R0 is the input argument ,whick point to the start address of context structure
+	 * 
 	 */	
 	mov		r13, r0				
+
 
 	/* Pop user state */
 	ldmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 
+
 	/**
-	 * 在這邊 reload ostimer counter ,tick =1ms (mov r0 #1)
-	 * 而不要在初始化 timer就load的話
-	 * 看起來可以解決卡在 bx r9的問題
+	 * Reload os timer counter
 	 */
 	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	
@@ -51,7 +53,7 @@ first_run:
 	ldmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	
 
-	/* Jump to user task */
+	/* Branch to user task */
 	msr     CPSR_c, #CPSR_M_USR
 	
 	bx 		r9
@@ -77,14 +79,16 @@ switch_task:
 	orr 	r10, r10, #0xC0 			/* disable FIQ and IRQ */
 	msr 	cpsr, r10
 
-	/* Load user stack */ 
+
+	/* Load context */ 
 	mov		r13, r0				
+
 
 	/* pop ,Load user state */
 	ldmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 
 	
-	/* 在這邊 reload ostimer counter */
+	/* Reload os timer counter */
 	stmfd 	sp!,	{r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	mov		r0 ,#(ostick_msec)
 	bl 		reload_ostick
@@ -105,6 +109,7 @@ switch_task:
 set_context_sp:
 	stmfd 	sp! ,{r1, r2, r3 ,r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 
+
 	/* switch to system mode */
 	mrs 	r10, cpsr
 	bic 	r10, r10, #0x1F 			/* clear bits */
@@ -112,7 +117,8 @@ set_context_sp:
 	orr 	r10, r10, #0xC0 
 	msr 	cpsr, r10
 
-	/** Load user stack */	
+
+	/** Load context */	
 	mov		r13, r0	
 
 

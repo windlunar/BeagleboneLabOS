@@ -60,26 +60,17 @@ READ_CP15_c1:
 .global READ_VECTOR_BASE
 READ_VECTOR_BASE:
 	/**
-	 * CP15 c12暫存器的 bit[31:5]存放 exception vector base address
+	 * bit[31:5] of CP15 c12 register keeps the exception vector base.
 	 * exception vectors offset
-	 * 
-	 * 0x00 Reset 				Reset
-	 * 0x04 Undefined 			PC = [base + 20h]
-	 * 0x08 SWI 				PC = [base + 24h]
-	 * 0x0C Pre-fetch abort 	PC = [base + 28h]
-	 * 0x10 Data abort 			PC = [base + 2ch]
-	 * 0x14 Unused 				PC = [base + 30h]
-	 * 0x18 IRQ 				PC = [base + 34h]
-	 * 0x20 FIQ 				PC = [base + 38h]
 	 */ 
 	mrc 	p15, #0, r0, c12, c0, #0
 	bx 		lr
 
 /****************************************************************************************/ 
- // c 指  CPSR中的control field ( PSR[7:0])
- // f 指  flag field (PSR[31:24])
- // x 指  extend field (PSR[15:8])
- // s 指  status field ( PSR[23:16])
+ // c :  CPSR中的control field ( PSR[7:0])
+ // f :  flag field (PSR[31:24])
+ // x :  extend field (PSR[15:8])
+ // s :  status field ( PSR[23:16])
  // 				
 /****************************************************************************************/
  //.equ exception_vector_base,	0x9ff52000
@@ -93,24 +84,7 @@ READ_VECTOR_BASE:
 _start:
 	/**
 	 * U-Boot version :2017.01
-	 * 初始化已透過U-Boot初始化
-	 * 
-	 * 透過 READ_VECTOR_BASE function 讀取 exception vector 存放的位址:
-	 * 0x9ff52000為 exception vector's base addr
-	 * SMI at 0x9ff52008 -> jump to 0x9ff52024
-	 * So svc_entry's address should load to 0x9ff52024
-	 */
-
-	/**設定svc_entry 的entry
-	 * 0x9ff52024 存放實際的svc_entry function的 entry address
-	 * 所以下面三行意思是令 
-	 * r0 = 0x9ff52024
-	 * r1 = svc_entry的 address
-	 * 再令 r0(0x9ff52024)這個位址的值 = svc_entry的 address(存在r1)
-	 * 
-	 * 所以當觸發 svc中斷時, 系統會先根據exception vector去 0x9ff52024這個位址拿svc_entry的
-	 * entry addr 
-	 * */ 
+	 */ 
 
 	mrs r0, cpsr
 	bic r0, r0, #0x1F 	/* clear mode bits */
@@ -119,8 +93,11 @@ _start:
 	msr cpsr, r0
 
 	/**
-	 * 設定 exception vector的起始位址
-	 * 以下這些位址應該要存放跳轉指令 ,以SVC為例 ,PC = [0x9ff52024] (跳轉到這個記憶體存放的內容)
+	 * The address of below should place the branch instruction ,in order to branch to the
+	 * actual entry of each exception
+	 * 
+	 * For instance ,the instruction at(base + 0x08) should make PC = [0x9ff52024] 
+	 * (Branch to the address which store in 0x9ff52024)
 	 * exception_vector_base +0x00		 	Reset 				
 	 * exception_vector_base +0x04		 	Undefined 			
 	 * exception_vector_base +0x08 			SWI 				
@@ -140,10 +117,10 @@ _start:
 
 
 	/**
-	 * 設定各 exceptions handler的 entry位址
+	 * Setting the entry of exception handler
 	 */
 
-	/* 存放 svc entry 位址的位址 =exception_vector_base +0x24 */
+	/* exception_vector_base +0x24 stores the entry address of svc_entry */
 	mrc 	p15, #0, r0, c12, c0, #0		/* Get the exception vector base from c12 */
 	add	r0 ,r0 ,#0x24						/* r0 =exception_vector_base +0x24 */
 	ldr r1, =svc_entry
@@ -164,7 +141,7 @@ _start:
 	str r1, [r0]
 
 
-	/* 存放 irq entry 位址的位址 =exception_vector_base +0x34 */
+	/* exception_vector_base +0x34 stores the entry address of irq_entry */
 	mrc 	p15, #0, r0, c12, c0, #0
 	add	r0 ,r0 ,#0x34					/* r0 =exception_vector_base +0x34 */
 	ldr r1, =irq_entry
@@ -174,29 +151,30 @@ _start:
 	/* fiq */
 
 
-	/* 設定 svc stack top */	
+	/* Setup svc stack top */	
 	ldr sp, =kernel_stack_top	
 	add r1, sp, #NON_KSTACK_SIZE		/*Now r1 = kernel_stack_top +0x1000 */
+
 
 	/* save svc cpsr */
 	mrs r3, cpsr
 
 
-	/* 設定 irq stack top */
+	/* Setup irq stack top */
 	mov r2, #0x12 		
 	msr cpsr_cxsf, r2
 	mov sp, r1							/* irq's sp = kernel_stack_top +0x1000 */
 	add r1, sp, #NON_KSTACK_SIZE		/* Now r1 = kernel_stack_top +0x2000 */
 
 
-	/* 設定 abort(prefetch_abort and data_abort) stack top */
+	/* Setup abort(prefetch_abort and data_abort) stack top */
 	mov r2, #0x17
 	msr cpsr_cxsf, r2
 	mov sp, r1							/* abort's sp = kernel_stack_top +0x2000 */
 	add r1, sp, #NON_KSTACK_SIZE		/* Now r1 = kernel_stack_top +0x3000 */
 
 
-	/* 回到 svc mode */
+	/* Back to svc mode */
 	msr cpsr_cxsf, r3
 
 

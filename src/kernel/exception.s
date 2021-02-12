@@ -42,27 +42,40 @@
 .align	2
 irq_entry:
 	/**
-	 * 分支處理timer0 irq(as os tick)跟其他中斷
+	 * Handle timer0 irq(os tick) and the others irqs seperately.
 	 */
 	stmfd 	sp!,	{r0 ,r1 ,r2 ,r3 ,r4 ,r5 ,r6 ,r7 ,r8 ,r9 ,r10 ,r11 ,r12 ,lr}
-	bl 		get_act_irqnum		/* 回傳值在r0 */
-	cmp 	r0, #66					/* 判斷是不是 os_tick中斷 */
-	bne 	non_ostick_irq			/* 不是的話就跳去處理一般中斷 */
+
+
+	/* Return val stores at r0 */
+	bl 		get_act_irqnum
+
+
+	/* Check if it is os_tick interrupt or not. */
+	cmp 	r0, #66
+
+
+	/* If not, branch to non_ostick_irq */
+	bne 	non_ostick_irq
+
+
 	ldmfd 	sp!,	{r0 ,r1 ,r2 ,r3 ,r4 ,r5 ,r6 ,r7 ,r8 ,r9 ,r10 ,r11 ,r12 ,lr}
 
 
-	/**
-	 * 準備原來user task的context 結構
-	 * 然後存到 r0 作為 irq_handler的傳入參數
-	 **/
-	sub		lr, lr, #4			/* 調整 lr_irq(返回user proc的位址) */
+	/* Adjust the return address lr_irq(Return from privilege mode to user task) */
+	sub		lr, lr, #4			
 
 
-	mov		r9 ,lr				/* r9 = lr_irq */
+	/* Save lr_irq to r9 */
+	mov		r9 ,lr
+
+	/* Save cpsr of user task to R12 */				
 	mrs		r12, spsr
 
 	
-	/* 測試 ,目前還在 irq mode ,重設 irq的stack pointer為初始pointer */
+	/* Reset irq's sp ,cause we will handle os tick interrupt at svc mode ,
+	 * and back to user mode directly
+	 */
 	ldr sp, =0x9df41000
 
 
@@ -78,15 +91,13 @@ irq_entry:
 
 
 	/**
-	 * In system mode
+	 * In system mode ,user mode shared the same stack pointer with system mode
 	 * r9 =lr_irq
-	 * 準備原來user task的context 結構
-	 * 然後存到 r0 作為 irq_handler的傳入參數
+	 *
+	 * Prepare context structure of user task.(Push it to stack)
+	 * And then asign the stack pointer(context struct's start addr) to r0 as input arg.
 	 */
 	stmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
-
-
-	/* make r0 as the user stack pointer (user task的context struct的起始位址) */
 	mov		r0,	sp	
 
 
@@ -100,7 +111,10 @@ irq_entry:
 	msr 	cpsr, r10
 
 
-	/* 在svc mode中處理irq中斷 ,應該傳入 user task的context(sp) 結構 address = r0 */
+	/* 
+	 * Handle ostick irq at svc mode ,the input argument(r0) is the should be the start 
+	 * address of user context
+	 */
 	bl 		timer0_isr
 
 
@@ -113,42 +127,40 @@ non_ostick_irq:
 
 
 /****************************************************************************************/
- // 當呼叫SVC時，SVC會觸發svc exception 
- // 跳進 svc_entry
+ // SVC exception entry 
+ // Will jump to here by using svc instruction.
 /****************************************************************************************/
 .type svc_entry, %function    
 .global svc_entry
 .align	2
 svc_entry:
-	/** switch to system mode
-	 * 要切換到system mode的原因為, SVC mode的r13(sp) ,r14(lr) 與user mode是不共用的
-	 * 而 system mode是共用的 ,因此先切換到system mode以保存user state
-	 */
-	mov 	r9 ,lr	//保存返回user proc的 address
+
+	/* Move lr to r9 to save the return address of user task */
+	mov 	r9 ,lr	
 	
 
 	/* Save user state*/
 	mrs		ip, spsr
 
 
-	/* switch to system mode to save user proc context */
+	/** 
+	 * switch to system mode to sace the context.
+	 * In system mode ,user mode shared the same stack pointer with system mode
+	 */
 	mrs 	r10, cpsr
-	bic 	r10, r10, #0x1F 		// clear bits
-	orr 	r10, r10, #(CPSR_M_SYS) // system mode
-	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
+	bic 	r10, r10, #0x1F 		/* clear bits */
+	orr 	r10, r10, #(CPSR_M_SYS) 
+	orr 	r10, r10, #0xC0 		/* disable FIQ and IRQ ,FIQ */
 	msr 	cpsr, r10
 
 
-	/**
-	 * 儲存 user proc context
-	 */
-	mov		lr ,r9	
-
-
 	/** 
-	 * push ,準備原來user task的context 結構
-	 * 然後存到 r1 作為傳入irq_handler的user task的context 結構 
-	 * r2為傳入參數
+	 * Prepare context structure of user task.(Push it to stack)
+	 * And then asign the spr(context struct's start addr) to r1 as 2nd input arg.
+	 * 
+	 * r0 : syscall id
+	 * r1 : User context(start address ad context structure)
+	 * r3 : The input args of system call.
 	 */
 	stmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,r12 ,lr}
 	mov		r1,	sp	
@@ -156,17 +168,14 @@ svc_entry:
 
 	/* switch back to svc mode */
 	mrs 	r10, cpsr
-	bic 	r10, r10, #0x1F 		// clear bits
-	orr 	r10, r10, #(CPSR_M_SVC) // system mode
-	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
+	bic 	r10, r10, #0x1F
+	orr 	r10, r10, #(CPSR_M_SVC)
+	orr 	r10, r10, #0xC0
 	msr 	cpsr, r10
 
 
 	/**
-	 * call syscall handler ,
-	 * r0 is the syscall id ,
-	 * r1 is the original context
-	 * r2 is input args(pointer)
+	 * Call syscall_handler
 	 */
 	push	{r0 ,r1 ,r2 ,r3}
 	bl 		syscall_handler
@@ -175,13 +184,13 @@ svc_entry:
 
 	/* switch to system mode */
 	mrs 	r10, cpsr
-	bic 	r10, r10, #0x1F 		// clear bits
-	orr 	r10, r10, #(CPSR_M_SYS) // system mode
-	orr 	r10, r10, #0xC0 		// disable FIQ and IRQ ,FIQ is not supported in AM335x devices.
+	bic 	r10, r10, #0x1F
+	orr 	r10, r10, #(CPSR_M_SYS)
+	orr 	r10, r10, #0xC0
 	msr 	cpsr, r10
 	
 
-	/* pop user context */
+	/* Pop user context back */
 	ldmfd 	sp!, {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10 ,r11 ,ip ,lr}
 	mrs		r10 ,spsr
 
@@ -190,7 +199,7 @@ svc_entry:
 	msr		cpsr, r10
 
 
-	/* 返回 syscall_<NAME> */
+	/* Return to syscall_<NAME> */
 	blx 	lr	
 
 

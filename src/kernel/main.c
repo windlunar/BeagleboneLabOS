@@ -89,7 +89,7 @@ int kernal_entry(void)
 
 	disable_watchdog(WATCHDOG_BASE) ;
 
-	/* 設定要跳進去sched()的context */
+	/* Setup the branch address of run_first_sched() */
 	set_first_sched();
 
 
